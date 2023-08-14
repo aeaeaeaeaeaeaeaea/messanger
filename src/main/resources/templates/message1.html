@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+</head>
+
+<body>
+	<form action="/message/post" method="post">
+		<label for="userInput">Ваша строка:</label>
+		<input type="text" id="userInput" name="message" required>
+		<button type="submit">Отправить</button>
+	</form>
+
+	<div th:each="message : ${messages}">
+
+		<div th:text="${message.getMessage()}">text</div>
+
+
+	</div>
+</body>
+
+</html>
