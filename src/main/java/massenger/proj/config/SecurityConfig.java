@@ -29,21 +29,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/auth/login", "/auth/reg", "/error").permitAll()
-                .anyRequest().hasAnyRole()
-                .and()
-                .headers().frameOptions().sameOrigin()
-                .and()
-                .formLogin().loginPage("/auth/login")
-                .loginProcessingUrl("/process_login")
-                .defaultSuccessUrl("/message", true)
-                .failureUrl("/auth/login?error")
-                .and()
-                .logout()
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/auth/login");
+    	httpSecurity
+        .authorizeRequests()
+            .antMatchers("/auth/login", "/auth/reg", "/error").permitAll()
+            .antMatchers("/auth/register").permitAll() // Добавляем разрешение на регистрацию
+            .antMatchers("/message").authenticated() // Предположим, что для /message нужна роль ROLE_USER
+            .anyRequest().authenticated() // Все остальные запросы требуют аутентификации
+        .and()
+            .formLogin()
+            .loginPage("/auth/login")
+            .loginProcessingUrl("/process_login")
+            .defaultSuccessUrl("/message", true)
+            .failureUrl("/auth/login?error")
+        .and()
+            .logout()
+            .logoutUrl("/logout")
+            .logoutSuccessUrl("/auth/login")
+        .and()
+            .headers().frameOptions().sameOrigin()
+        .and()
+            .csrf().disable(); // Временно отключаем CSRF для упрощения
     }
 
     @Bean

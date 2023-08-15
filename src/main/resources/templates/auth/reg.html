@@ -6,16 +6,15 @@
 </head>
 <body>
 	
-	<form action="/auth/register"  method="post">
-		
-        <label for="username">Имя пользователя:</label>
-        <input type="text" id="username" name="username"required><br>
-        
-        <label for="password">Пароль:</label>
-        <input type="password" id="password" name="password"required><br>   
-        
-        <input type="submit" value="Зарегистрироваться">
-    </form>
+	<form name="f" method="post" action="/auth/register" class="login-form">
+		<input name="username" type="text" id="typeEmailX" class="form-control form-control-lg" />
+		<label class="form-label" for="typeEmailX">Username</label>
+
+		<input name="password" type="password" id="typePasswordX" class="form-control form-control-lg" />
+		<label class="form-label" for="typePasswordX">Password</label>
+
+		<button type="submit">Login</button>
+	</form>
 
 </body>
 </html>

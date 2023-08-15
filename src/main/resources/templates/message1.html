@@ -7,18 +7,16 @@
 </head>
 
 <body>
-	<form action="/message/post" method="post">
-		<label for="userInput">Ваша строка:</label>
-		<input type="text" id="userInput" name="message" required>
-		<button type="submit">Отправить</button>
-	</form>
+	
+	
 
-	<div th:each="message : ${messages}">
+	<div th:each="user : ${users}">
 
-		<div th:text="${message.getMessage()}">text</div>
+		<div th:text="${user.getUsername()}">text</div>
 
 
 	</div>
+	
 </body>
 
 </html>

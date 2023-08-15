@@ -10,31 +10,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import massenger.proj.services.MessageService;
+import massenger.proj.services.UserService;
 
 @Controller()
 @RequestMapping("/message")
 public class MessageController {
-	
-	private final MessageService messageServ;
-	
-	public MessageController(MessageService messageServ) {
-		this.messageServ = messageServ;
+
+	private UserService userServ;
+
+	public MessageController(UserService userServ) {
+		this.userServ = userServ;
 	}
-	
+
 	@GetMapping()
 	public String message(Model model) {
-		model.addAttribute("messages", messageServ.findAll());
-		System.out.println("Я ТУТ!");
+		model.addAttribute("users", userServ.findAll());
 		return "message1";
-	}
-	
-	@PostMapping("/post")
-	public String mess(@RequestParam("message") String message) {
-		System.out.println("Test: " + message);
-		message mess = new message();
-		mess.setMessage(message);
-		messageServ.save(mess);
-		return "redirect:/message";
 	}
 
 }

@@ -28,6 +28,8 @@ public class UserService {
 
 		user.setId(id);
 		
+		user.setRole("ROLE_USER");
+		
 		userRep.save(user);
 	}
 	

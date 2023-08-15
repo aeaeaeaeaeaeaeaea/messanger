@@ -12,10 +12,6 @@ import java.util.Collection;
 
 public class PersonDetails implements UserDetails {
 
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	private final User user;
 
     public PersonDetails(User user) {
