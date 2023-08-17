@@ -1,4 +1,4 @@
-package massenger.proj.controllers;
+package messenger.proj.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import massenger.proj.models.User;
-import massenger.proj.services.UserService;
+import messenger.proj.models.User;
+import messenger.proj.services.UserService;
 
 @Controller
 @RequestMapping("/auth")

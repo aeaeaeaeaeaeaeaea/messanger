@@ -1,16 +1,16 @@
-package massenger.proj.controllers;
+package messenger.proj.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import massenger.proj.models.message;
+import messenger.proj.models.message;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import massenger.proj.services.MessageService;
-import massenger.proj.services.UserService;
+import messenger.proj.services.MessageService;
+import messenger.proj.services.UserService;
 
 @Controller()
 @RequestMapping("/message")

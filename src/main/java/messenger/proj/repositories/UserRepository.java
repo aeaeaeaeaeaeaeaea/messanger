@@ -1,6 +1,6 @@
-package massenger.proj.repositories;
+package messenger.proj.repositories;
 
-import massenger.proj.models.User;
+import messenger.proj.models.User;
 
 import org.springframework.data.cassandra.repository.CassandraRepository;
 import org.springframework.data.cassandra.repository.Query;

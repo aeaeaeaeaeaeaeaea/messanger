@@ -1,4 +1,4 @@
-package massenger.proj.services;
+package messenger.proj.services;
 
 import java.util.List;
 import java.util.UUID;
@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import massenger.proj.models.message;
-import massenger.proj.repositories.MessageRepositroy;
+import messenger.proj.models.message;
+import messenger.proj.repositories.MessageRepositroy;
 
 @Service
 @Transactional(readOnly = true)

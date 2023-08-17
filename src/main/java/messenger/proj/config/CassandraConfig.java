@@ -1,4 +1,4 @@
-package massenger.proj.config;
+package messenger.proj.config;
 
 import java.util.Collections;
 import java.util.List;

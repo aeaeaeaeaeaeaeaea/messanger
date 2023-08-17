@@ -1,4 +1,4 @@
-package massenger.proj.models;
+package messenger.proj.models;
 
 import java.util.UUID;
 

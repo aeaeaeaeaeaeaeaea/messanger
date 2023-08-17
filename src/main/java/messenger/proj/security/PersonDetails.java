@@ -1,11 +1,11 @@
-package massenger.proj.security;
+package messenger.proj.security;
 
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import massenger.proj.models.User;
+import messenger.proj.models.User;
 
 import java.util.Collection;
 
