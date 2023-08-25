@@ -27,11 +27,7 @@ public class MessageService {
 	
 	@Transactional
 	public void save(message message) {
-		
-		UUID id = UUID.randomUUID();
-		
-		message.setId(id);
-		
+		message.setId(UUID.randomUUID().toString());
 		messageRep.save(message);
 	}
 }

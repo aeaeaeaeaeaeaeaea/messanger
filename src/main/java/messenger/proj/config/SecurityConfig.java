@@ -10,7 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import massenger.proj.services.PersonDetailsServices;
+import messenger.proj.services.PersonDetailsServices;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -32,14 +32,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     	httpSecurity
         .authorizeRequests()
             .antMatchers("/auth/login", "/auth/reg", "/error").permitAll()
-            .antMatchers("/auth/register").permitAll() // Добавляем разрешение на регистрацию
-            .antMatchers("/message").authenticated() // Предположим, что для /message нужна роль ROLE_USER
-            .anyRequest().authenticated() // Все остальные запросы требуют аутентификации
+            .antMatchers("/auth/register").permitAll() 
+            .antMatchers("/message").authenticated() 
+            .anyRequest().authenticated() 
         .and()
             .formLogin()
             .loginPage("/auth/login")
             .loginProcessingUrl("/process_login")
-            .defaultSuccessUrl("/message", true)
+            .defaultSuccessUrl("/users", true)
             .failureUrl("/auth/login?error")
         .and()
             .logout()

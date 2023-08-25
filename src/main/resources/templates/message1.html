@@ -12,7 +12,7 @@
 
 	<div th:each="user : ${users}">
 
-		<div th:text="${user.getUsername()}">text</div>
+		<a th:href="@{/chat/{userId})(userId=${user.getId()})}" th:text="${user.getUsername()}">text</a>
 
 
 	</div>

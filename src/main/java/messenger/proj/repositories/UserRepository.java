@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface UserRepository extends CassandraRepository<User, UUID> {
+public interface UserRepository extends CassandraRepository<User, String> {
 
 	@Query("SELECT * FROM users WHERE username=?0 ALLOW FILTERING")
 	Optional<User> findByUsername(String username);

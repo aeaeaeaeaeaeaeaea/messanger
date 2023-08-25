@@ -10,7 +10,7 @@ import org.springframework.data.cassandra.core.mapping.Table;
 public class User {
 	
 	@PrimaryKey
-	private UUID id;
+	private String id;
 	
 	@Column("password")
 	private String password;
@@ -25,18 +25,18 @@ public class User {
 		
 	}
 	
-	public User(String role, String password, UUID id, String username) {
+	public User(String role, String password, String id, String username) {
 		this.id = id;
 		this.role = role;
 		this.password = password;
 		this.username = username;
 	}
 	
-	public void setId(UUID id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	
-	public UUID getId() {
+	public String getId() {
 		return this.id;
 	}
 	
