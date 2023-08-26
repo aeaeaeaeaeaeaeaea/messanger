@@ -4,25 +4,25 @@ import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 
-@Table("message1")
+@Table("chatmessage")
 public class message {
 	
 	@PrimaryKey
 	private String id;
 	
-	@Column("chatId")
+	@Column("chatid")
 	private String chatId;
 	
-	@Column("senderId")
+	@Column("senderid")
 	private String senderId;
 	
-	@Column("recipientId")
+	@Column("recipientid")
 	private String recipientId;
 	
-	@Column("senderName")
+	@Column("sendername")
 	private String senderName;
 	
-	@Column("recipientName")
+	@Column("recipientname")
 	private String recipientName;
 	
 	@Column("content")

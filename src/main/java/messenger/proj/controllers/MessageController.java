@@ -10,6 +10,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import messenger.proj.models.User;
 import messenger.proj.models.message;
 import messenger.proj.services.ChatRoomService;
@@ -34,13 +39,23 @@ public class MessageController {
 		this.chatRoomServ = chatRoomServ;
 	}
 	
-	@MessageMapping("/chat.sendMessage")
-	@SendTo("/topic/public")
-	public void processMessage(@Payload message message) {
-		messageServ.save(message);
+	@MessageMapping("/chat/{chatId}/sendMessage")
+	@SendTo("/topic/{chatId}")
+	public void processChatMessage(@Payload message message, @PathVariable("chatId") String chatId) throws JsonMappingException, JsonProcessingException {
 		
-		messagingTemplate.convertAndSend("/topic/public", message);
+	        ObjectMapper objectMapper = new ObjectMapper();
+	        JsonNode jsonNode = objectMapper.readTree(chatId);
+
+	        String extractedChatId = jsonNode.get("chatId").asText();
+	        System.out.println("Extracted Chat id: " + extractedChatId);
+
+	        message.setChatId(extractedChatId);
+	        messageServ.save(message);
+
+	        messagingTemplate.convertAndSend("/topic/" + extractedChatId, message);
+	    
 	}
+
 	
 	@GetMapping("/users")
 	public String users(Model model) {
@@ -53,16 +68,10 @@ public class MessageController {
 	@GetMapping("/chat/{userId}")
 	public String chat(@PathVariable("userId") String userId, Model model) {
 		
+		model.addAttribute("messages", messageServ.findByChatId(userId));
+		
 		model.addAttribute("id", userId);
 			
 		return "chat";
 	}
-	
-	
-	
-
-	
-
-	
-
 }

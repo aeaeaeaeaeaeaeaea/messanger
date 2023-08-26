@@ -3,73 +3,67 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>Insert title here</title>
+	<title>Chat Example</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 </head>
 
 <body>
-
-
-
-	<form id="chatForm">
-		<input type="text" id="messageInput" th:data="${id}" placeholder="Type a message...">
-		<button type="submit">Send</button>
-	</form>
-
-
-	<!-- Ваш HTML-код -->
-
-	<!-- Ваш HTML-код -->
-
-	<script src="/webjars/sockjs-client/1.1.4/sockjs.min.js"></script>
-	<script src="/webjars/stomp-websocket/2.3.4/stomp.min.js"></script>
+	
+	
+	
+	<div>
+		<h2>Chat</h2>
+		
+		<div th:each="message : ${messages}">
+			
+			<p th:text="${message.getContent()}"></p>
+			
+		</div>
+		
+		<div id="chatMessages"></div>
+		<form id="messageForm">
+			<input type="text" id="messageInput"  th:data="${id}" placeholder="Type your message..." />
+			<button type="submit">Send</button>
+		</form>
+	</div>
 
 	<script>
 		var stompClient = null;
+		var mess = document.getElementById('messageInput');
+		var chatId = mess.getAttribute("data");
 
-		function connect() {
-			var socket = new SockJS('/chat');
+		function connectToChat(chatId) {
+			var socket = new SockJS('/chat/' + chatId);
 			stompClient = Stomp.over(socket);
 			stompClient.connect({}, function (frame) {
 				console.log('Connected: ' + frame);
-
-				stompClient.subscribe('/topic/public', function (message) {
+				stompClient.subscribe('/topic/' + chatId, function (message) {
 					showMessage(JSON.parse(message.body));
 				});
 			});
 		}
 
 		function showMessage(message) {
-			var messageDiv = document.createElement('div');
-			messageDiv.textContent = message.sender + ': ' + message.content;
-			document.getElementById('chatMessages').appendChild(messageDiv);
+			$("#chatMessages").append("<p>" + message.content + "</p>");
 		}
 
 		function sendMessage() {
-			var messageInput = document.getElementById('messageInput');
-			var messageContent = messageInput.value;
-			var sender = messageInput.getAttribute("data");
-			console.log("Sender:", sender); // Отладочный вывод значения sender
-			var message = {
-				sender: sender,
-				content: messageContent
-			};
-			stompClient.send('/app/chat.sendMessage', {}, JSON.stringify(message));
-			messageInput.value = '';
+			var messageInput = $("#messageInput");
+			var message = messageInput.val();
+			stompClient.send("/app/chat/`{chatId}`/sendMessage", {}, JSON.stringify({'content': message, 'chatId': chatId}));
+			messageInput.val("");
 		}
 
-
-		document.getElementById('chatForm').addEventListener('submit', function (event) {
-			event.preventDefault();
-			sendMessage();
+		$(function () {
+			$("form#messageForm").on('submit', function (e) {
+				e.preventDefault();
+				sendMessage();
+			});
+			connectToChat(chatId); // Замените на фактический ID чата
 		});
-
-		window.onload = function () {
-			connect();
-		};
 	</script>
-
-
-
 </body>
 
 </html>
