@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html  xmlns:th="http://thymeleaf.org">
+<html xmlns:th="http://thymeleaf.org">
 
 <head>
 	<meta charset="UTF-8">
@@ -7,16 +7,20 @@
 </head>
 
 <body>
-	
-	
+
+
 
 	<div th:each="user : ${users}">
 
-		<a th:href="@{/chat/{userId})(userId=${user.getId()})}" th:text="${user.getUsername()}">text</a>
+		<div th:if="${user.getId() != currentUser}">
+			<a th:href="@{/chat/{userId})(userId=${user.getId()})}" th:text="${user.getUsername()}">text</a>
+		</div>
+
+
 
 
 	</div>
-	
+
 </body>
 
 </html>

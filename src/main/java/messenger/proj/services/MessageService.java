@@ -34,4 +34,9 @@ public class MessageService {
 	public List<message> findByChatId(String chatId) {
 		return messageRep.findByChatId(chatId);
 	}
+	
+	@Transactional
+	public void deleteById(String messageId) {
+		messageRep.deleteById(messageId);
+	}
 }

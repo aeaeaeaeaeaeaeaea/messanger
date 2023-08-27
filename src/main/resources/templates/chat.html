@@ -7,32 +7,139 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+	<style>
+		.my-message {
+			background-color: lightblue;
+			padding: 5px;
+			margin: 5px;
+			border-radius: 5px;
+			clear: both;
+		}
+
+		.other-message {
+			background-color: lightgreen;
+			padding: 5px;
+			margin: 5px;
+			border-radius: 5px;
+			float: left;
+			clear: both;
+		}
+	</style>
 </head>
 
 <body>
-	
-	
-	
+
+
+
 	<div>
 		<h2>Chat</h2>
-		
+
 		<div th:each="message : ${messages}">
-			
-			<p th:text="${message.getContent()}"></p>
-			
+			<div class="message-container"
+				th:classappend="${message.getSenderId() == currentUser ? 'my-message' : 'other-message'}">
+				<p th:text="${message.getContent()}" class="message-content" th:data-id="${message.getId()}"></p>
+			</div>
 		</div>
 		
 		<div id="chatMessages"></div>
 		<form id="messageForm">
-			<input type="text" id="messageInput"  th:data="${id}" placeholder="Type your message..." />
+			<input type="text" id="messageInput" th:data="${id}" th:dataSenderId="${currentUser}"
+				placeholder="Type your message..." />
 			<button type="submit">Send</button>
 		</form>
 	</div>
+
+	<!-- Модальное окно -->
+	<div id="myModal" class="modal">
+		<div class="modal-content">
+			<span class="close">&times;</span>
+			<p>Выберите действие:</p>
+			<button id="deleteButton">Удалить</button>
+			<button id="editButton">Редактировать</button>
+		</div>
+	</div>
+
+	<script>
+		$(function () {
+			var modal = $("#myModal");
+			var deleteButton = $("#deleteButton");
+			var editButton = $("#editButton");
+			var messageId;
+
+			$(".message-content").on('contextmenu', function (e) {
+				e.preventDefault();
+				messageId = $(this).attr("data-id");
+				modal.css({top: e.pageY + "px", left: e.pageX + "px"});
+				modal.show();
+			});
+
+			$(".close").on("click", function () {
+				modal.hide();
+			});
+
+			deleteButton.on("click", function () {
+				deleteMessage(messageId);
+				modal.hide();
+			});
+
+			editButton.on("click", function () {
+				editMessage(messageId);
+				modal.hide();
+			});
+
+			$(document).on('click', function (e) {
+				if (!$(e.target).closest(".modal-content").length && !$(e.target).hasClass("message-content")) {
+					modal.hide();
+				}
+			});
+
+			// Добавляем обработчик клика правой кнопкой мыши на сообщении
+			$(".message-content").on('mousedown', function (e) {
+				if (e.button === 2) {
+					$(this).trigger('contextmenu');
+				}
+			});
+		});
+	</script>
+
+	<script>
+		function deleteMessage(messageId) {
+			$.ajax({
+				type: "POST",
+				url: "/deleteMessage?messageId=" + messageId, // Замените на путь к вашему @PostMapping
+				success: function () {
+					console.log("Сообщение удалено");
+					// Обновите список сообщений или выполните другие действия по необходимости
+				}
+			});
+		}
+
+		function editMessage(messageId) {
+			$.ajax({
+				type: "POST",
+				url: "/editMessage/" + messageId, // Замените на путь к вашему @PostMapping
+				success: function () {
+					console.log("Редактирование сообщения");
+					// Откройте модальное окно с формой редактирования или выполните другие действия
+				}
+			});
+		}
+
+	</script>
+
+	<script>
+		function showMessage(message) {
+			var messageClass = (message.senderId === currentUser ? "my-message" : "other-message");
+			$("#chatMessages").append("<p class='" + messageClass + "'>" + message.content + "</p>");
+		}
+
+	</script>
 
 	<script>
 		var stompClient = null;
 		var mess = document.getElementById('messageInput');
 		var chatId = mess.getAttribute("data");
+		var dataSenderId = mess.getAttribute("dataSenderId");
 
 		function connectToChat(chatId) {
 			var socket = new SockJS('/chat/' + chatId);
@@ -52,7 +159,7 @@
 		function sendMessage() {
 			var messageInput = $("#messageInput");
 			var message = messageInput.val();
-			stompClient.send("/app/chat/`{chatId}`/sendMessage", {}, JSON.stringify({'content': message, 'chatId': chatId}));
+			stompClient.send("/app/chat/`{chatId}`/sendMessage", {}, JSON.stringify({'content': message, 'chatId': chatId, 'dataSenderId': dataSenderId}));
 			messageInput.val("");
 		}
 
