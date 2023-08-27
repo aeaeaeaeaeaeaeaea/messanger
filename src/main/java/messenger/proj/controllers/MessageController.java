@@ -47,7 +47,7 @@ public class MessageController {
 	        JsonNode jsonNode = objectMapper.readTree(chatId);
 
 	        String extractedChatId = jsonNode.get("chatId").asText();
-	        System.out.println("Extracted Chat id: " + extractedChatId);
+	       
 
 	        message.setChatId(extractedChatId);
 	        messageServ.save(message);
