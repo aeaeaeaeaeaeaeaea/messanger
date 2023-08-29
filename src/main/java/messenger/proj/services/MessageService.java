@@ -39,4 +39,10 @@ public class MessageService {
 	public void deleteById(String messageId) {
 		messageRep.deleteById(messageId);
 	}
+	
+	@Transactional
+	public void edit(message message, String messageId) {
+		message.setId(messageId);
+		messageRep.save(message);
+	}
 }

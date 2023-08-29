@@ -40,7 +40,7 @@
 				<p th:text="${message.getContent()}" class="message-content" th:data-id="${message.getId()}"></p>
 			</div>
 		</div>
-		
+
 		<div id="chatMessages"></div>
 		<form id="messageForm">
 			<input type="text" id="messageInput" th:data="${id}" th:dataSenderId="${currentUser}"
@@ -50,13 +50,23 @@
 	</div>
 
 	<!-- Модальное окно -->
-	<div id="myModal" class="modal">
+	<div id="myModal" class="modal" style="display: none;">
 		<div class="modal-content">
 			<span class="close">&times;</span>
 			<p>Выберите действие:</p>
 			<button id="deleteButton">Удалить</button>
 			<button id="editButton">Редактировать</button>
 		</div>
+	</div>
+	
+	<!-- Форма для редактирования сообщения -->
+	<div id="editForm" style="display: none;">
+		<form id="messageEditForm" action="/editMessage" method="post">
+			<input type="hidden" name="messageId" id="editMessageId" value="">
+			 <input type="hidden" name="chatId" id="editChatId" value="">
+			<input type="text" name="editedContent" id="editedContent" placeholder="Редактировать сообщение">
+			<button type="submit">Сохранить изменения</button>
+		</form>
 	</div>
 
 	<script>
@@ -83,30 +93,36 @@
 			});
 
 			editButton.on("click", function () {
-				editMessage(messageId);
+				var messageContent = $(".message-content[data-id='" + messageId + "']").text();
+				$("#editedContent").val(messageContent);
+				$("#editChatId").val(chatId);
+				$("#editMessageId").val(messageId);
+
+				$("#editForm").show();
+				$("#messageForm").hide();
 				modal.hide();
 			});
 
 			$(document).on('click', function (e) {
-				if (!$(e.target).closest(".modal-content").length && !$(e.target).hasClass("message-content")) {
+				if (!$(e.target).hasClass("message-content")) {
 					modal.hide();
-				}
-			});
-
-			// Добавляем обработчик клика правой кнопкой мыши на сообщении
-			$(".message-content").on('mousedown', function (e) {
-				if (e.button === 2) {
-					$(this).trigger('contextmenu');
 				}
 			});
 		});
 	</script>
 
 	<script>
+
+
+
 		function deleteMessage(messageId) {
+
+			var mess = document.getElementById('messageInput');
+			var chatId = mess.getAttribute("data");
+
 			$.ajax({
 				type: "POST",
-				url: "/deleteMessage?messageId=" + messageId, // Замените на путь к вашему @PostMapping
+				url: "/deleteMessage?messageId=" + messageId + "&chatId=" + chatId, // Замените на путь к вашему @PostMapping
 				success: function () {
 					console.log("Сообщение удалено");
 					// Обновите список сообщений или выполните другие действия по необходимости
@@ -115,9 +131,13 @@
 		}
 
 		function editMessage(messageId) {
+
+			var mess = document.getElementById('messageInput');
+			var chatId = mess.getAttribute("data");
+
 			$.ajax({
 				type: "POST",
-				url: "/editMessage/" + messageId, // Замените на путь к вашему @PostMapping
+				url: "/editMessage?messageId=" + messageId, // Замените на путь к вашему @PostMapping
 				success: function () {
 					console.log("Редактирование сообщения");
 					// Откройте модальное окно с формой редактирования или выполните другие действия
