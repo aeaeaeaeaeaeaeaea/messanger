@@ -54,9 +54,11 @@ public class MessageController {
 
 		String extractedChatId = jsonNode.get("chatId").asText();
 		String senderId = jsonNode.get("dataSenderId").asText();
+		String recipId = jsonNode.get("dataRecipId").asText();
 
 		message.setChatId(extractedChatId);
 		message.setSenderId(senderId);
+		message.setRecipientId(recipId);
 		messageServ.save(message);
 
 		messagingTemplate.convertAndSend("/topic/" + extractedChatId, message);
@@ -80,9 +82,17 @@ public class MessageController {
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
+		
+		String curentUserId = personDetails.getUser().getId();
 
-		model.addAttribute("messages", messageServ.findByChatId(userId));
-		model.addAttribute("currentUser", personDetails.getUser().getId());
+	
+		model.addAttribute("messages", messageServ.findByChatId(curentUserId, userId));
+		
+		for (message messages : messageServ.findByChatId(userId, curentUserId)) {
+			System.out.println(messages.getContent());
+		}
+		
+		model.addAttribute("currentUser", curentUserId);
 		model.addAttribute("id", userId);
 
 		return "chat";

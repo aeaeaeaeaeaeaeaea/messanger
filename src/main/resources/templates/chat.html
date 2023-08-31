@@ -44,6 +44,7 @@
 		<div id="chatMessages"></div>
 		<form id="messageForm">
 			<input type="text" id="messageInput" th:data="${id}" th:dataSenderId="${currentUser}"
+			th:dataRecipId="${id}"
 				placeholder="Type your message..." />
 			<button type="submit">Send</button>
 		</form>
@@ -113,8 +114,6 @@
 
 	<script>
 
-
-
 		function deleteMessage(messageId) {
 
 			var mess = document.getElementById('messageInput');
@@ -160,6 +159,7 @@
 		var mess = document.getElementById('messageInput');
 		var chatId = mess.getAttribute("data");
 		var dataSenderId = mess.getAttribute("dataSenderId");
+		var dataRecipId = mess.getAttribute("dataRecipId");
 
 		function connectToChat(chatId) {
 			var socket = new SockJS('/chat/' + chatId);
@@ -179,7 +179,7 @@
 		function sendMessage() {
 			var messageInput = $("#messageInput");
 			var message = messageInput.val();
-			stompClient.send("/app/chat/`{chatId}`/sendMessage", {}, JSON.stringify({'content': message, 'chatId': chatId, 'dataSenderId': dataSenderId}));
+			stompClient.send("/app/chat/`{chatId}`/sendMessage", {}, JSON.stringify({'content': message, 'chatId': chatId, 'dataSenderId': dataSenderId, 'dataRecipId' : dataRecipId}));
 			messageInput.val("");
 		}
 

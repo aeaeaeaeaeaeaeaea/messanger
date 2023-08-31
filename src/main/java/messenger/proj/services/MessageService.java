@@ -31,8 +31,8 @@ public class MessageService {
 		messageRep.save(message);
 	}
 
-	public List<message> findByChatId(String chatId) {
-		return messageRep.findByChatId(chatId);
+	public List<message> findByChatId(String chatId, String senderId) {
+		return messageRep.findByChatId(chatId, senderId);
 	}
 	
 	@Transactional
