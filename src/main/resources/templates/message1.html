@@ -11,15 +11,48 @@
 
 
 	<div th:each="user : ${users}">
-
 		<div th:if="${user.getId() != currentUser}">
-			<a th:href="@{/chat/{userId})(userId=${user.getId()})}" th:text="${user.getUsername()}">text</a>
+			<a class="start-chat" th:attr="data-userId=${user.getId()},data-currentUser=${currentUser}"
+				th:text="${user.getUsername()}">text</a>
 		</div>
-
-
-
-
 	</div>
+
+
+
+
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	
+	<script>
+		$(document).ready(function () {
+			$(".start-chat").click(function (e) {
+				e.preventDefault(); // Отменяем стандартное действие ссылки
+
+				var userId = $(this).data("userId");
+				var currentUser = $(this).data("currentUser");
+
+				// Создаем объект данных для отправки
+				var data = {
+					userId: userId,
+					currentUser: currentUser
+				};
+
+				// Отправляем POST-запрос на указанный URL
+				$.ajax({
+					type: "POST",
+					url: "/chat?userId=" + userId + "&currentUser" + currentUser, // Замените на ваш URL
+					data: JSON.stringify(data),
+					contentType: "application/json",
+					success: function (response) {
+						// Обработка успешного ответа от сервера
+					},
+					error: function (error) {
+						// Обработка ошибки
+					}
+				});
+			});
+		});
+	</script>
+
 
 </body>
 
