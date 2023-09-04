@@ -4,19 +4,19 @@ import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 
-@Table("ChatRoom")
+@Table("chatroom")
 public class ChatRoom {
 	
 	@PrimaryKey
 	private String id;
 	
-	@Column("chatId")
+	@Column("chatid")
 	private String chatId;
 	
-	@Column("senderId")
+	@Column("senderid")
 	private String senderId;
 	
-	@Column("recipientId")
+	@Column("recipientid")
 	private String recipientId;
 	
 	public ChatRoom() {

@@ -77,50 +77,5 @@ public class MessageController {
 		return "message1";
 	}
 
-	@GetMapping("/chat/{userId}")
-	public String chat(@PathVariable("userId") String userId, Model model) {
-
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
-		
-		String curentUserId = personDetails.getUser().getId();
-
 	
-		model.addAttribute("messages", messageServ.findByChatId(curentUserId, userId));
-		
-		for (message messages : messageServ.findByChatId(userId, curentUserId)) {
-			System.out.println(messages.getContent());
-		}
-		
-		model.addAttribute("currentUser", curentUserId);
-		model.addAttribute("id", userId);
-
-		return "chat";
-	}
-
-	@PostMapping("/deleteMessage")
-	public String deleteMessage(@RequestParam("messageId") String messageId, @RequestParam("chatId") String chatId) {
-
-		messageServ.deleteById(messageId);
-
-		return "redirect:/chat/" + chatId;
-	}
-
-	@PostMapping("/editMessage")
-	public String editMessage(@ModelAttribute("message") message message, @RequestParam("chatId") String chatId,
-			@RequestParam("messageId") String messageId, @RequestParam("editedContent") String editedContent) {
-		
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
-
-		message.setId(messageId);
-		message.setContent(editedContent);
-		message.setChatId(chatId);
-		message.setSenderId(personDetails.getUser().getId());
-		
-		messageServ.edit(message, messageId);
-
-		return "redirect:/chat/" + chatId;
-	}
-
 }
