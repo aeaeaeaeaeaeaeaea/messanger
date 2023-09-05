@@ -7,15 +7,26 @@
 </head>
 
 <body>
-
-
-
-	<div th:each="user : ${users}">
-		<div th:if="${user.getId() != currentUser}">
-			<a class="start-chat" id="chat" th:userId="${user.getId()}" th:currentUser="${currentUser}"
-				th:text="${user.getUsername()}">text</a>
+	
+	 
+	<div th:if="${!chatList.isEmpty()}">
+		<div th:each="chatRoom : ${chatRoom}">
+			<a th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()} ) }" th:text="${chatRoom.getId()}">Text</a>
 		</div>
 	</div>
+	
+
+	<div th:if="${chatList.isEmpty()}">
+
+		<div th:each="user : ${users}">
+			<div th:if="${user.getId() != currentUser}">
+				<a class="start-chat" id="chat" th:userId="${user.getId()}" th:currentUser="${currentUser}"
+					th:text="${user.getUsername()}">text</a>
+			</div>
+		</div>
+
+	</div>
+
 
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -23,11 +34,11 @@
 		$(document).ready(function () {
 			$(".start-chat").click(function (e) {
 				e.preventDefault(); // Отменяем стандартное действие ссылки
-				
+
 				var mess = document.getElementById('chat');
 				var userId = mess.getAttribute("userId");
 				var currentUser = mess.getAttribute("currentUser");
-			
+
 
 				// Создаем объект данных для отправки
 				var data = {
@@ -41,12 +52,6 @@
 					url: "/chat?userId=" + userId + "&currentUser=" + currentUser, // Исправленная строка
 					data: JSON.stringify(data),
 					contentType: "application/json",
-					success: function (response) {
-						// Обработка успешного ответа от сервера
-					},
-					error: function (error) {
-						// Обработка ошибки
-					}
 				});
 			});
 		});

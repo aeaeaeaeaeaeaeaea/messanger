@@ -1,7 +1,7 @@
 package messenger.proj.services;
 
 import java.util.UUID;
-
+import java.util.stream.Stream;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,10 +37,9 @@ public class ChatRoomService {
 		
 	
 		Optional<ChatRoom> chatRoom2 = chatRoomRep.findBySenderIdAndRecipientId(recipientId, senderId);
+		Optional<ChatRoom> chatRoom1 = chatRoomRep.findBySenderIdAndRecipientId(senderId, recipientId);
 
-
-
-		if (!chatRoom2.isPresent()) {
+		if (!chatRoom2.isPresent() && !chatRoom1.isPresent()) {
 
 			ChatRoom chatRoom = new ChatRoom();
 
@@ -57,6 +56,16 @@ public class ChatRoomService {
 		Optional<ChatRoom> chatRoom = chatRoomRep.findBySenderIdAndRecipientId(senderId, recipientId);
 
 		return chatRoom;
+	}
+	
+	public List<ChatRoom> findAll(String userId) {
+		
+		List<ChatRoom> listOne = chatRoomRep.findBySenderId(userId);
+		List<ChatRoom> listTwo = chatRoomRep.findByRecipientId(userId);
+		
+		List<ChatRoom> newList = Stream.concat(listOne.stream(), listTwo.stream()).toList();
+		
+		return newList;
 	}
 
 }

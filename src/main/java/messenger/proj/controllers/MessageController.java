@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import messenger.proj.models.ChatRoom;
 import messenger.proj.models.User;
 import messenger.proj.models.message;
 import messenger.proj.security.PersonDetails;
@@ -70,8 +71,14 @@ public class MessageController {
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
+		String id = personDetails.getUser().getId();
+		
+		for (ChatRoom ch :  chatRoomServ.findAll(id)) {
+			System.out.println(ch.getId());
+		}
 
-		model.addAttribute("currentUser", personDetails.getUser().getId());
+		model.addAttribute("currentUser", id);
+		model.addAttribute("chatList", chatRoomServ.findAll(id));
 		model.addAttribute("users", userServ.findAll());
 
 		return "message1";

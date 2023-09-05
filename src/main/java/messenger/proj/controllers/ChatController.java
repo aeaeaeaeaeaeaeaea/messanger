@@ -46,8 +46,13 @@ public class ChatController {
 		chatRoomServ.save(userId, currentUser);
 		
 		Optional<ChatRoom> chat = chatRoomServ.findBySenderIdAndRecipientId(currentUser, userId);
+		Optional<ChatRoom> chat1 = chatRoomServ.findBySenderIdAndRecipientId(userId, currentUser);
 		
-		return "redirect:/chat/" + chat.get().getId();
+		if (chat.isPresent()) {
+			return "redirect:/chat/" + chat.get().getId();
+		}
+		
+		return "redirect:/chat/" + chat1.get().getId();
 	}
 	
 	@GetMapping("/chat/{userId}")
