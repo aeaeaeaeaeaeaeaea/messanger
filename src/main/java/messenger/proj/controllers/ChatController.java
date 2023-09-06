@@ -24,17 +24,15 @@ import messenger.proj.services.UserService;
 @Controller
 public class ChatController {
 		
-	private SimpMessagingTemplate messagingTemplate;
-	private MessageService messageServ;
-	private ChatRoomService chatRoomServ;
-	private UserService userServ;
+
+	private final MessageService messageServ;
+	private final ChatRoomService chatRoomServ;
+
 	
 	@Autowired
-	public ChatController(ChatRoomService chatRoomServ, UserService userServ, SimpMessagingTemplate messagingTemplate, MessageService messageServ) {
+	public ChatController(ChatRoomService chatRoomServ, MessageService messageServ) {
 		super();
 		this.chatRoomServ = chatRoomServ;
-		this.userServ = userServ;
-		this.messagingTemplate = messagingTemplate;
 		this.messageServ = messageServ;
 	}
 	
@@ -95,6 +93,15 @@ public class ChatController {
 		messageServ.edit(message, messageId);
 
 		return "redirect:/chat/" + chatId;
+	}
+	
+	@PostMapping("/deleteChat")
+	public String deleteChat(@RequestParam("chatId") String chatId) {
+		
+		chatRoomServ.deleteById(chatId);
+		messageServ.deleteByChatId(chatId);
+		
+		return "redirect:/";
 	}
 
 	

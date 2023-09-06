@@ -35,7 +35,7 @@ public class AuthController {
     @PostMapping("/register")
     public String registration(@ModelAttribute("user") User user) {
     	userServ.save(user);
-    	return "redirect:/message";
+    	return "redirect:/auth/login";
     }
 
 

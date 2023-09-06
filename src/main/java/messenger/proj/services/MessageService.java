@@ -45,4 +45,10 @@ public class MessageService {
 		message.setId(messageId);
 		messageRep.save(message);
 	}
+	
+	@Transactional
+	public void deleteByChatId(String chatId) {
+		messageRep.deleteByChatId(chatId);
+	}
+	
 }

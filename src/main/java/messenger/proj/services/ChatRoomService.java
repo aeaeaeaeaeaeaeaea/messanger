@@ -23,12 +23,10 @@ import java.util.List;
 public class ChatRoomService {
 
 	private final ChatRoomRepository chatRoomRep;
-	private final CassandraTemplate cassandraTemplate;
 
 	@Autowired
-	public ChatRoomService(ChatRoomRepository chatRoomRep, CassandraTemplate cassandraTemplate) {
+	public ChatRoomService(ChatRoomRepository chatRoomRep) {
 		this.chatRoomRep = chatRoomRep;
-		this.cassandraTemplate = cassandraTemplate;
 	}
 
 	@Transactional
@@ -66,6 +64,11 @@ public class ChatRoomService {
 		List<ChatRoom> newList = Stream.concat(listOne.stream(), listTwo.stream()).toList();
 		
 		return newList;
+	}
+	
+	@Transactional
+	public void deleteById(String chatId) {
+		chatRoomRep.deleteById(chatId);
 	}
 
 }

@@ -2,21 +2,21 @@
 <html xmlns:th="http://thymeleaf.org">
 
 <head>
-	<meta charset="UTF-8">
-	<title>Insert title here</title>
+
+	<!-- Подключение необходимых библиотек и стилей для модального окна и jQuery -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
-
 <body>
-	
-	 
-	<div th:if="${!chatList.isEmpty()}">
-		<div th:each="chatRoom : ${chatRoom}">
-			<a th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()} ) }" th:text="${chatRoom.getId()}">Text</a>
-		</div>
-	</div>
-	
-
-	<div th:if="${chatList.isEmpty()}">
+    <div th:if="${!chatList.isEmpty()}">
+        <div th:each="chatRoom : ${chatList}">
+            <!-- Добавляем класс "chat-link" для каждой ссылки -->
+            <a th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}" th:text="${chatRoom.getId()}" class="chat-link">Text</a>
+        </div>
+    </div>
+    
+    <div th:if="${chatList.isEmpty()}">
 
 		<div th:each="user : ${users}">
 			<div th:if="${user.getId() != currentUser}">
@@ -26,6 +26,86 @@
 		</div>
 
 	</div>
+
+    <!-- Модальное окно -->
+    <div class="modal" id="myModal" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Действия с чатом</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Выберите действие:</p>
+                    <button id="deleteButton" class="btn btn-danger">Удалить чат</button>
+                    <button id="editButton" class="btn btn-primary">Очистить сообщения</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(function () {
+            var modal = $("#myModal");
+            var deleteButton = $("#deleteButton");
+            var editButton = $("#editButton");
+            var chatId;
+
+            // Обработчик клика правой кнопкой мыши на ссылке
+            $(".chat-link").on('contextmenu', function (e) {
+                e.preventDefault();
+                chatId = $(this).text(); // Получаем текст ссылки (ID чата)
+                modal.css({top: e.pageY + "px", left: e.pageX + "px"});
+                modal.show();
+            });
+
+            // Обработчик клика на кнопку закрытия модального окна
+            $(".close").on("click", function () {
+                modal.hide();
+            });
+
+            // Обработчик клика на кнопку "Удалить"
+            deleteButton.on("click", function () {
+                deleteChat(chatId); // Здесь вызывайте функцию удаления чата с chatId
+                modal.hide();
+            });
+
+            // Обработчик клика на кнопку "Редактировать"
+            editButton.on("click", function () {
+                // Здесь вы можете выполнить действия для редактирования чата с chatId
+                // Например, переход на страницу редактирования
+                redirectToEditPage(chatId);
+                modal.hide();
+            });
+
+            // Обработчик клика за пределами модального окна для закрытия
+            $(document).on('click', function (e) {
+                if (!$(e.target).hasClass("chat-link")) {
+                    modal.hide();
+                }
+            });
+        });
+
+        // Функция для удаления чата (замените этот код на вашу реализацию)
+        function deleteChat(chatId) {
+            $.ajax({
+				type: "POST",
+				url: "/deleteChat?chatId=" + chatId, // Замените на путь к вашему @PostMapping
+				success: function () {
+					console.log("Сообщение удалено");
+					// Обновите список сообщений или выполните другие действия по необходимости
+				}
+			});
+        }
+
+        // Функция для перехода на страницу редактирования чата (замените этот код на вашу реализацию)
+        function redirectToEditPage(chatId) {
+            console.log("Переход на страницу редактирования чата с ID: " + chatId);
+        }
+    </script>
+
+
+
 
 
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

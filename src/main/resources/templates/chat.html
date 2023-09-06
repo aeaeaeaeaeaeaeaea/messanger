@@ -7,9 +7,8 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-	
+
 	<style>
-		
 		.my-message {
 			background-color: lightblue;
 			padding: 5px;
@@ -26,9 +25,8 @@
 			float: left;
 			clear: both;
 		}
-		
 	</style>
-	
+
 </head>
 
 <body>
@@ -45,10 +43,20 @@
 
 		<div id="chatMessages"></div>
 		<form id="messageForm">
-			<input type="text" id="messageInput" th:data="${id}" th:dataSenderId="${currentUser}"
-			th:dataRecipId="${id}"
+			<input type="text" id="messageInput" th:data="${id}" th:dataSenderId="${currentUser}" th:dataRecipId="${id}"
 				placeholder="Type your message..." />
 			<button type="submit">Send</button>
+		</form>
+	</div>
+
+
+	<!-- Форма для редактирования сообщения -->
+	<div id="editForm" style="display: none;">
+		<form id="messageEditForm" action="/editMessage" method="post">
+			<input type="hidden" name="messageId" id="editMessageId" value="">
+			<input type="hidden" name="chatId" id="editChatId" value="">
+			<input type="text" name="editedContent" id="editedContent" placeholder="Редактировать сообщение">
+			<button type="submit">Сохранить изменения</button>
 		</form>
 	</div>
 
@@ -62,15 +70,8 @@
 		</div>
 	</div>
 	
-	<!-- Форма для редактирования сообщения -->
-	<div id="editForm" style="display: none;">
-		<form id="messageEditForm" action="/editMessage" method="post">
-			<input type="hidden" name="messageId" id="editMessageId" value="">
-			 <input type="hidden" name="chatId" id="editChatId" value="">
-			<input type="text" name="editedContent" id="editedContent" placeholder="Редактировать сообщение">
-			<button type="submit">Сохранить изменения</button>
-		</form>
-	</div>
+	
+
 
 	<script>
 		$(function () {
@@ -181,7 +182,7 @@
 		function sendMessage() {
 			var messageInput = $("#messageInput");
 			var message = messageInput.val();
-			stompClient.send("/app/chat/`{chatId}`/sendMessage", {}, JSON.stringify({'content': message, 'chatId': chatId, 'dataSenderId': dataSenderId, 'dataRecipId' : dataRecipId}));
+			stompClient.send("/app/chat/`{chatId}`/sendMessage", {}, JSON.stringify({'content': message, 'chatId': chatId, 'dataSenderId': dataSenderId, 'dataRecipId': dataRecipId}));
 			messageInput.val("");
 		}
 
@@ -193,6 +194,7 @@
 			connectToChat(chatId); // Замените на фактический ID чата
 		});
 	</script>
+	
 </body>
 
 </html>
