@@ -23,47 +23,58 @@ import messenger.proj.services.UserService;
 
 @Controller
 public class ChatController {
-		
 
 	private final MessageService messageServ;
 	private final ChatRoomService chatRoomServ;
 
-	
 	@Autowired
 	public ChatController(ChatRoomService chatRoomServ, MessageService messageServ) {
 		super();
 		this.chatRoomServ = chatRoomServ;
 		this.messageServ = messageServ;
 	}
-	
+
 	@PostMapping("/chat")
 	public String createChat(@RequestParam("userId") String userId, @RequestParam("currentUser") String currentUser) {
-		
+
 		System.out.println("TEST: " + currentUser);
-		
+
 		chatRoomServ.save(userId, currentUser);
-		
+
 		Optional<ChatRoom> chat = chatRoomServ.findBySenderIdAndRecipientId(currentUser, userId);
 		Optional<ChatRoom> chat1 = chatRoomServ.findBySenderIdAndRecipientId(userId, currentUser);
-		
+
 		if (chat.isPresent()) {
 			return "redirect:/chat/" + chat.get().getId();
 		}
-		
+
 		return "redirect:/chat/" + chat1.get().getId();
 	}
-	
+
 	@GetMapping("/chat/{userId}")
 	public String chat(@PathVariable("userId") String userId, Model model) {
-
+		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
-		
-		String curentUserId = personDetails.getUser().getId();
 
-	
-		model.addAttribute("messages", messageServ.findByChatId(userId));
+		String curentUserId = personDetails.getUser().getId();
 		
+	
+		
+		Optional<ChatRoom> chat = chatRoomServ.findById(userId);
+		
+		if (!chat.isPresent()) {
+			return "redirect:/users";
+		}
+		
+		if (chat.isPresent() && (!chat.get().getSenderId().equals(curentUserId) && !chat.get().getRecipientId().equals(curentUserId))) {
+			return "redirect:/users";
+		}
+
+		
+
+		model.addAttribute("messages", messageServ.findByChatId(userId));
+
 		model.addAttribute("currentUser", curentUserId);
 		model.addAttribute("id", userId);
 
@@ -81,7 +92,7 @@ public class ChatController {
 	@PostMapping("/editMessage")
 	public String editMessage(@ModelAttribute("message") message message, @RequestParam("chatId") String chatId,
 			@RequestParam("messageId") String messageId, @RequestParam("editedContent") String editedContent) {
-		
+
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
 
@@ -89,23 +100,34 @@ public class ChatController {
 		message.setContent(editedContent);
 		message.setChatId(chatId);
 		message.setSenderId(personDetails.getUser().getId());
-		
+
 		messageServ.edit(message, messageId);
 
 		return "redirect:/chat/" + chatId;
 	}
-	
+
 	@PostMapping("/deleteChat")
 	public String deleteChat(@RequestParam("chatId") String chatId) {
-		
+
+		for (message m : messageServ.findByChatId(chatId)) {
+			messageServ.deleteById(m.getId());
+		}
+
 		chatRoomServ.deleteById(chatId);
-		messageServ.deleteByChatId(chatId);
-		
-		return "redirect:/";
+
+		return "redirect:/users";
 	}
+	
+	
+	@PostMapping("/deleteChatMessage")
+	public String deleteChatMessages(@RequestParam("chatId") String chatId) {
 
-	
-	
-	
+		for (message m : messageServ.findByChatId(chatId)) {
+			messageServ.deleteById(m.getId());
+		}
 
+		
+
+		return "redirect:/users";
+	}
 }

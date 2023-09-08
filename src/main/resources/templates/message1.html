@@ -91,16 +91,17 @@
             $.ajax({
 				type: "POST",
 				url: "/deleteChat?chatId=" + chatId, // Замените на путь к вашему @PostMapping
-				success: function () {
-					console.log("Сообщение удалено");
-					// Обновите список сообщений или выполните другие действия по необходимости
-				}
+			
 			});
         }
 
         // Функция для перехода на страницу редактирования чата (замените этот код на вашу реализацию)
         function redirectToEditPage(chatId) {
-            console.log("Переход на страницу редактирования чата с ID: " + chatId);
+            $.ajax({
+				type: "POST",
+				url: "/deleteChatMessage?chatId=" + chatId, // Замените на путь к вашему @PostMapping
+				
+			});
         }
     </script>
 

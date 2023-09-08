@@ -72,6 +72,8 @@ public class MessageController {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
 		String id = personDetails.getUser().getId();
+		
+		System.out.println(id);
 
 		model.addAttribute("currentUser", id);
 		model.addAttribute("chatList", chatRoomServ.findAll(id));

@@ -28,6 +28,10 @@ public class ChatRoomService {
 	public ChatRoomService(ChatRoomRepository chatRoomRep) {
 		this.chatRoomRep = chatRoomRep;
 	}
+	
+	public Optional<ChatRoom> findById(String chatId) {
+		return chatRoomRep.findById(chatId);
+	}
 
 	@Transactional
 	public void save(String senderId, String recipientId) {

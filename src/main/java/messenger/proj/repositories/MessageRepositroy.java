@@ -18,7 +18,7 @@ public interface MessageRepositroy extends CassandraRepository<message, String> 
 	@Query("SELECT * FROM chatmessage WHERE chatid = ?0 ALLOW FILTERING")
 	List<message> findByChatId(String chatId);
 	
-	@Query("DELETE FROM chatmessage WHERE chatid = ?0")
+	@Query("DELETE FROM chatmessage WHERE chatid = ?0 IF EXISTS")
 	void deleteByChatId(String chatId);
 	
 }
