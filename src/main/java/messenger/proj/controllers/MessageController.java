@@ -1,6 +1,10 @@
 package messenger.proj.controllers;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -66,14 +71,28 @@ public class MessageController {
 
 	}
 
+	@GetMapping("/users-data")
+	@ResponseBody
+	public Map<String, Object> getUsersData() {
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
+		String id = personDetails.getUser().getId();
+		
+		// Ваша логика для получения данных
+		Map<String, Object> data = new HashMap<>();
+		data.put("currentUser", id);
+		data.put("chatList", chatRoomServ.findAll(id));
+		data.put("users", userServ.findAll());
+		return data;
+	}
+
 	@GetMapping("/users")
 	public String users(Model model) {
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
 		String id = personDetails.getUser().getId();
-		
-		System.out.println(id);
 
 		model.addAttribute("currentUser", id);
 		model.addAttribute("chatList", chatRoomServ.findAll(id));
@@ -82,5 +101,4 @@ public class MessageController {
 		return "message1";
 	}
 
-	
 }
