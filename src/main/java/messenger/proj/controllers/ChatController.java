@@ -37,7 +37,6 @@ public class ChatController {
 	@PostMapping("/chat")
 	public String createChat(@RequestParam("userId") String userId, @RequestParam("currentUser") String currentUser) {
 
-		System.out.println("TEST: " + currentUser);
 
 		chatRoomServ.save(userId, currentUser);
 
@@ -45,9 +44,11 @@ public class ChatController {
 		Optional<ChatRoom> chat1 = chatRoomServ.findBySenderIdAndRecipientId(userId, currentUser);
 
 		if (chat.isPresent()) {
+			System.out.println("REDIRECT 1");
 			return "redirect:/chat/" + chat.get().getId();
 		}
-
+		
+		System.out.println("REDIRECT 2");
 		return "redirect:/chat/" + chat1.get().getId();
 	}
 
@@ -86,7 +87,7 @@ public class ChatController {
 
 		messageServ.deleteById(messageId);
 
-		return "redirect:/chat/" + chatId;
+		return "redirect:/users";
 	}
 
 	@PostMapping("/editMessage")
@@ -107,7 +108,7 @@ public class ChatController {
 	}
 
 	@PostMapping("/deleteChat")
-	public String deleteChat(@RequestParam("chatId") String chatId) {
+	public String deleteChat(@RequestParam(value = "chatId", required = false) String chatId) {
 
 		for (message m : messageServ.findByChatId(chatId)) {
 			messageServ.deleteById(m.getId());
@@ -120,7 +121,7 @@ public class ChatController {
 	
 	
 	@PostMapping("/deleteChatMessage")
-	public String deleteChatMessages(@RequestParam("chatId") String chatId) {
+	public String deleteChatMessages(@RequestParam(value = "chatId", required = false) String chatId) {
 
 		for (message m : messageServ.findByChatId(chatId)) {
 			messageServ.deleteById(m.getId());

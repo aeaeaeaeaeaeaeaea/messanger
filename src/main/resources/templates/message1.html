@@ -4,21 +4,27 @@
 <head>
 
 	<!-- Подключение необходимых библиотек и стилей для модального окна и jQuery -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</head>
-<body>
-    <div th:if="${!chatList.isEmpty()}">
-        <div th:each="chatRoom : ${chatList}">
-            <!-- Добавляем класс "chat-link" для каждой ссылки -->
-            <a th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}" th:text="${chatRoom.getId()}" class="chat-link">Text</a>
-        </div>
-    </div>
-    
-    <div th:if="${chatList.isEmpty()}">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-		<div th:each="user : ${users}">
+</head>
+
+<body>
+	
+	
+	
+	<div id="chatList" th:if="${!chatList.isEmpty()}">
+		<div   th:each="chatRoom : ${chatList}">
+			<!-- Добавляем класс "chat-link" для каждой ссылки -->
+			<a th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}" th:text="${chatRoom.getId()}"
+				class="chat-link">Text</a>
+		</div>
+	</div>
+
+	<div id="userList" th:if="${chatList.isEmpty()}">
+
+		<div  th:each="user : ${users}">
 			<div th:if="${user.getId() != currentUser}">
 				<a class="start-chat" id="chat" th:userId="${user.getId()}" th:currentUser="${currentUser}"
 					th:text="${user.getUsername()}">text</a>
@@ -27,89 +33,131 @@
 
 	</div>
 
-    <!-- Модальное окно -->
-    <div class="modal" id="myModal" style="display: none;">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Действия с чатом</h5>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <p>Выберите действие:</p>
-                    <button id="deleteButton" class="btn btn-danger">Удалить чат</button>
-                    <button id="editButton" class="btn btn-primary">Очистить сообщения</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <script>
-        $(function () {
-            var modal = $("#myModal");
-            var deleteButton = $("#deleteButton");
-            var editButton = $("#editButton");
-            var chatId;
 
-            // Обработчик клика правой кнопкой мыши на ссылке
-            $(".chat-link").on('contextmenu', function (e) {
-                e.preventDefault();
-                chatId = $(this).text(); // Получаем текст ссылки (ID чата)
-                modal.css({top: e.pageY + "px", left: e.pageX + "px"});
-                modal.show();
-            });
 
-            // Обработчик клика на кнопку закрытия модального окна
-            $(".close").on("click", function () {
-                modal.hide();
-            });
+	<script>
+		// Функция для выполнения AJAX-запроса и обновления страницы
+		function updatePage() {
+			$.ajax({
+				type: "GET",
+				url: "/users-data", // URL-адрес, который будет возвращать данные в формате JSON
+				dataType: "json",
+				success: function (data) {
+					// Обновление DOM-элементов на основе полученных данных
+					$("#currentUser").text(data.currentUser);
 
-            // Обработчик клика на кнопку "Удалить"
-            deleteButton.on("click", function () {
-                deleteChat(chatId); // Здесь вызывайте функцию удаления чата с chatId
-                modal.hide();
-            });
+					// Обновление списка чатов (пример)
+					var chatList = $("#chatList");
+					chatList.empty(); // Очищаем список
 
-            // Обработчик клика на кнопку "Редактировать"
-            editButton.on("click", function () {
-                // Здесь вы можете выполнить действия для редактирования чата с chatId
-                // Например, переход на страницу редактирования
-                redirectToEditPage(chatId);
-                modal.hide();
-            });
+					data.chatList.forEach(function (chat) {
+						var chatItem = $("<li>").text(chat.name);
+						chatList.append(chatItem);
+					});
 
-            // Обработчик клика за пределами модального окна для закрытия
-            $(document).on('click', function (e) {
-                if (!$(e.target).hasClass("chat-link")) {
-                    modal.hide();
-                }
-            });
-        });
+					// Обновление списка пользователей (пример)
+					var userList = $("#userList");
+					userList.empty();
 
-        // Функция для удаления чата (замените этот код на вашу реализацию)
-        function deleteChat(chatId) {
-            $.ajax({
+					data.users.forEach(function (user) {
+						var userItem = $("<li>").text(user.username);
+						userList.append(userItem);
+					});
+				},
+				error: function (error) {
+					console.error("Ошибка запроса: " + error);
+				}
+			});
+		}
+
+		// Выполнение обновления страницы с определенным интервалом
+		setInterval(updatePage, 5000); // Например, каждые 5 секунд
+
+	</script>
+
+	<!-- Модальное окно -->
+	<div class="modal" id="myModal" style="display: none;">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Действия с чатом</h5>
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+				<div class="modal-body">
+					<p>Выберите действие:</p>
+					<button id="deleteButton" class="btn btn-danger">Удалить чат</button>
+					<button id="editButton" class="btn btn-primary">Очистить сообщения</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		$(function () {
+			var modal = $("#myModal");
+			var deleteButton = $("#deleteButton");
+			var editButton = $("#editButton");
+			var chatId;
+
+			// Обработчик клика правой кнопкой мыши на ссылке
+			$(".chat-link").on('contextmenu', function (e) {
+				e.preventDefault();
+				chatId = $(this).text(); // Получаем текст ссылки (ID чата)
+				modal.css({top: e.pageY + "px", left: e.pageX + "px"});
+				modal.show();
+			});
+
+			// Обработчик клика на кнопку закрытия модального окна
+			$(".close").on("click", function () {
+				modal.hide();
+			});
+
+			// Обработчик клика на кнопку "Удалить"
+			deleteButton.on("click", function () {
+				deleteChat(chatId); // Здесь вызывайте функцию удаления чата с chatId
+				modal.hide();
+			});
+
+			// Обработчик клика на кнопку "Редактировать"
+			editButton.on("click", function () {
+				// Здесь вы можете выполнить действия для редактирования чата с chatId
+				// Например, переход на страницу редактирования
+				redirectToEditPage(chatId);
+				modal.hide();
+			});
+
+			// Обработчик клика за пределами модального окна для закрытия
+			$(document).on('click', function (e) {
+				if (!$(e.target).hasClass("chat-link")) {
+					modal.hide();
+				}
+			});
+		});
+
+		// Функция для удаления чата (замените этот код на вашу реализацию)
+		function deleteChat(chatId) {
+			$.ajax({
 				type: "POST",
 				url: "/deleteChat?chatId=" + chatId, // Замените на путь к вашему @PostMapping
-			
-			});
-        }
 
-        // Функция для перехода на страницу редактирования чата (замените этот код на вашу реализацию)
-        function redirectToEditPage(chatId) {
-            $.ajax({
+			});
+		}
+
+		// Функция для перехода на страницу редактирования чата (замените этот код на вашу реализацию)
+		function redirectToEditPage(chatId) {
+			$.ajax({
 				type: "POST",
 				url: "/deleteChatMessage?chatId=" + chatId, // Замените на путь к вашему @PostMapping
-				
+
 			});
-        }
-    </script>
+		}
+	</script>
 
 
 
 
 
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 	<script>
 		$(document).ready(function () {
