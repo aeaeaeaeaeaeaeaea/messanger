@@ -26,16 +26,18 @@ public class ChatController {
 
 	private final MessageService messageServ;
 	private final ChatRoomService chatRoomServ;
+	private UserService userServ;
 
 	@Autowired
-	public ChatController(ChatRoomService chatRoomServ, MessageService messageServ) {
+	public ChatController(UserService userServ, ChatRoomService chatRoomServ, MessageService messageServ) {
 		super();
 		this.chatRoomServ = chatRoomServ;
+		this.userServ = userServ;
 		this.messageServ = messageServ;
 	}
 
 	@PostMapping("/chat")
-	public String createChat(@RequestParam("userId") String userId, @RequestParam("currentUser") String currentUser) {
+	public String createChat(@RequestParam(value = "userId", required = false) String userId, @RequestParam(value = "currentUser", required = false) String currentUser) {
 
 
 		chatRoomServ.save(userId, currentUser);
@@ -44,11 +46,11 @@ public class ChatController {
 		Optional<ChatRoom> chat1 = chatRoomServ.findBySenderIdAndRecipientId(userId, currentUser);
 
 		if (chat.isPresent()) {
-			System.out.println("REDIRECT 1");
+			System.out.println("CHAT 1 ID: " + chat.get().getId());
 			return "redirect:/chat/" + chat.get().getId();
 		}
 		
-		System.out.println("REDIRECT 2");
+		System.out.println("CHAT 2 ID: " + chat1.get().getId());
 		return "redirect:/chat/" + chat1.get().getId();
 	}
 
@@ -71,8 +73,6 @@ public class ChatController {
 		if (chat.isPresent() && (!chat.get().getSenderId().equals(curentUserId) && !chat.get().getRecipientId().equals(curentUserId))) {
 			return "redirect:/users";
 		}
-
-		
 
 		model.addAttribute("messages", messageServ.findByChatId(userId));
 
@@ -130,5 +130,19 @@ public class ChatController {
 		
 
 		return "redirect:/users";
+	}
+	
+	@GetMapping("/users")
+	public String users(Model model) {
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
+		String id = personDetails.getUser().getId();
+
+		model.addAttribute("currentUser", id);
+		model.addAttribute("chatList", chatRoomServ.findAll(id));
+		model.addAttribute("users", userServ.findAll());
+
+		return "message1";
 	}
 }

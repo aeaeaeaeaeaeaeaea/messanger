@@ -71,34 +71,6 @@ public class MessageController {
 
 	}
 
-	@GetMapping("/users-data")
-	@ResponseBody
-	public Map<String, Object> getUsersData() {
 
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
-		String id = personDetails.getUser().getId();
-		
-		// Ваша логика для получения данных
-		Map<String, Object> data = new HashMap<>();
-		data.put("currentUser", id);
-		data.put("chatList", chatRoomServ.findAll(id));
-		data.put("users", userServ.findAll());
-		return data;
-	}
-
-	@GetMapping("/users")
-	public String users(Model model) {
-
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
-		String id = personDetails.getUser().getId();
-
-		model.addAttribute("currentUser", id);
-		model.addAttribute("chatList", chatRoomServ.findAll(id));
-		model.addAttribute("users", userServ.findAll());
-
-		return "message1";
-	}
 
 }
