@@ -121,15 +121,20 @@
 
 			var mess = document.getElementById('messageInput');
 			var chatId = mess.getAttribute("data");
+			
+			const deleteMessageUrl = `/deleteMessage?messageId=${messageId}&chatId=${chatId}`;
 
-			$.ajax({
-				type: "POST",
-				url: "/deleteMessage?messageId=" + messageId + "&chatId=" + chatId, // Замените на путь к вашему @PostMapping
-				success: function () {
-					console.log("Сообщение удалено");
-					// Обновите список сообщений или выполните другие действия по необходимости
-				}
-			});
+
+				fetch(deleteMessageUrl, {
+					method: 'POST'
+				}).then((response) => {
+					// Если запрос выполнен успешно, удаляем элемент списка файлов
+					if (response.ok) {
+						window.location.href = `/chat/${chatId}`;
+					}
+				});
+
+			
 		}
 
 		function editMessage(messageId) {
