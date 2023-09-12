@@ -46,11 +46,9 @@ public class ChatController {
 		Optional<ChatRoom> chat1 = chatRoomServ.findBySenderIdAndRecipientId(userId, currentUser);
 
 		if (chat.isPresent()) {
-			System.out.println("CHAT 1 ID: " + chat.get().getId());
 			return "redirect:/chat/" + chat.get().getId();
 		}
 		
-		System.out.println("CHAT 2 ID: " + chat1.get().getId());
 		return "redirect:/chat/" + chat1.get().getId();
 	}
 
@@ -87,7 +85,7 @@ public class ChatController {
 
 		messageServ.deleteById(messageId);
 
-		return "redirect:/users";
+		return "redirect:/chat/" + chatId;
 	}
 
 	@PostMapping("/editMessage")
@@ -126,8 +124,6 @@ public class ChatController {
 		for (message m : messageServ.findByChatId(chatId)) {
 			messageServ.deleteById(m.getId());
 		}
-
-		
 
 		return "redirect:/users";
 	}
