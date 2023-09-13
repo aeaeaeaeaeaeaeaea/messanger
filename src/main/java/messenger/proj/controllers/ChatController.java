@@ -70,8 +70,11 @@ public class ChatController {
 		
 		if (chat.isPresent() && (!chat.get().getSenderId().equals(curentUserId) && !chat.get().getRecipientId().equals(curentUserId))) {
 			return "redirect:/users";
+			
 		}
-
+		
+		messageServ.getCaсhedMessages();
+		
 		model.addAttribute("messages", messageServ.findByChatId(userId));
 
 		model.addAttribute("currentUser", curentUserId);
