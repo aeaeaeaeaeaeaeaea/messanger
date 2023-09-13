@@ -1,7 +1,12 @@
 package messenger.proj.services;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,10 +20,14 @@ import messenger.proj.repositories.MessageRepositroy;
 public class MessageService {
 
 	private final MessageRepositroy messageRep;
+	private final MessageRedisService messageRedisServ;
+	private final RedisTemplate<String, message> redisTemplate;
 
 	@Autowired
-	public MessageService(MessageRepositroy messageRep) {
+	public MessageService(MessageRepositroy messageRep, MessageRedisService messageRedisServ, RedisTemplate<String, message> redisTemplate) {
 		this.messageRep = messageRep;
+		this.redisTemplate = redisTemplate;
+		this.messageRedisServ = messageRedisServ;
 	}
 
 	public List<message> findAll() {
@@ -27,8 +36,10 @@ public class MessageService {
 
 	@Transactional
 	public void save(message message) {
-		message.setId(UUID.randomUUID().toString());
+		String id = UUID.randomUUID().toString();
+		message.setId(id);
 		messageRep.save(message);
+		messageRedisServ.cacheMessage(id, message);
 	}
 
 	public List<message> findByChatId(String chatId) {
@@ -50,5 +61,21 @@ public class MessageService {
 	public void deleteByChatId(String chatId) {
 		messageRep.deleteByChatId(chatId);
 	}
+	
+	public void getCaсhedMessages() {
+		
+		Set<String> keys = redisTemplate.keys("*");
+		
+		List<message> messages = new ArrayList<>();
+		for (String key : keys) {
+			 message message = messageRedisServ.getMessageFromCache(key);
+			 System.out.println(message.getContent());
+			
+		}
+		
+
+		 
+	}
+	
 	
 }
