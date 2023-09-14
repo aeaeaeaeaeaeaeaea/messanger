@@ -73,9 +73,8 @@ public class ChatController {
 			
 		}
 		
-		messageServ.getCaсhedMessages();
 		
-		model.addAttribute("messages", messageServ.findByChatId(userId));
+		model.addAttribute("messages", messageServ.getCaсhedMessages());
 
 		model.addAttribute("currentUser", curentUserId);
 		model.addAttribute("id", userId);

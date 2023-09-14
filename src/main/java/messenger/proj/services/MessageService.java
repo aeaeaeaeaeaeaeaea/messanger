@@ -22,6 +22,7 @@ public class MessageService {
 	private final MessageRepositroy messageRep;
 	private final MessageRedisService messageRedisServ;
 	private final RedisTemplate<String, message> redisTemplate;
+	
 
 	@Autowired
 	public MessageService(MessageRepositroy messageRep, MessageRedisService messageRedisServ, RedisTemplate<String, message> redisTemplate) {
@@ -62,18 +63,19 @@ public class MessageService {
 		messageRep.deleteByChatId(chatId);
 	}
 	
-	public void getCaсhedMessages() {
+	public List<message> getCaсhedMessages() {
 		
-		Set<String> keys = redisTemplate.keys("*");
-		
-		List<message> messages = new ArrayList<>();
-		for (String key : keys) {
-			 message message = messageRedisServ.getMessageFromCache(key);
-			 System.out.println(message.getContent());
-			
-		}
-		
-
+	
+//        List<message> recentMessages = new ArrayList<>();
+//        List<message> recentMessageIds = redisTemplate.opsForList().range(MessageRedisService.RECENT_MESSAGES_KEY, 0, MessageRedisService.MAX_RECENT_MESSAGES - 1);
+//        
+//        for (message message : recentMessageIds) {
+//            if (message != null) {
+//                recentMessages.add(message);
+//            }
+//        }
+//        
+        return null;
 		 
 	}
 	
