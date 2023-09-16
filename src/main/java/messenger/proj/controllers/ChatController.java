@@ -3,7 +3,6 @@ package messenger.proj.controllers;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -37,8 +36,8 @@ public class ChatController {
 	}
 
 	@PostMapping("/chat")
-	public String createChat(@RequestParam(value = "userId", required = false) String userId, @RequestParam(value = "currentUser", required = false) String currentUser) {
-
+	public String createChat(@RequestParam(value = "userId", required = false) String userId,
+			@RequestParam(value = "currentUser", required = false) String currentUser) {
 
 		chatRoomServ.save(userId, currentUser);
 
@@ -48,32 +47,30 @@ public class ChatController {
 		if (chat.isPresent()) {
 			return "redirect:/chat/" + chat.get().getId();
 		}
-		
+
 		return "redirect:/chat/" + chat1.get().getId();
 	}
 
 	@GetMapping("/chat/{userId}")
 	public String chat(@PathVariable("userId") String userId, Model model) {
-		
+
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
 
 		String curentUserId = personDetails.getUser().getId();
-		
-	
-		
+
 		Optional<ChatRoom> chat = chatRoomServ.findById(userId);
-		
+
 		if (!chat.isPresent()) {
 			return "redirect:/users";
 		}
-		
-		if (chat.isPresent() && (!chat.get().getSenderId().equals(curentUserId) && !chat.get().getRecipientId().equals(curentUserId))) {
+
+		if (chat.isPresent() && (!chat.get().getSenderId().equals(curentUserId)
+				&& !chat.get().getRecipientId().equals(curentUserId))) {
 			return "redirect:/users";
-			
+
 		}
-		
-		
+
 		model.addAttribute("messages", messageServ.getCaсhedMessages());
 
 		model.addAttribute("currentUser", curentUserId);
@@ -118,8 +115,7 @@ public class ChatController {
 
 		return "redirect:/users";
 	}
-	
-	
+
 	@PostMapping("/deleteChatMessage")
 	public String deleteChatMessages(@RequestParam(value = "chatId", required = false) String chatId) {
 
@@ -129,7 +125,7 @@ public class ChatController {
 
 		return "redirect:/users";
 	}
-	
+
 	@GetMapping("/users")
 	public String users(Model model) {
 

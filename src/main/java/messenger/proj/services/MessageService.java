@@ -40,7 +40,7 @@ public class MessageService {
 		String id = UUID.randomUUID().toString();
 		message.setId(id);
 		messageRep.save(message);
-		messageRedisServ.cacheMessage(id, message);
+		messageRedisServ.cacheMessage(message);
 	}
 
 	public List<message> findByChatId(String chatId) {
@@ -64,18 +64,7 @@ public class MessageService {
 	}
 	
 	public List<message> getCaсhedMessages() {
-		
-	
-//        List<message> recentMessages = new ArrayList<>();
-//        List<message> recentMessageIds = redisTemplate.opsForList().range(MessageRedisService.RECENT_MESSAGES_KEY, 0, MessageRedisService.MAX_RECENT_MESSAGES - 1);
-//        
-//        for (message message : recentMessageIds) {
-//            if (message != null) {
-//                recentMessages.add(message);
-//            }
-//        }
-//        
-        return null;
+		return messageRedisServ.getLatestMessages(MessageRedisService.MAX_RECENT_MESSAGES);
 		 
 	}
 	
