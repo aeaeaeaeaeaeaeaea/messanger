@@ -1,7 +1,10 @@
 package messenger.proj.services;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -11,31 +14,20 @@ import messenger.proj.models.message;
 public class MessageRedisService {
 
 	private final RedisTemplate<String, message> redisTemplate;
+	static final String MESSAGE_KEY = "latest_messages";
 	static final int MAX_RECENT_MESSAGES = 10;
+	
 
 	public MessageRedisService(RedisTemplate<String, message> redisTemplate) {
 		this.redisTemplate = redisTemplate;
 	}
 
-	public message getMessageFromCache(String messageId) {
-		return (message) redisTemplate.opsForValue().get(messageId);
-	}
+	public void cacheMessage(message message) {
+        redisTemplate.opsForList().leftPush(MESSAGE_KEY, message);
+    }
 
-	public void cacheMessage(String messageId, message message) {
-
-		redisTemplate.opsForSet().add(messageId, message);
-
-		long currentKeyCount = redisTemplate.opsForSet().size(messageId);
-
-		if (currentKeyCount > MAX_RECENT_MESSAGES) {
-			long keysToRemove = currentKeyCount - MAX_RECENT_MESSAGES;
-			Set<String> keysToRemoveSet = redisTemplate.opsForSet().pop(messageId, keysToRemove);
-
-			
-			for (String keyToRemove : keysToRemoveSet) {
-				redisTemplate.delete(keyToRemove);
-			}
-		}
-	}
+    public List<message> getLatestMessages(int count) {
+        return redisTemplate.opsForList().range(MESSAGE_KEY, 0, count - 1);
+    }
 
 }
