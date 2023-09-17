@@ -71,7 +71,8 @@ public class ChatController {
 
 		}
 
-		model.addAttribute("messages", messageServ.getCaсhedMessages());
+		model.addAttribute("cachedMessages", messageServ.getCaсhedMessages(userId));
+		model.addAttribute("cassandraMessages", messageServ.getCaсhedMessages(userId));
 
 		model.addAttribute("currentUser", curentUserId);
 		model.addAttribute("id", userId);
