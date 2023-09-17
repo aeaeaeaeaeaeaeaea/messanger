@@ -65,7 +65,7 @@ public class MessageController {
 		message.setChatId(extractedChatId);
 		message.setSenderId(senderId);
 		message.setRecipientId(recipId);
-		messageServ.save(message);
+		messageServ.save(extractedChatId, message);
 
 		messagingTemplate.convertAndSend("/topic/" + extractedChatId, message);
 

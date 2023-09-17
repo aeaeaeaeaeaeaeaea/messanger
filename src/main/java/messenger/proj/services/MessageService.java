@@ -36,11 +36,11 @@ public class MessageService {
 	}
 
 	@Transactional
-	public void save(message message) {
+	public void save(String chatId, message message) {
 		String id = UUID.randomUUID().toString();
 		message.setId(id);
 		messageRep.save(message);
-		messageRedisServ.cacheMessage(message);
+		messageRedisServ.cacheMessage(id, chatId, message);
 	}
 
 	public List<message> findByChatId(String chatId) {
@@ -63,8 +63,8 @@ public class MessageService {
 		messageRep.deleteByChatId(chatId);
 	}
 	
-	public List<message> getCaсhedMessages() {
-		return messageRedisServ.getLatestMessages(MessageRedisService.MAX_RECENT_MESSAGES);
+	public List<message> getCaсhedMessages(String chatId) {
+		return messageRedisServ.getLatestMessages(chatId);
 		 
 	}
 	

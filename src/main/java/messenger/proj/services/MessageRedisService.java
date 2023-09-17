@@ -1,8 +1,10 @@
 package messenger.proj.services;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -14,20 +16,39 @@ import messenger.proj.models.message;
 public class MessageRedisService {
 
 	private final RedisTemplate<String, message> redisTemplate;
-	static final String MESSAGE_KEY = "latest_messages";
-	static final int MAX_RECENT_MESSAGES = 10;
+
 	
 
 	public MessageRedisService(RedisTemplate<String, message> redisTemplate) {
 		this.redisTemplate = redisTemplate;
 	}
 
-	public void cacheMessage(message message) {
-        redisTemplate.opsForList().leftPush(MESSAGE_KEY, message);
+	public void cacheMessage(String messageId, String chatId, message message) {
+		
+		Set<String> keySet = redisTemplate.keys(chatId+":*");
+		String[] arrayList =  keySet.toArray(new String[0]);
+		
+		if (keySet.size() >= 5) {
+			redisTemplate.delete(arrayList[arrayList.length - 1]);
+			redisTemplate.opsForValue().set(chatId + ":" + messageId, message);
+		} else {
+			redisTemplate.opsForValue().set(chatId + ":" + messageId, message);
+		}
+		
+        
     }
 
-    public List<message> getLatestMessages(int count) {
-        return redisTemplate.opsForList().range(MESSAGE_KEY, 0, count - 1);
+    public List<message> getLatestMessages(String chatId) {
+    	
+    	Set<String> keySet = redisTemplate.keys(chatId + ":*");
+    	
+    	List<message> messages = new ArrayList<message>();
+    	for (String kString : keySet) {
+    		messages.add(redisTemplate.opsForValue().get(kString));
+    	}
+    	
+    	return messages;
+        
     }
 
 }
