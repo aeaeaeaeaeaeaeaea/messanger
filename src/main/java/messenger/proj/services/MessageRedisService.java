@@ -17,8 +17,6 @@ public class MessageRedisService {
 
 	private final RedisTemplate<String, message> redisTemplate;
 
-	
-
 	public MessageRedisService(RedisTemplate<String, message> redisTemplate) {
 		this.redisTemplate = redisTemplate;
 	}
