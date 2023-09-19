@@ -40,7 +40,6 @@ public class MessageService {
 	public void save(String chatId, message message) {
 		String id = UUID.randomUUID().toString();
 		message.setId(id);
-		messageRep.save(message);
 		messageRedisServ.cacheMessage(id, chatId, message);
 	}
 
@@ -49,8 +48,9 @@ public class MessageService {
 	}
 
 	@Transactional
-	public void deleteById(String messageId) {
+	public void deleteById(String messageId, String chatId) {
 		messageRep.deleteById(messageId);
+		redisTemplate.delete(chatId + ":" + messageId);
 	}
 
 	@Transactional
@@ -69,28 +69,5 @@ public class MessageService {
 
 	}
 
-	public List<message> getAllMessage(String chatId) {
-
-		Set<String> keySet = redisTemplate.keys(chatId + ":*");
-
-		List<message> redisMessages = new ArrayList<message>();
-		for (String kString : keySet) {
-			redisMessages.add(redisTemplate.opsForValue().get(kString));
-		}
-		
-		List<message> cassandraMessages = messageRep.findByChatId(chatId);
-		
-        List<message> combinedMessages = new ArrayList<>();
-        combinedMessages.addAll(redisMessages);
-        combinedMessages.addAll(cassandraMessages);
-        
-        Set<message> uniqueMessages = new HashSet<>(combinedMessages);
-        
-        for (message m : uniqueMessages) {
-        	System.out.println("MESSAGE: " + m.getId());
-        }
-        
-        return new ArrayList<>(uniqueMessages);
-	}
 
 }

@@ -35,21 +35,30 @@
 
 	<div>
 		<h2>Chat</h2>
-
-		<div th:each="message : ${messages}">
+		
+		<div th:each="cassandraMessage : ${cassandraMessages}">
 			<div class="message-container"
-				th:classappend="${message.getSenderId() == currentUser ? 'my-message' : 'other-message'}">
-				<p th:text="${message.getContent()}" class="message-content" th:data-id="${message.getId()}"></p>
+				th:classappend="${cassandraMessage.getSenderId() == currentUser ? 'my-message' : 'other-message'}">
+				<p th:text="${cassandraMessage.getContent()}" class="message-content" th:data-id="${cassandraMessage.getId()}"></p>
 			</div>
 		</div>
 
-		<div id="chatMessages"></div>
+		<div th:each="cachedMessage : ${cachedMessages}">
+			<div class="message-container"
+				th:classappend="${cachedMessage.getSenderId() == currentUser ? 'my-message' : 'other-message'}">
+				<p th:text="${cachedMessage.getContent()}" class="message-content" th:data-id="${cachedMessage.getId()}"></p>
+			</div>
+		</div>
+
+		
+	</div>
+	
+	<div id="chatMessages"></div>
 		<form id="messageForm">
 			<input type="text" id="messageInput" th:data="${id}" th:dataSenderId="${currentUser}" th:dataRecipId="${id}"
 				placeholder="Type your message..." />
 			<button type="submit">Send</button>
 		</form>
-	</div>
 	
 	
 
