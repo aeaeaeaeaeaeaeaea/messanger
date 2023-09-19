@@ -1,8 +1,10 @@
 package messenger.proj.controllers;
 
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -26,10 +28,12 @@ public class ChatController {
 	private final MessageService messageServ;
 	private final ChatRoomService chatRoomServ;
 	private UserService userServ;
-
+	private final RedisTemplate<String, message> redisTemplate;
+	
 	@Autowired
-	public ChatController(UserService userServ, ChatRoomService chatRoomServ, MessageService messageServ) {
+	public ChatController(RedisTemplate<String, message> redisTemplate, UserService userServ, ChatRoomService chatRoomServ, MessageService messageServ) {
 		super();
+		this.redisTemplate = redisTemplate;
 		this.chatRoomServ = chatRoomServ;
 		this.userServ = userServ;
 		this.messageServ = messageServ;
@@ -70,8 +74,16 @@ public class ChatController {
 			return "redirect:/users";
 
 		}
-
-		model.addAttribute("messages", messageServ.getAllMessage(userId));
+		
+	
+		
+		
+		
+//		model.addAttribute("messages", messageServ.getAllMessage(userId));
+		
+		model.addAttribute("cachedMessages", messageServ.getCaсhedMessages(userId));
+		model.addAttribute("cassandraMessages", messageServ.findByChatId(userId));
+		
 		
 		model.addAttribute("currentUser", curentUserId);
 		model.addAttribute("id", userId);
@@ -82,7 +94,7 @@ public class ChatController {
 	@PostMapping("/deleteMessage")
 	public String deleteMessage(@RequestParam("messageId") String messageId, @RequestParam("chatId") String chatId) {
 
-		messageServ.deleteById(messageId);
+		messageServ.deleteById(messageId, chatId);
 
 		return "redirect:/chat/" + chatId;
 	}
@@ -108,7 +120,9 @@ public class ChatController {
 	public String deleteChat(@RequestParam(value = "chatId", required = false) String chatId) {
 
 		for (message m : messageServ.findByChatId(chatId)) {
-			messageServ.deleteById(m.getId());
+			System.out.println("CHAT ID: " + chatId);
+			System.out.println("MESSAGE ID: " + m.getId());
+			messageServ.deleteById(m.getId(), chatId);
 		}
 
 		chatRoomServ.deleteById(chatId);
@@ -120,7 +134,11 @@ public class ChatController {
 	public String deleteChatMessages(@RequestParam(value = "chatId", required = false) String chatId) {
 
 		for (message m : messageServ.findByChatId(chatId)) {
-			messageServ.deleteById(m.getId());
+			
+			System.out.println("CHAT ID: " + chatId);
+			System.out.println("MESSAGE ID: " + m.getId());
+			
+			messageServ.deleteById(m.getId(), chatId);
 		}
 
 		return "redirect:/users";
