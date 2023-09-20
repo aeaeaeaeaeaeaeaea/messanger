@@ -29,9 +29,10 @@ public class ChatController {
 	private final ChatRoomService chatRoomServ;
 	private UserService userServ;
 	private final RedisTemplate<String, message> redisTemplate;
-	
+
 	@Autowired
-	public ChatController(RedisTemplate<String, message> redisTemplate, UserService userServ, ChatRoomService chatRoomServ, MessageService messageServ) {
+	public ChatController(RedisTemplate<String, message> redisTemplate, UserService userServ,
+			ChatRoomService chatRoomServ, MessageService messageServ) {
 		super();
 		this.redisTemplate = redisTemplate;
 		this.chatRoomServ = chatRoomServ;
@@ -74,17 +75,10 @@ public class ChatController {
 			return "redirect:/users";
 
 		}
-		
-	
-		
-		
-		
-//		model.addAttribute("messages", messageServ.getAllMessage(userId));
-		
+
 		model.addAttribute("cachedMessages", messageServ.getCaсhedMessages(userId));
 		model.addAttribute("cassandraMessages", messageServ.findByChatId(userId));
-		
-		
+
 		model.addAttribute("currentUser", curentUserId);
 		model.addAttribute("id", userId);
 
@@ -95,6 +89,7 @@ public class ChatController {
 	public String deleteMessage(@RequestParam("messageId") String messageId, @RequestParam("chatId") String chatId) {
 
 		messageServ.deleteById(messageId, chatId);
+		System.out.println("DELETE MESSAGE: " + messageId);
 
 		return "redirect:/chat/" + chatId;
 	}
@@ -119,9 +114,11 @@ public class ChatController {
 	@PostMapping("/deleteChat")
 	public String deleteChat(@RequestParam(value = "chatId", required = false) String chatId) {
 
+		for (message m : messageServ.getCaсhedMessages(chatId)) {
+			messageServ.deleteById(m.getId(), chatId);
+		}
+
 		for (message m : messageServ.findByChatId(chatId)) {
-			System.out.println("CHAT ID: " + chatId);
-			System.out.println("MESSAGE ID: " + m.getId());
 			messageServ.deleteById(m.getId(), chatId);
 		}
 
@@ -133,11 +130,11 @@ public class ChatController {
 	@PostMapping("/deleteChatMessage")
 	public String deleteChatMessages(@RequestParam(value = "chatId", required = false) String chatId) {
 
+		for (message m : messageServ.getCaсhedMessages(chatId)) {
+			messageServ.deleteById(m.getId(), chatId);
+		}
+
 		for (message m : messageServ.findByChatId(chatId)) {
-			
-			System.out.println("CHAT ID: " + chatId);
-			System.out.println("MESSAGE ID: " + m.getId());
-			
 			messageServ.deleteById(m.getId(), chatId);
 		}
 
