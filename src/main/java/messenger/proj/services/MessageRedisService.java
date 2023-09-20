@@ -32,9 +32,9 @@ public class MessageRedisService {
 		if (keySet.size() >= 5) {
 			messageRep.save(redisTemplate.opsForValue().get(arrayList[arrayList.length - 1]));
 			redisTemplate.delete(arrayList[arrayList.length - 1]);
-			redisTemplate.opsForValue().set(chatId + ":" + messageId, message);
+			redisTemplate.opsForValue().set("message:" + chatId + ":" + messageId, message);
 		} else {
-			redisTemplate.opsForValue().set(chatId + ":" + messageId, message);
+			redisTemplate.opsForValue().set("message:" + chatId + ":" + messageId, message);
 		}
 		
         
@@ -42,7 +42,7 @@ public class MessageRedisService {
 
     public List<message> getLatestMessages(String chatId) {
     	
-    	Set<String> keySet = redisTemplate.keys(chatId + ":*");
+    	Set<String> keySet = redisTemplate.keys("message:" + chatId + ":*");
     	
     	List<message> messages = new ArrayList<message>();
     	for (String kString : keySet) {
