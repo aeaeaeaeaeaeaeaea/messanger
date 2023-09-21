@@ -19,6 +19,10 @@ import messenger.proj.models.ChatRoom;
 import messenger.proj.models.message;
 import messenger.proj.security.PersonDetails;
 import messenger.proj.services.ChatRoomService;
+<<<<<<< HEAD
+import messenger.proj.services.ConnectionService;
+=======
+>>>>>>> origin/master
 import messenger.proj.services.MessageService;
 import messenger.proj.services.UserService;
 
@@ -29,11 +33,21 @@ public class ChatController {
 	private final ChatRoomService chatRoomServ;
 	private UserService userServ;
 	private final RedisTemplate<String, message> redisTemplate;
+<<<<<<< HEAD
+	private final ConnectionService connectionServ;
+
+	@Autowired
+	public ChatController(ConnectionService connectionServ, RedisTemplate<String, message> redisTemplate, UserService userServ,
+			ChatRoomService chatRoomServ, MessageService messageServ) {
+		super();
+		this.connectionServ = connectionServ;
+=======
 
 	@Autowired
 	public ChatController(RedisTemplate<String, message> redisTemplate, UserService userServ,
 			ChatRoomService chatRoomServ, MessageService messageServ) {
 		super();
+>>>>>>> origin/master
 		this.redisTemplate = redisTemplate;
 		this.chatRoomServ = chatRoomServ;
 		this.userServ = userServ;
@@ -148,7 +162,11 @@ public class ChatController {
 		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
 		String id = personDetails.getUser().getId();
 		
+<<<<<<< HEAD
+		connectionServ.userConnection(id, userServ.findById(id).get());
+=======
 		
+>>>>>>> origin/master
 
 		model.addAttribute("currentUser", id);
 		model.addAttribute("chatList", chatRoomServ.findAll(id));
