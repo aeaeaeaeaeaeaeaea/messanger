@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Chat Example</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+	<style>
+		.my-message {
+			background-color: lightblue;
+			padding: 5px;
+			margin: 5px;
+			border-radius: 5px;
+			clear: both;
+		}
+
+		.other-message {
+			background-color: lightgreen;
+			padding: 5px;
+			margin: 5px;
+			border-radius: 5px;
+			float: left;
+			clear: both;
+		}
+	</style>
+
+</head>
+
+<body>
+	
+	
+
+	<div>
+		<h2>Chat</h2>
+		
+		<div th:each="cassandraMessage : ${cassandraMessages}">
+			<div class="message-container"
+				th:classappend="${cassandraMessage.getSenderId() == currentUser ? 'my-message' : 'other-message'}">
+				<p th:text="${cassandraMessage.getContent()}" class="message-content" th:data-id="${cassandraMessage.getId()}"></p>
+			</div>
+		</div>
+
+		<div th:each="cachedMessage : ${cachedMessages}">
+			<div class="message-container"
+				th:classappend="${cachedMessage.getSenderId() == currentUser ? 'my-message' : 'other-message'}">
+				<p th:text="${cachedMessage.getContent()}" class="message-content" th:data-id="${cachedMessage.getId()}"></p>
+			</div>
+		</div>
+
+		
+	</div>
+	
+	<div id="chatMessages"></div>
+		<form id="messageForm">
+			<input type="text" id="messageInput" th:data="${id}" th:dataSenderId="${currentUser}" th:dataRecipId="${id}"
+				placeholder="Type your message..." />
+			<button type="submit">Send</button>
+		</form>
+	
+	
+
+
+	<!-- Форма для редактирования сообщения -->
+	<div id="editForm" style="display: none;">
+		<form id="messageEditForm" action="/editMessage" method="post">
+			<input type="hidden" name="messageId" id="editMessageId" value="">
+			<input type="hidden" name="chatId" id="editChatId" value="">
+			<input type="text" name="editedContent" id="editedContent" placeholder="Редактировать сообщение">
+			<button type="submit">Сохранить изменения</button>
+		</form>
+	</div>
+
+	<!-- Модальное окно -->
+	<div id="myModal" class="modal" style="display: none;">
+		<div class="modal-content">
+			<span class="close">&times;</span>
+			<p>Выберите действие:</p>
+			<button id="deleteButton">Удалить</button>
+			<button id="editButton">Редактировать</button>
+		</div>
+	</div>
+	
+	
+
+
+	<script>
+		$(function () {
+			var modal = $("#myModal");
+			var deleteButton = $("#deleteButton");
+			var editButton = $("#editButton");
+			var messageId;
+
+			$(".message-content").on('contextmenu', function (e) {
+				e.preventDefault();
+				messageId = $(this).attr("data-id");
+				modal.css({top: e.pageY + "px", left: e.pageX + "px"});
+				modal.show();
+			});
+
+			$(".close").on("click", function () {
+				modal.hide();
+			});
+
+			deleteButton.on("click", function () {
+				deleteMessage(messageId);
+				modal.hide();
+			});
+
+			editButton.on("click", function () {
+				var messageContent = $(".message-content[data-id='" + messageId + "']").text();
+				$("#editedContent").val(messageContent);
+				$("#editChatId").val(chatId);
+				$("#editMessageId").val(messageId);
+
+				$("#editForm").show();
+				$("#messageForm").hide();
+				modal.hide();
+			});
+
+			$(document).on('click', function (e) {
+				if (!$(e.target).hasClass("message-content")) {
+					modal.hide();
+				}
+			});
+		});
+	</script>
+
+	<script>
+
+		function deleteMessage(messageId) {
+
+			var mess = document.getElementById('messageInput');
+			var chatId = mess.getAttribute("data");
+			
+			const deleteMessageUrl = `/deleteMessage?messageId=${messageId}&chatId=${chatId}`;
+
+
+				fetch(deleteMessageUrl, {
+					method: 'POST'
+				}).then((response) => {
+					// Если запрос выполнен успешно, удаляем элемент списка файлов
+					if (response.ok) {
+						window.location.href = `/chat/${chatId}`;
+					}
+				});
+
+			
+		}
+
+		function editMessage(messageId) {
+
+			var mess = document.getElementById('messageInput');
+			var chatId = mess.getAttribute("data");
+
+			$.ajax({
+				type: "POST",
+				url: "/editMessage?messageId=" + messageId, // Замените на путь к вашему @PostMapping
+				success: function () {
+					console.log("Редактирование сообщения");
+					// Откройте модальное окно с формой редактирования или выполните другие действия
+				}
+			});
+		}
+
+	</script>
+
+	<script>
+		function showMessage(message) {
+			var messageClass = (message.senderId === currentUser ? "my-message" : "other-message");
+			$("#chatMessages").append("<p class='" + messageClass + "'>" + message.content + "</p>");
+		}
+
+	</script>
+
+
+	<script>
+		var stompClient = null;
+		var mess = document.getElementById('messageInput');
+		var chatId = mess.getAttribute("data");
+		var dataSenderId = mess.getAttribute("dataSenderId");
+		var dataRecipId = mess.getAttribute("dataRecipId");
+
+		function connectToChat(chatId) {
+			var socket = new SockJS('/chat/' + chatId);
+			stompClient = Stomp.over(socket);
+			stompClient.connect({}, function (frame) {
+				console.log('Connected: ' + frame);
+				stompClient.subscribe('/topic/' + chatId, function (message) {
+					showMessage(JSON.parse(message.body));
+				});
+			});
+		}
+
+		function showMessage(message) {
+			$("#chatMessages").append("<p>" + message.content + "</p>");
+		}
+
+		function sendMessage() {
+			var messageInput = $("#messageInput");
+			var message = messageInput.val();
+			stompClient.send("/app/chat/`{chatId}`/sendMessage", {}, JSON.stringify({'content': message, 'chatId': chatId, 'dataSenderId': dataSenderId, 'dataRecipId': dataRecipId}));
+			messageInput.val("");
+		}
+
+		$(function () {
+			$("form#messageForm").on('submit', function (e) {
+				e.preventDefault();
+				sendMessage();
+			});
+			connectToChat(chatId); // Замените на фактический ID чата
+		});
+	</script>
+	
+	
+</body>
+
+</html>
