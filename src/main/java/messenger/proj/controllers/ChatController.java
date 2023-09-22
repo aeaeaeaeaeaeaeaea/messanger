@@ -3,6 +3,8 @@ package messenger.proj.controllers;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
@@ -16,13 +18,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import messenger.proj.models.ChatRoom;
+import messenger.proj.models.ConnectionInfo;
 import messenger.proj.models.message;
 import messenger.proj.security.PersonDetails;
 import messenger.proj.services.ChatRoomService;
-<<<<<<< HEAD
 import messenger.proj.services.ConnectionService;
-=======
->>>>>>> origin/master
 import messenger.proj.services.MessageService;
 import messenger.proj.services.UserService;
 
@@ -31,23 +31,15 @@ public class ChatController {
 
 	private final MessageService messageServ;
 	private final ChatRoomService chatRoomServ;
-	private UserService userServ;
+	private final UserService userServ;
 	private final RedisTemplate<String, message> redisTemplate;
-<<<<<<< HEAD
 	private final ConnectionService connectionServ;
 
 	@Autowired
 	public ChatController(ConnectionService connectionServ, RedisTemplate<String, message> redisTemplate, UserService userServ,
 			ChatRoomService chatRoomServ, MessageService messageServ) {
-		super();
+		
 		this.connectionServ = connectionServ;
-=======
-
-	@Autowired
-	public ChatController(RedisTemplate<String, message> redisTemplate, UserService userServ,
-			ChatRoomService chatRoomServ, MessageService messageServ) {
-		super();
->>>>>>> origin/master
 		this.redisTemplate = redisTemplate;
 		this.chatRoomServ = chatRoomServ;
 		this.userServ = userServ;
@@ -156,17 +148,13 @@ public class ChatController {
 	}
 
 	@GetMapping("/users")
-	public String users(Model model) {
+	public String users(Model model, HttpServletRequest request) {
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
 		String id = personDetails.getUser().getId();
 		
-<<<<<<< HEAD
-		connectionServ.userConnection(id, userServ.findById(id).get());
-=======
-		
->>>>>>> origin/master
+		connectionServ.userConnection(id, new ConnectionInfo(), request);
 
 		model.addAttribute("currentUser", id);
 		model.addAttribute("chatList", chatRoomServ.findAll(id));
