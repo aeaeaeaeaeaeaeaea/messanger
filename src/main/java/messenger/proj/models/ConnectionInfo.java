@@ -7,9 +7,13 @@ public class ConnectionInfo {
 	private String userName;
 	private String userId;
 	private String ipAddress;
-	private LocalDateTime logInTime;
+	private String logInTime;
 	
-	public ConnectionInfo(String userName, String userId, String ipAddress, LocalDateTime logInTime) {
+	public ConnectionInfo() {
+		
+	}
+	
+	public ConnectionInfo(String userName, String userId, String ipAddress, String logInTime) {
 		super();
 		this.userName = userName;
 		this.userId = userId;
@@ -41,11 +45,11 @@ public class ConnectionInfo {
 		this.ipAddress = ipAddress;
 	}
 
-	public LocalDateTime getLogInTime() {
+	public String getLogInTime() {
 		return logInTime;
 	}
 
-	public void setLogInTime(LocalDateTime logInTime) {
+	public void setLogInTime(String logInTime) {
 		this.logInTime = logInTime;
 	}
 	
