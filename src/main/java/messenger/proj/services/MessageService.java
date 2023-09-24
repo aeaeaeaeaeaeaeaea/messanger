@@ -50,7 +50,7 @@ public class MessageService {
 	@Transactional
 	public void deleteById(String messageId, String chatId) {
 		messageRep.deleteById(messageId);
-		redisTemplate.delete(chatId + ":" + messageId);
+		redisTemplate.delete("message:" + chatId + ":" + messageId);
 	}
 
 	@Transactional
