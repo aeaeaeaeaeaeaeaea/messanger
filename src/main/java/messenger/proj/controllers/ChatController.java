@@ -23,6 +23,7 @@ import messenger.proj.models.message;
 import messenger.proj.security.PersonDetails;
 import messenger.proj.services.ChatRoomService;
 import messenger.proj.services.ConnectionService;
+import messenger.proj.services.ElasitSearchSerivce;
 import messenger.proj.services.MessageService;
 import messenger.proj.services.UserService;
 
@@ -34,11 +35,13 @@ public class ChatController {
 	private final UserService userServ;
 	private final RedisTemplate<String, message> redisTemplate;
 	private final ConnectionService connectionServ;
+	private final ElasitSearchSerivce elasitSearchServ;
 
 	@Autowired
-	public ChatController(ConnectionService connectionServ, RedisTemplate<String, message> redisTemplate, UserService userServ,
+	public ChatController(ElasitSearchSerivce elasitSearchServ, ConnectionService connectionServ, RedisTemplate<String, message> redisTemplate, UserService userServ,
 			ChatRoomService chatRoomServ, MessageService messageServ) {
 		
+		this.elasitSearchServ = elasitSearchServ;
 		this.connectionServ = connectionServ;
 		this.redisTemplate = redisTemplate;
 		this.chatRoomServ = chatRoomServ;
@@ -153,6 +156,8 @@ public class ChatController {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
 		String id = personDetails.getUser().getId();
+		
+		System.out.println(elasitSearchServ.searchByFieldName("qq"));
 		
 		connectionServ.userConnection(id, new ConnectionInfo(), request);
 

@@ -37,7 +37,6 @@ public class ChatRoomService {
 	public void save(String senderId, String recipientId) {
 
 		
-	
 		Optional<ChatRoom> chatRoom2 = chatRoomRep.findBySenderIdAndRecipientId(recipientId, senderId);
 		Optional<ChatRoom> chatRoom1 = chatRoomRep.findBySenderIdAndRecipientId(senderId, recipientId);
 
