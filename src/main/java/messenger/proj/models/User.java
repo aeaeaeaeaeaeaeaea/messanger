@@ -5,8 +5,10 @@ import java.util.UUID;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 @Table("users")
+@Document(indexName = "user")
 public class User {
 	
 	@PrimaryKey
