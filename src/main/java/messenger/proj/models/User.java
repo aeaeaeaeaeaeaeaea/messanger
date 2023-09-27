@@ -8,7 +8,6 @@ import org.springframework.data.cassandra.core.mapping.Table;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 @Table("users")
-@Document(indexName = "user")
 public class User {
 	
 	@PrimaryKey

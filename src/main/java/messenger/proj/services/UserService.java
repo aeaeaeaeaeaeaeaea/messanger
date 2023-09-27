@@ -8,8 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
-
+import messenger.proj.models.ElasticUser;
 import messenger.proj.models.User;
 import messenger.proj.repositories.UserRepository;
 
@@ -18,10 +17,12 @@ import messenger.proj.repositories.UserRepository;
 public class UserService {
 
 	private UserRepository userRep;
-
+	private ElasitSearchSerivce elasitSearchServ;
+	
 	@Autowired
-	public UserService(UserRepository userRep) {
+	public UserService(UserRepository userRep, ElasitSearchSerivce elasitSearchServ) {
 		this.userRep = userRep;
+		this.elasitSearchServ = elasitSearchServ;
 	}
 
 	@Transactional
@@ -30,6 +31,9 @@ public class UserService {
 		user.setId(id);	
 		user.setRole("ROLE_USER");
 		userRep.save(user);
+		
+		ElasticUser elasticUser = new ElasticUser(user.getId(), user.getUsername());
+		elasitSearchServ.save(elasticUser);
 	}
 	
 	public List<User> findAll() {
