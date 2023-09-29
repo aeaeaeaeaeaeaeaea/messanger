@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import messenger.proj.models.ElasticUser;
 import messenger.proj.models.User;
-import messenger.proj.repositories.ElasticSearchRep;
+
 import messenger.proj.repositories.UserRepository;
 
 @Service
@@ -19,13 +19,12 @@ import messenger.proj.repositories.UserRepository;
 public class UserService {
 
 	private UserRepository userRep;
-	private ElasitSearchSerivce elasitSearchServ;
 	ElasticsearchOperations elasticsearchOperations; 
+
 	
 	@Autowired
-	public UserService(UserRepository userRep, ElasitSearchSerivce elasitSearchServ) {
+	public UserService(UserRepository userRep) {
 		this.userRep = userRep;
-		this.elasitSearchServ = elasitSearchServ;
 	}
 
 	@Transactional
@@ -34,10 +33,7 @@ public class UserService {
 		user.setId(id);	
 		user.setRole("ROLE_USER");
 		userRep.save(user);
-		
-		
-		ElasticUser elasticUser = new ElasticUser(user.getId(), user.getUsername());
-		elasitSearchServ.save(elasticUser);
+	
 	}
 	
 	public List<User> findAll() {

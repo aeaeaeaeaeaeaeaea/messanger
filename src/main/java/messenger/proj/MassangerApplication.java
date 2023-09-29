@@ -17,6 +17,7 @@ public class MassangerApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(MassangerApplication.class, args);
 	}
+	
 
 
 }

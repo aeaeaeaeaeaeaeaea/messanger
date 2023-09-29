@@ -4,6 +4,7 @@ import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -13,18 +14,24 @@ import org.springframework.data.elasticsearch.config.AbstractElasticsearchConfig
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
 @Configuration
-@EnableElasticsearchRepositories(basePackages = "messenger.proj.repositories")
-@ComponentScan(basePackages = { "messenger.proj.services" })
 public class ElasticSearchConfig extends AbstractElasticsearchConfiguration {
 
-    @Bean
-    @Override
-    public RestHighLevelClient elasticsearchClient() {
-        ClientConfiguration clientConfiguration = ClientConfiguration.builder()
-            .connectedTo("localhost:9200")
-            .build();
+	private final ElasticsearchProperties elasticsearchProperties;
 
-        return RestClients.create(clientConfiguration)
-            .rest();
-    }
+	public ElasticSearchConfig(ElasticsearchProperties elasticsearchProperties) {
+		super();
+		this.elasticsearchProperties = elasticsearchProperties;
+	}
+
+	@Override
+	@Bean
+	public RestHighLevelClient elasticsearchClient() {
+		final ClientConfiguration clientConfiguration = ClientConfiguration.builder()
+				.connectedTo("localhost:9200")
+				.withConnectTimeout(elasticsearchProperties.getConnectionTimeout())
+				.withSocketTimeout(elasticsearchProperties.getSocketTimeout()).build();
+
+		return RestClients.create(clientConfiguration).rest();
+	}
+	
 }
