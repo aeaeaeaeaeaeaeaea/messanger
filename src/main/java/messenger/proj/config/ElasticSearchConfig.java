@@ -1,37 +1,35 @@
 package messenger.proj.config;
 
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.json.jackson.JacksonJsonpMapper;
+import co.elastic.clients.transport.ElasticsearchTransport;
+import co.elastic.clients.transport.rest_client.RestClientTransport;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
-import org.elasticsearch.client.RestClientBuilder;
-import org.elasticsearch.client.RestHighLevelClient;
-import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.elasticsearch.client.ClientConfiguration;
-import org.springframework.data.elasticsearch.client.RestClients;
-import org.springframework.data.elasticsearch.config.AbstractElasticsearchConfiguration;
-import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
 @Configuration
-public class ElasticSearchConfig extends AbstractElasticsearchConfiguration {
+public class ElasticSearchConfig
+{
+    @Bean
+    public RestClient getRestClient() {
+        RestClient restClient = RestClient.builder(
+                new HttpHost("localhost", 9200)).build();
+        return restClient;
+    }
 
-	private final ElasticsearchProperties elasticsearchProperties;
+    @Bean
+    public  ElasticsearchTransport getElasticsearchTransport() {
+        return new RestClientTransport(
+                getRestClient(), new JacksonJsonpMapper());
+    }
 
-	public ElasticSearchConfig(ElasticsearchProperties elasticsearchProperties) {
-		super();
-		this.elasticsearchProperties = elasticsearchProperties;
-	}
 
-	@Override
-	@Bean
-	public RestHighLevelClient elasticsearchClient() {
-		final ClientConfiguration clientConfiguration = ClientConfiguration.builder()
-				.connectedTo("localhost:9200")
-				.withConnectTimeout(elasticsearchProperties.getConnectionTimeout())
-				.withSocketTimeout(elasticsearchProperties.getSocketTimeout()).build();
+    @Bean
+    public ElasticsearchClient getElasticsearchClient(){
+        ElasticsearchClient client = new ElasticsearchClient(getElasticsearchTransport());
+        return client;
+    }
 
-		return RestClients.create(clientConfiguration).rest();
-	}
-	
 }

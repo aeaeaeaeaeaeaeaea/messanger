@@ -1,21 +1,15 @@
 package messenger.proj.repositories;
 
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch.core.*;
+import co.elastic.clients.elasticsearch.core.search.Hit;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch.core.DeleteRequest;
-import co.elastic.clients.elasticsearch.core.DeleteResponse;
-import co.elastic.clients.elasticsearch.core.GetResponse;
-import co.elastic.clients.elasticsearch.core.IndexResponse;
-import co.elastic.clients.elasticsearch.core.SearchRequest;
-import co.elastic.clients.elasticsearch.core.SearchResponse;
-import co.elastic.clients.elasticsearch.core.search.Hit;
 import messenger.proj.models.ElasticUser;
 
 @Repository
@@ -24,13 +18,8 @@ public class ElasticSearchQuery {
 	@Autowired
 	private ElasticsearchClient elasticsearchClient;
 
-	private final String indexName = "products";
+	private final String indexName = "users";
 	
-	
-	
-	
-	
-
 	public String createOrUpdateDocument(ElasticUser elasticUser) throws IOException {
 
 		IndexResponse response = elasticsearchClient

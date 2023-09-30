@@ -1,5 +1,6 @@
 package messenger.proj.controllers;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
 
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import messenger.proj.models.ChatRoom;
 import messenger.proj.models.ConnectionInfo;
 import messenger.proj.models.message;
+import messenger.proj.repositories.ElasticSearchQuery;
 import messenger.proj.security.PersonDetails;
 import messenger.proj.services.ChatRoomService;
 import messenger.proj.services.ConnectionService;
@@ -34,11 +36,14 @@ public class ChatController {
 	private final UserService userServ;
 	private final RedisTemplate<String, message> redisTemplate;
 	private final ConnectionService connectionServ;
+	private final ElasticSearchQuery elasticSearchQuery;
 
 	@Autowired
 	public ChatController(ConnectionService connectionServ, RedisTemplate<String, message> redisTemplate, UserService userServ,
-			ChatRoomService chatRoomServ, MessageService messageServ) {
-	
+			ChatRoomService chatRoomServ, MessageService messageServ, 
+			ElasticSearchQuery elasticSearchQuery) {
+		
+		this.elasticSearchQuery = elasticSearchQuery;
 		this.connectionServ = connectionServ;
 		this.redisTemplate = redisTemplate;
 		this.chatRoomServ = chatRoomServ;
@@ -155,6 +160,13 @@ public class ChatController {
 		String id = personDetails.getUser().getId();
 		
 		connectionServ.userConnection(id, new ConnectionInfo(), request);
+		
+		try {
+			System.out.println(elasticSearchQuery.getDocumentById(id));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		model.addAttribute("currentUser", id);
 		model.addAttribute("chatList", chatRoomServ.findAll(id));
