@@ -11,7 +11,7 @@ public class ElasticUser {
 	@Id
 	private String id;
 	
-	@Field(type = FieldType.Text, name = "UserName")
+	@Field(type = FieldType.Text, name = "userName")
 	private String userName;
 	
 	public ElasticUser() {

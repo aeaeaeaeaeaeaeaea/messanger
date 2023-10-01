@@ -1,6 +1,8 @@
 package messenger.proj.controllers;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -20,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import messenger.proj.models.ChatRoom;
 import messenger.proj.models.ConnectionInfo;
+import messenger.proj.models.ElasticUser;
+import messenger.proj.models.User;
 import messenger.proj.models.message;
 import messenger.proj.repositories.ElasticSearchQuery;
 import messenger.proj.security.PersonDetails;
@@ -159,11 +163,17 @@ public class ChatController {
 		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
 		String id = personDetails.getUser().getId();
 		
+		User user = userServ.findById(id).get();
+		
 		connectionServ.userConnection(id, new ConnectionInfo(), request);
 		
 		try {
-			System.out.println(elasticSearchQuery.getDocumentById(id));
-		} catch (IOException e) {
+			List<ElasticUser> usesElasticUsers = new ArrayList<>();
+			for (ElasticUser u : usesElasticUsers) {
+				System.out.println(u.getUserName());
+			}
+			
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

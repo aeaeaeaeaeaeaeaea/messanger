@@ -6,6 +6,7 @@ import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,7 +21,7 @@ public class ElasticSearchConfig
     }
 
     @Bean
-    public  ElasticsearchTransport getElasticsearchTransport() {
+    public ElasticsearchTransport getElasticsearchTransport() {
         return new RestClientTransport(
                 getRestClient(), new JacksonJsonpMapper());
     }
@@ -30,6 +31,12 @@ public class ElasticSearchConfig
     public ElasticsearchClient getElasticsearchClient(){
         ElasticsearchClient client = new ElasticsearchClient(getElasticsearchTransport());
         return client;
+    }
+    
+    @Bean
+    public RestHighLevelClient restHighLevelClient() {
+        // Настройка и создание клиента ElasticSearch
+        return new RestHighLevelClient(RestClient.builder(new HttpHost("localhost", 9200)));
     }
 
 }
