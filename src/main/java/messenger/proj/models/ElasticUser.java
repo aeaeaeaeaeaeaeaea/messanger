@@ -38,4 +38,11 @@ public class ElasticUser {
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
+
+	@Override
+	public String toString() {
+		return "ElasticUser [id=" + id + ", userName=" + userName + "]";
+	}
+	
+	
 }

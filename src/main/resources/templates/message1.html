@@ -12,157 +12,180 @@
 
 <body>
 
+	<div th:if="${searchElasticUser == null}">
 
+		<div th:if="${!chatList.isEmpty()}">
 
-	<div th:if="${!chatList.isEmpty()}">
+			<div th:each="chatRoom : ${chatList}">
 
-		<div th:each="chatRoom : ${chatList}">
+				<a th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}" th:text="${chatRoom.getId()}"
+					class="chat-link">Text</a>
 
-			<a th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}" th:text="${chatRoom.getId()}"
-				class="chat-link">Text</a>
+			</div>
 
-		</div>
-
-		<!-- Модальное окно -->
-		<div class="modal" id="myModal" style="display: none;">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title">Действия с чатом</h5>
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
-					</div>
-					<div class="modal-body">
-						<p>Выберите действие:</p>
-						<button id="deleteButton" class="btn btn-danger">Удалить чат</button>
-						<button id="editButton" class="btn btn-primary">Очистить сообщения</button>
+			<!-- Модальное окно -->
+			<div class="modal" id="myModal" style="display: none;">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Действия с чатом</h5>
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+						</div>
+						<div class="modal-body">
+							<p>Выберите действие:</p>
+							<button id="deleteButton" class="btn btn-danger">Удалить чат</button>
+							<button id="editButton" class="btn btn-primary">Очистить сообщения</button>
+						</div>
 					</div>
 				</div>
 			</div>
+
+
+
 		</div>
 
-		<script>
-			$(function () {
-				var modal = $("#myModal");
-				var deleteButton = $("#deleteButton");
-				var editButton = $("#editButton");
-				var chatId;
+		<div th:if="${chatList.isEmpty()}">
 
-				// Обработчик клика правой кнопкой мыши на ссылке
-				$(".chat-link").on('contextmenu', function (e) {
-					e.preventDefault();
-					chatId = $(this).text(); // Получаем текст ссылки (ID чата)
-					modal.css({top: e.pageY + "px", left: e.pageX + "px"});
-					modal.show();
-				});
+			<div th:each="user : ${users}">
 
-				// Обработчик клика на кнопку закрытия модального окна
-				$(".close").on("click", function () {
-					modal.hide();
-				});
+				<div th:if="${user.getId() != currentUser}">
 
-				// Обработчик клика на кнопку "Удалить"
-				deleteButton.on("click", function () {
-					deleteChat(chatId); // Здесь вызывайте функцию удаления чата с chatId
-					modal.hide();
-				});
+					<a class="start-chat" id="chat" th:userId="${user.getId()}" th:currentUser="${currentUser}"
+						th:text="${user.getUsername()}">text</a>
 
-				// Обработчик клика на кнопку "Редактировать"
-				editButton.on("click", function () {
-					// Здесь вы можете выполнить действия для редактирования чата с chatId
-					// Например, переход на страницу редактирования
-					redirectToEditPage(chatId);
-					modal.hide();
-				});
+				</div>
 
-				// Обработчик клика за пределами модального окна для закрытия
-				$(document).on('click', function (e) {
-					if (!$(e.target).hasClass("chat-link")) {
-						modal.hide();
-					}
-				});
-			});
-
-			// Функция для удаления чата (замените этот код на вашу реализацию)
-			function deleteChat(chatId) {
-
-				const deleteFileUrl = `/deleteChat?chatId=${chatId}`;
-
-
-				fetch(deleteFileUrl, {
-					method: 'POST'
-				}).then((response) => {
-					// Если запрос выполнен успешно, удаляем элемент списка файлов
-					if (response.ok) {
-						window.location.href = `/users`;
-					}
-				});
-			}
+			</div>
 
 
 
-			// Функция для перехода на страницу редактирования чата (замените этот код на вашу реализацию)
-			function redirectToEditPage(chatId) {
-
-				const deleteFileUrl = `/deleteChatMessage?chatId=${chatId}`;
-
-
-				fetch(deleteFileUrl, {
-					method: 'POST'
-				}).then((response) => {
-					// Если запрос выполнен успешно, удаляем элемент списка файлов
-					if (response.ok) {
-						window.location.href = `/users`;
-					}
-				});
-			}
-		</script>
-
+		</div>
 
 	</div>
 
-	<div th:if="${chatList.isEmpty()}">
+	<form action="/users" method="GET">
+		<input type="text" name="userName" />
+		<button type="submit" id="save-button">Save</button>
+	</form>
 
-		<div th:each="user : ${users}">
+	<div th:if="${searchElasticUser != null}">
+
+		<div th:each="user : ${searchElasticUser}">
 
 			<div th:if="${user.getId() != currentUser}">
 
 				<a class="start-chat" id="chat" th:userId="${user.getId()}" th:currentUser="${currentUser}"
-					th:text="${user.getUsername()}">text</a>
+					th:text="${user.getUserName()}">text</a>
 
 			</div>
 
 		</div>
 
-		<script>
-			
-			$(document).ready(function () {
-				$(".start-chat").click(function (e) {
-					e.preventDefault();
-
-					var mess = document.getElementById('chat');
-					var userId = mess.getAttribute("userId");
-					var currentUser = mess.getAttribute("currentUser");
-					var chatId = mess.getAttribute("chatId"); // Получаем chatId из атрибута
-
-					const deleteFileUrl = `/chat?userId=${userId}&currentUser=${currentUser}`;
-
-					fetch(deleteFileUrl, {
-						method: 'POST'
-					}).then((response) => {
-						if (response.ok) {
-							// Используем chatId для перенаправления
-							window.location.href = `/chat/${chatId}`;
-						}
-					});
-					
-				});
-			});
-			
-		</script>
-
 	</div>
 
+	<script>
+		$(function () {
+			var modal = $("#myModal");
+			var deleteButton = $("#deleteButton");
+			var editButton = $("#editButton");
+			var chatId;
 
+			// Обработчик клика правой кнопкой мыши на ссылке
+			$(".chat-link").on('contextmenu', function (e) {
+				e.preventDefault();
+				chatId = $(this).text(); // Получаем текст ссылки (ID чата)
+				modal.css({top: e.pageY + "px", left: e.pageX + "px"});
+				modal.show();
+			});
+
+			// Обработчик клика на кнопку закрытия модального окна
+			$(".close").on("click", function () {
+				modal.hide();
+			});
+
+			// Обработчик клика на кнопку "Удалить"
+			deleteButton.on("click", function () {
+				deleteChat(chatId); // Здесь вызывайте функцию удаления чата с chatId
+				modal.hide();
+			});
+
+			// Обработчик клика на кнопку "Редактировать"
+			editButton.on("click", function () {
+				// Здесь вы можете выполнить действия для редактирования чата с chatId
+				// Например, переход на страницу редактирования
+				redirectToEditPage(chatId);
+				modal.hide();
+			});
+
+			// Обработчик клика за пределами модального окна для закрытия
+			$(document).on('click', function (e) {
+				if (!$(e.target).hasClass("chat-link")) {
+					modal.hide();
+				}
+			});
+		});
+
+		// Функция для удаления чата (замените этот код на вашу реализацию)
+		function deleteChat(chatId) {
+
+			const deleteFileUrl = `/deleteChat?chatId=${chatId}`;
+
+
+			fetch(deleteFileUrl, {
+				method: 'POST'
+			}).then((response) => {
+				// Если запрос выполнен успешно, удаляем элемент списка файлов
+				if (response.ok) {
+					window.location.href = `/users`;
+				}
+			});
+		}
+
+
+
+		// Функция для перехода на страницу редактирования чата (замените этот код на вашу реализацию)
+		function redirectToEditPage(chatId) {
+
+			const deleteFileUrl = `/deleteChatMessage?chatId=${chatId}`;
+
+
+			fetch(deleteFileUrl, {
+				method: 'POST'
+			}).then((response) => {
+				// Если запрос выполнен успешно, удаляем элемент списка файлов
+				if (response.ok) {
+					window.location.href = `/users`;
+				}
+			});
+		}
+	</script>
+
+	<script>
+
+		$(document).ready(function () {
+			$(".start-chat").click(function (e) {
+				e.preventDefault();
+
+				var mess = document.getElementById('chat');
+				var userId = mess.getAttribute("userId");
+				var currentUser = mess.getAttribute("currentUser");
+				var chatId = mess.getAttribute("chatId"); // Получаем chatId из атрибута
+
+				const deleteFileUrl = `/chat?userId=${userId}&currentUser=${currentUser}`;
+
+				fetch(deleteFileUrl, {
+					method: 'POST'
+				}).then((response) => {
+					if (response.ok) {
+						// Используем chatId для перенаправления
+						window.location.href = `/chat/${chatId}`;
+					}
+				});
+
+			});
+		});
+
+	</script>
 
 
 </body>

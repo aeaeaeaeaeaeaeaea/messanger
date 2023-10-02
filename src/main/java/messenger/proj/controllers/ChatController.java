@@ -156,28 +156,27 @@ public class ChatController {
 		return "redirect:/users";
 	}
 
+	
 	@GetMapping("/users")
-	public String users(Model model, HttpServletRequest request) {
+	public String users(Model model, 
+						HttpServletRequest request, 
+						@RequestParam(value = "userName", required = false) String userName) {
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
 		String id = personDetails.getUser().getId();
 		
-		User user = userServ.findById(id).get();
-		
 		connectionServ.userConnection(id, new ConnectionInfo(), request);
 		
-		try {
-			List<ElasticUser> usesElasticUsers = new ArrayList<>();
-			for (ElasticUser u : usesElasticUsers) {
-				System.out.println(u.getUserName());
+		if (userName != null) {
+			try {
+				model.addAttribute("searchElasticUser", elasticSearchQuery.search(userName));
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
-
+	
 		model.addAttribute("currentUser", id);
 		model.addAttribute("chatList", chatRoomServ.findAll(id));
 		model.addAttribute("users", userServ.findAll());
