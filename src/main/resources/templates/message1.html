@@ -11,6 +11,11 @@
 </head>
 
 <body>
+	
+	<form action="/users" method="GET">
+		<input type="text" name="userName" />
+		<button type="submit" id="save-button">Save</button>
+	</form>
 
 	<div th:if="${searchElasticUser == null}">
 
@@ -18,8 +23,8 @@
 
 			<div th:each="chatRoom : ${chatList}">
 
-				<a th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}" th:text="${chatRoom.getId()}"
-					class="chat-link">Text</a>
+				<a th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}"
+					th:text="${chatRoom.getId()}" class="chat-link">Text</a>
 
 			</div>
 
@@ -51,22 +56,17 @@
 				<div th:if="${user.getId() != currentUser}">
 
 					<a class="start-chat" id="chat" th:userId="${user.getId()}" th:currentUser="${currentUser}"
-						th:text="${user.getUsername()}">text</a>
+						th:text="${user.getUsername()} + ' ' + ${user.getId()}">text</a>
 
 				</div>
 
 			</div>
 
-
-
 		</div>
 
 	</div>
 
-	<form action="/users" method="GET">
-		<input type="text" name="userName" />
-		<button type="submit" id="save-button">Save</button>
-	</form>
+	
 
 	<div th:if="${searchElasticUser != null}">
 
@@ -75,7 +75,7 @@
 			<div th:if="${user.getId() != currentUser}">
 
 				<a class="start-chat" id="chat" th:userId="${user.getId()}" th:currentUser="${currentUser}"
-					th:text="${user.getUserName()}">text</a>
+					th:text="${user.getUserName()} + ' ' + ${user.getId()}">text</a>
 
 			</div>
 
@@ -158,6 +158,7 @@
 				}
 			});
 		}
+		
 	</script>
 
 	<script>

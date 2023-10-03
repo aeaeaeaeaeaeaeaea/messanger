@@ -23,10 +23,12 @@ import java.util.List;
 public class ChatRoomService {
 
 	private final ChatRoomRepository chatRoomRep;
+	UserService userService;
 
 	@Autowired
-	public ChatRoomService(ChatRoomRepository chatRoomRep) {
+	public ChatRoomService(UserService userService, ChatRoomRepository chatRoomRep) {
 		this.chatRoomRep = chatRoomRep;
+		this.userService = userService;
 	}
 	
 	public Optional<ChatRoom> findById(String chatId) {
@@ -36,10 +38,9 @@ public class ChatRoomService {
 	@Transactional
 	public void save(String senderId, String recipientId) {
 
-		
 		Optional<ChatRoom> chatRoom2 = chatRoomRep.findBySenderIdAndRecipientId(recipientId, senderId);
 		Optional<ChatRoom> chatRoom1 = chatRoomRep.findBySenderIdAndRecipientId(senderId, recipientId);
-
+	
 		if (!chatRoom2.isPresent() && !chatRoom1.isPresent()) {
 
 			ChatRoom chatRoom = new ChatRoom();

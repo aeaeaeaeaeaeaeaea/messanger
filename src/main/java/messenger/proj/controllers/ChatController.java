@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -56,20 +57,19 @@ public class ChatController {
 	}
 
 	@PostMapping("/chat")
-	public String createChat(@RequestParam(value = "userId", required = false) String userId,
-			@RequestParam(value = "currentUser", required = false) String currentUser) {
+	public ResponseEntity<String> createChat(@RequestParam(value = "userId", required = false) String userId,
+	        @RequestParam(value = "currentUser", required = false) String currentUser) {
 
-		chatRoomServ.save(userId, currentUser);
+	    chatRoomServ.save(userId, currentUser);
 
-		Optional<ChatRoom> chat = chatRoomServ.findBySenderIdAndRecipientId(currentUser, userId);
-		Optional<ChatRoom> chat1 = chatRoomServ.findBySenderIdAndRecipientId(userId, currentUser);
+	    Optional<ChatRoom> chat = chatRoomServ.findBySenderIdAndRecipientId(currentUser, userId);
+	    Optional<ChatRoom> chat1 = chatRoomServ.findBySenderIdAndRecipientId(userId, currentUser);
 
-		if (chat.isPresent()) {
-			return "redirect:/chat/" + chat.get().getId();
-		}
+	    String chatId = chat.isPresent() ? chat.get().getId() : chat1.get().getId();
 
-		return "redirect:/chat/" + chat1.get().getId();
+	    return ResponseEntity.ok(chatId);
 	}
+
 
 	@GetMapping("/chat/{userId}")
 	public String chat(@PathVariable("userId") String userId, Model model) {
@@ -165,6 +165,7 @@ public class ChatController {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
 		String id = personDetails.getUser().getId();
+		
 		
 		connectionServ.userConnection(id, new ConnectionInfo(), request);
 		
