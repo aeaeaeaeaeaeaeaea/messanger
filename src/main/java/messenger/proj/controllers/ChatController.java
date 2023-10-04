@@ -67,7 +67,7 @@ public class ChatController {
 
 	    String chatId = chat.isPresent() ? chat.get().getId() : chat1.get().getId();
 
-	    return ResponseEntity.ok(chatId);
+	    return ResponseEntity.ok(new String(chatId));
 	}
 
 
@@ -104,7 +104,6 @@ public class ChatController {
 	public String deleteMessage(@RequestParam("messageId") String messageId, @RequestParam("chatId") String chatId) {
 
 		messageServ.deleteById(messageId, chatId);
-		System.out.println("DELETE MESSAGE: " + messageId);
 
 		return "redirect:/chat/" + chatId;
 	}
@@ -166,7 +165,7 @@ public class ChatController {
 		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
 		String id = personDetails.getUser().getId();
 		
-		
+	
 		connectionServ.userConnection(id, new ConnectionInfo(), request);
 		
 		if (userName != null) {
