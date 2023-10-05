@@ -32,7 +32,7 @@ $(function() {
 
 
 	$(document).on('click', function(e) {
-		if (!$(e.target).hasClass("chat-link")) {
+		if (!$(e.target).hasClass("list-group-item list-group-item-action")) {
 			modal.hide();
 		}
 	});
