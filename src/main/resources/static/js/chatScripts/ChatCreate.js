@@ -1,5 +1,5 @@
 $(document).ready(function() {
-	$(".list-group-item list-group-item-action").click(function(e) {
+	$(".chat-create").click(function(e) {
 		e.preventDefault();
 
 		var mess = document.getElementById('chat');

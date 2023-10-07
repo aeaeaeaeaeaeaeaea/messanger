@@ -19,90 +19,146 @@
 
 		<div class="row">
 
-			<div class="col-2 mt-2">
+			<div class="col-3 mt-2">
 
 				<form action="/users" method="GET">
 					<input class="form-control" type="text" name="userName" placeholder="Search" />
 				</form>
 
+				<div class="mt-2">
+
+					<!-- Chat List -->
+					<div th:if="${searchElasticUser == null}">
+
+						<!-- Если чатов нет, то выводится список user'ов -->
+						<!-- User's list -->
+						<div th:if="${chatList.isEmpty()}">
+
+							<div th:each="user : ${users}">
+
+								<div th:if="${user.getId() != currentUser}">
+
+									<a class="chat-create list-group-item list-group-item-action" id="chat"
+										th:userId="${user.getId()}" th:currentUser="${currentUser}"
+										th:text="${user.getUsername()} + ' ' + ${user.getId()}">text</a>
+
+								</div>
+							</div>
+
+						</div>
+						<!-- End -->
+
+						<!-- Список чатов -->
+						<!-- Chat list -->
+						<div th:if="${!chatList.isEmpty()}">
+
+							<div th:each="chatRoom : ${chatList}">
+
+								<a class="chat-link list-group-item list-group-item-action"
+									th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}"
+									th:text="${chatRoom.getId()}">
+									Text</a>
+
+							</div>
+
+							<!-- Модальное окно для удаления чата и удаления всех сообщений в чате -->
+							<div class="modal" id="myModal" style="display: none;">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title">Действия с чатом</h5>
+											<button type="button" class="close" data-dismiss="modal">&times;</button>
+										</div>
+										<div class="modal-body">
+											<p>Выберите действие:</p>
+											<button id="deleteButton" class="btn btn-danger">Удалить чат</button>
+											<button id="editButton" class="btn btn-primary">Очистить сообщения</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- Конец -->
+
+						</div>
+						<!-- End -->
+
+					</div>
+					<!-- End -->
+
+					<!-- Поиск по nickname'ам user'ов с помощью elasticSearch -->
+					<!-- Elastic user's -->
+					<div th:if="${searchElasticUser != null}">
+
+						<div th:each="user : ${searchElasticUser}">
+
+							<div th:if="${user.getId() != currentUser}">
+
+								<a class="chat-create list-group-item list-group-item-action" id="chat"
+									th:userId="${user.getId()}" th:currentUser="${currentUser}"
+									th:text="${user.getUserName()} + ' ' + ${user.getId()}">text</a>
+
+							</div>
+
+						</div>
+
+					</div>
+					<!-- End -->
+
+				</div>
+
+
+
+			</div>
+
+
+
+
+
+
+
+			<div class="col" style="background-color: red; height: 100%; width: 100%;">
+				123
+				<br />
+				123
+				<br />
+				123
+				<br />
+				123
+				<br />
+				123
+				<br />
+				123
+				<br />
+				123
 			</div>
 
 		</div>
+
+
+
+
+
+
+
+
+
+
+
+	</div>
+
+	<div class="container-fluid">
 
 		<div class="row">
 
-			<!-- Chat List -->
-			<div th:if="${searchElasticUser == null}">
 
-				<!-- User's list -->
-				<div th:if="${chatList.isEmpty()}">
-
-					<div th:each="user : ${users}">
-						<div th:if="${user.getId() != currentUser}">
-							<a class="list-group-item list-group-item-action" id="create-chat"
-								th:userId="${user.getId()}" th:currentUser="${currentUser}"
-								th:text="${user.getUsername()} + ' ' + ${user.getId()}">text</a>
-						</div>
-					</div>
-
-				</div>
-				<!-- End -->
-
-
-				<!-- Chat list -->
-				<div th:if="${!chatList.isEmpty()}">
-
-					<div th:each="chatRoom : ${chatList}">
-						<a id="create-chat" th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}"
-							th:text="${chatRoom.getId()}" class="list-group-item list-group-item-action">Text</a>
-					</div>
-
-				</div>
-				<!-- End -->
-
-			</div>
-			<!-- End -->
-
-
-			<!-- Elastic user's -->
-			<div th:if="${searchElasticUser != null}">
-
-				<div th:each="user : ${searchElasticUser}">
-
-					<div th:if="${user.getId() != currentUser}">
-
-						<a class="list-group-item list-group-item-action" id="create-chat" th:userId="${user.getId()}"
-							th:currentUser="${currentUser}"
-							th:text="${user.getUserName()} + ' ' + ${user.getId()}">text</a>
-
-					</div>
-
-				</div>
-
-			</div>
-			<!-- End -->
 
 		</div>
+
 	</div>
 
 
 
-	<!-- Модальное окно -->
-	<div class="modal" id="myModal" style="display: none;">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">Действия с чатом</h5>
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-				</div>
-				<div class="modal-body">
-					<p>Выберите действие:</p>
-					<button id="deleteButton" class="btn btn-danger">Удалить чат</button>
-					<button id="editButton" class="btn btn-primary">Очистить сообщения</button>
-				</div>
-			</div>
-		</div>
-	</div>
+
 
 
 
