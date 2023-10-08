@@ -9,9 +9,13 @@ public class ChatRoom {
 	
 	@PrimaryKey
 	private String id;
+
 	
-	@Column("chatid")
-	private String chatId;
+	@Column("recipientname")
+	private String recipientName;
+	
+	@Column("sendername")
+	private String senderName;
 	
 	@Column("senderid")
 	private String senderId;
@@ -22,9 +26,10 @@ public class ChatRoom {
 	public ChatRoom() {
 	}
 
-	public ChatRoom(String id, String chatId, String senderId, String recipientId) {
+	public ChatRoom(String id, String senderId, String senderName, String recipientName, String recipientId) {
 		this.id = id;
-		this.chatId = chatId;
+		this.senderName = senderName;
+		this.recipientName = recipientName;
 		this.senderId = senderId;
 		this.recipientId = recipientId;
 	}
@@ -37,13 +42,7 @@ public class ChatRoom {
 		this.id = id;
 	}
 
-	public String getChatId() {
-		return chatId;
-	}
-
-	public void setChatId(String chatId) {
-		this.chatId = chatId;
-	}
+	
 
 	public String getSenderId() {
 		return senderId;
@@ -60,10 +59,21 @@ public class ChatRoom {
 	public void setRecipientId(String recipientId) {
 		this.recipientId = recipientId;
 	}
-	
-	
-	
-	
-	
+
+	public String getRecipientName() {
+		return recipientName;
+	}
+
+	public void setRecipientName(String recipientName) {
+		this.recipientName = recipientName;
+	}
+
+	public String getSenderName() {
+		return senderName;
+	}
+
+	public void setSenderName(String senderName) {
+		this.senderName = senderName;
+	}
 
 }

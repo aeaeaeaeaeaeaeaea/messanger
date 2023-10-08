@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import messenger.proj.models.ChatRoom;
+import messenger.proj.models.User;
 import messenger.proj.repositories.ChatRoomRepository;
 
 import org.springframework.data.cassandra.core.CassandraTemplate;
@@ -36,18 +37,23 @@ public class ChatRoomService {
 	}
 
 	@Transactional
-	public void save(String senderId, String recipientId) {
+	public void save(String currentUserId, String recipientId) {
+		
+		Optional<User> currentUser = userService.findById(currentUserId);
+		Optional<User> recipient = userService.findById(recipientId);
 
-		Optional<ChatRoom> chatRoom2 = chatRoomRep.findBySenderIdAndRecipientId(recipientId, senderId);
-		Optional<ChatRoom> chatRoom1 = chatRoomRep.findBySenderIdAndRecipientId(senderId, recipientId);
+		Optional<ChatRoom> chatRoom2 = chatRoomRep.findBySenderIdAndRecipientId(recipientId, currentUserId);
+		Optional<ChatRoom> chatRoom1 = chatRoomRep.findBySenderIdAndRecipientId(currentUserId, recipientId);
 	
 		if (!chatRoom2.isPresent() && !chatRoom1.isPresent()) {
 
 			ChatRoom chatRoom = new ChatRoom();
 
 			chatRoom.setId(UUID.randomUUID().toString());
-			chatRoom.setSenderId(senderId);
+			chatRoom.setSenderId(currentUserId);
 			chatRoom.setRecipientId(recipientId);
+			chatRoom.setSenderName(currentUser.get().getUsername());
+			chatRoom.setRecipientName(recipient.get().getUsername());
 			chatRoomRep.save(chatRoom);
 		}
 

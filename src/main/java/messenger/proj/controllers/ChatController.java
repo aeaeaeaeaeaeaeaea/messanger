@@ -60,7 +60,7 @@ public class ChatController {
 	public ResponseEntity<String> createChat(@RequestParam(value = "userId", required = false) String userId,
 	        @RequestParam(value = "currentUser", required = false) String currentUser) {
 
-	    chatRoomServ.save(userId, currentUser);
+	    chatRoomServ.save(currentUser, userId);
 
 	    Optional<ChatRoom> chat = chatRoomServ.findBySenderIdAndRecipientId(currentUser, userId);
 	    Optional<ChatRoom> chat1 = chatRoomServ.findBySenderIdAndRecipientId(userId, currentUser);
@@ -90,6 +90,8 @@ public class ChatController {
 			return "redirect:/users";
 
 		}
+		
+		
 
 		model.addAttribute("cachedMessages", messageServ.getCaсhedMessages(userId));
 		model.addAttribute("cassandraMessages", messageServ.findByChatId(userId));
@@ -176,6 +178,8 @@ public class ChatController {
 			}
 			
 		}
+		
+		
 	
 		model.addAttribute("currentUser", id);
 		model.addAttribute("chatList", chatRoomServ.findAll(id));
