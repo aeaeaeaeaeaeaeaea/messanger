@@ -137,6 +137,8 @@ public class ChatController {
 		for (message m : messageServ.findByChatId(chatId)) {
 			messageServ.deleteById(m.getId(), chatId);
 		}
+		
+		
 
 		chatRoomServ.deleteById(chatId);
 
@@ -178,6 +180,8 @@ public class ChatController {
 			}
 			
 		}
+		
+		
 		
 		
 	

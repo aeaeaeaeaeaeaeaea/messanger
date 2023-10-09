@@ -2,11 +2,12 @@ $(document).ready(function() {
     const modal = $("#myModal");
     const deleteButton = $("#deleteButton");
     const editButton = $("#editButton");
-    let chatId;
-
+	var chatId;
+	
     $(".chat-link").on('contextmenu', function(e) {
         e.preventDefault();
-        chatId = $(this).text();
+        var mess = document.getElementById('link');
+		chatId = mess.getAttribute("data");
         modal.css({ top: e.pageY + "px", left: e.pageX + "px" });
         modal.show();
     });

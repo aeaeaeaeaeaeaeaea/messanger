@@ -1,16 +1,27 @@
 package messenger.proj.models;
 
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.stereotype.Component;
+
+import jnr.ffi.Struct.int16_t;
+import messenger.proj.repositories.MessageRepositroy;
+import messenger.proj.services.MessageService;
 
 @Table("chatroom")
+@Component
 public class ChatRoom {
 	
 	@PrimaryKey
 	private String id;
 
-	
 	@Column("recipientname")
 	private String recipientName;
 	
@@ -22,6 +33,9 @@ public class ChatRoom {
 	
 	@Column("recipientid")
 	private String recipientId;
+
+	private MessageService messageService;
+	
 	
 	public ChatRoom() {
 	}
@@ -32,6 +46,11 @@ public class ChatRoom {
 		this.recipientName = recipientName;
 		this.senderId = senderId;
 		this.recipientId = recipientId;
+	}
+	
+	@Autowired
+	public ChatRoom(MessageService messageService) {
+		this.messageService = messageService;
 	}
 
 	public String getId() {
@@ -74,6 +93,11 @@ public class ChatRoom {
 
 	public void setSenderName(String senderName) {
 		this.senderName = senderName;
+	}
+	
+	public message getLastMessage(String chatId) {
+		System.out.println(messageService.getCaсhedMessages(chatId).get(0));
+		return this.messageService.getCaсhedMessages(chatId).get(0);
 	}
 
 }

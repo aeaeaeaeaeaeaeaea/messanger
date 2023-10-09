@@ -53,17 +53,51 @@
 
 							<div th:each="chatRoom : ${chatList}">
 
-								<a class="chat-link list-group-item list-group-item-action"
-									th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}"
-									th:if="${chatRoom.getRecipientId().equals(currentUser)}"
-									th:text="${chatRoom.getSenderName()}">
-									Text</a>
+								<div th:if="${chatRoom.getRecipientId().equals(currentUser)}">
 
-								<a class="chat-link list-group-item list-group-item-action"
-									th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}"
-									th:if="${!chatRoom.getRecipientId().equals(currentUser)}"
-									th:text="${chatRoom.getRecipientName()}">
-									Text</a>
+									<a class="chat-link list-group-item list-group-item-action" id="link"
+										th:data="${chatRoom.getId()}"
+										th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}">
+
+										<div class="d-flex w-100 justify-content-between">
+											<h5 class="mb-1" th:text="${chatRoom.getSenderName()}">text</h5>
+											<small>3 дня назад</small>
+										</div>
+
+
+										<p 	class="mb-1" 
+											th:text="${chatRoom.getLastMessage(chatRoom.getId())}"
+											>
+											text
+										</p>
+										
+									</a>
+
+								</div>
+
+								<div th:if="${!chatRoom.getRecipientId().equals(currentUser)}">
+
+									<a 	class="chat-link list-group-item list-group-item-action"
+										th:data="${chatRoom.getId()}"
+										th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}">
+
+										<div class="d-flex w-100 justify-content-between">
+											<h5 class="mb-1" th:text="${chatRoom.getRecipientName()}">text</h5>
+											<small>3 дня назад</small>
+										</div>
+
+
+										<p 	class="mb-1"
+											th:text="${chatRoom.getLastMessage(chatRoom.getId())}"
+											>
+											text
+										</p>
+
+
+									</a>
+
+								</div>
+
 
 							</div>
 

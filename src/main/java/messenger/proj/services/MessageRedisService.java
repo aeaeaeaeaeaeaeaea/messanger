@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,8 @@ public class MessageRedisService {
 
 	private final RedisTemplate<String, message> redisTemplate;
 	private final MessageRepositroy messageRep;
-
+	
+	@Autowired
 	public MessageRedisService(MessageRepositroy messageRep, RedisTemplate<String, message> redisTemplate) {
 		this.redisTemplate = redisTemplate;
 		this.messageRep = messageRep;
