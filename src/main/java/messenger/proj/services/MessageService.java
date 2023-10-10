@@ -1,6 +1,7 @@
 package messenger.proj.services;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import messenger.proj.models.ChatRoom;
 import messenger.proj.models.message;
 import messenger.proj.repositories.MessageRepositroy;
 
@@ -69,5 +71,21 @@ public class MessageService {
 
 	}
 
+	public HashMap<String, message> getLastMessage(List<ChatRoom> chats) {
+		
+		HashMap<String, message> lastMessages = new HashMap<>();
+		
+		
+		for (ChatRoom chatRoom : chats) {
+			try {
+				lastMessages.put(chatRoom.getId(), getCaсhedMessages(chatRoom.getId()).get(0));
+			} catch (IndexOutOfBoundsException e) {
+				lastMessages.put(chatRoom.getId(), new message());
+			}
+		}
+		
+		return lastMessages;
+	
+	}
 
 }

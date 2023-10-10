@@ -182,9 +182,7 @@ public class ChatController {
 		}
 		
 		
-		
-		
-	
+		model.addAttribute("lastMessages", messageServ.getLastMessage(chatRoomServ.findAll(id)));	
 		model.addAttribute("currentUser", id);
 		model.addAttribute("chatList", chatRoomServ.findAll(id));
 		model.addAttribute("users", userServ.findAll());

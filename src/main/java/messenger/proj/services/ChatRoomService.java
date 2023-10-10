@@ -24,7 +24,7 @@ import java.util.List;
 public class ChatRoomService {
 
 	private final ChatRoomRepository chatRoomRep;
-	UserService userService;
+ 	private final UserService userService;
 
 	@Autowired
 	public ChatRoomService(UserService userService, ChatRoomRepository chatRoomRep) {

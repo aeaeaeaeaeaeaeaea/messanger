@@ -1,8 +1,10 @@
 package messenger.proj.models;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
+import org.elasticsearch.cluster.metadata.AliasAction.NewAliasValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
@@ -33,25 +35,22 @@ public class ChatRoom {
 	
 	@Column("recipientid")
 	private String recipientId;
-
-	private MessageService messageService;
 	
 	
-	public ChatRoom() {
-	}
 
 	public ChatRoom(String id, String senderId, String senderName, String recipientName, String recipientId) {
 		this.id = id;
+		
 		this.senderName = senderName;
 		this.recipientName = recipientName;
 		this.senderId = senderId;
 		this.recipientId = recipientId;
 	}
-	
-	@Autowired
-	public ChatRoom(MessageService messageService) {
-		this.messageService = messageService;
+
+	public ChatRoom() {
+		
 	}
+	
 
 	public String getId() {
 		return id;
@@ -94,10 +93,9 @@ public class ChatRoom {
 	public void setSenderName(String senderName) {
 		this.senderName = senderName;
 	}
+
 	
-	public message getLastMessage(String chatId) {
-		System.out.println(messageService.getCaсhedMessages(chatId).get(0));
-		return this.messageService.getCaсhedMessages(chatId).get(0);
-	}
+	
+	
 
 }

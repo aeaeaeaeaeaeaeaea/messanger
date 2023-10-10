@@ -1,5 +1,6 @@
 package messenger.proj.controllers;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,13 +62,19 @@ public class MessageController {
 		String extractedChatId = jsonNode.get("chatId").asText();
 		String senderId = jsonNode.get("dataSenderId").asText();
 		String recipId = jsonNode.get("dataRecipId").asText();
+		
+		if (!message.getContent().equals("")) {
+			
+			message.setChatId(extractedChatId);
+			message.setSenderId(senderId);
+			message.setRecipientId(recipId);
+			message.setSendTime(Instant.now());
+			messageServ.save(extractedChatId, message);
 
-		message.setChatId(extractedChatId);
-		message.setSenderId(senderId);
-		message.setRecipientId(recipId);
-		messageServ.save(extractedChatId, message);
-
-		messagingTemplate.convertAndSend("/topic/" + extractedChatId, message);
+			messagingTemplate.convertAndSend("/topic/" + extractedChatId, message);
+			
+		}
+		
 
 	}
 

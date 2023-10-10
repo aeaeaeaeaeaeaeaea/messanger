@@ -1,5 +1,7 @@
 package messenger.proj.models;
 
+import java.time.Instant;
+
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
@@ -33,16 +35,21 @@ public class message {
 	
 	@Column("status")
 	private String status;
+	
+	@Column("sendtime")
+	private Instant sendTime;
+	
 
 	
 	public message() {	
 	}
 
 
-	public message(String id, String chatId, String senderId, String recipientId, String senderName,
+	public message(String id, Instant sendTime, String chatId, String senderId, String recipientId, String senderName,
 			String recipientName, String content, String status) {
 		super();
 		this.id = id;
+		this.sendTime = sendTime;
 		this.chatId = chatId;
 		this.senderId = senderId;
 		this.recipientId = recipientId;
@@ -130,6 +137,14 @@ public class message {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	
+	public Instant getSendTime() {
+		return sendTime;
+	}
+
+	public void setSendTime(Instant sendTime) {
+		this.sendTime = sendTime;
 	}
 		
 }

@@ -61,35 +61,38 @@
 
 										<div class="d-flex w-100 justify-content-between">
 											<h5 class="mb-1" th:text="${chatRoom.getSenderName()}">text</h5>
-											<small>3 дня назад</small>
+											<small
+												th:text="${lastMessages.get(chatRoom.getId()).getSendTime()}">
+												text
+												</small>
 										</div>
 
 
-										<p 	class="mb-1" 
-											th:text="${chatRoom.getLastMessage(chatRoom.getId())}"
-											>
+										<p class="mb-1" th:text="${lastMessages.get(chatRoom.getId()).getContent()}">
 											text
 										</p>
-										
+
 									</a>
 
 								</div>
 
 								<div th:if="${!chatRoom.getRecipientId().equals(currentUser)}">
 
-									<a 	class="chat-link list-group-item list-group-item-action"
+									<a 	class="chat-link list-group-item list-group-item-action" 
+										id="link"
 										th:data="${chatRoom.getId()}"
 										th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}">
 
 										<div class="d-flex w-100 justify-content-between">
 											<h5 class="mb-1" th:text="${chatRoom.getRecipientName()}">text</h5>
-											<small>3 дня назад</small>
+											<small 
+												th:text="${lastMessages.get(chatRoom.getId()).getSendTime()}">
+												time
+												</small>
 										</div>
 
 
-										<p 	class="mb-1"
-											th:text="${chatRoom.getLastMessage(chatRoom.getId())}"
-											>
+										<p class="mb-1" th:text="${lastMessages.get(chatRoom.getId()).getContent()}">
 											text
 										</p>
 
