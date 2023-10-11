@@ -1,10 +1,12 @@
 package messenger.proj.models;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -37,15 +39,14 @@ public class message {
 	private String status;
 	
 	@Column("sendtime")
-	private Instant sendTime;
-	
+	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+	private LocalDateTime sendTime;
 
-	
 	public message() {	
 	}
 
 
-	public message(String id, Instant sendTime, String chatId, String senderId, String recipientId, String senderName,
+	public message(String id, LocalDateTime sendTime, String chatId, String senderId, String recipientId, String senderName,
 			String recipientName, String content, String status) {
 		super();
 		this.id = id;
@@ -139,12 +140,22 @@ public class message {
 		this.status = status;
 	}
 	
-	public Instant getSendTime() {
+	public LocalDateTime getSendTime() {
 		return sendTime;
 	}
 
-	public void setSendTime(Instant sendTime) {
+	public void setSendTime(LocalDateTime sendTime) {
 		this.sendTime = sendTime;
 	}
+
+
+	@Override
+	public String toString() {
+		return "message [id=" + id + ", chatId=" + chatId + ", senderId=" + senderId + ", recipientId=" + recipientId
+				+ ", senderName=" + senderName + ", recipientName=" + recipientName + ", content=" + content
+				+ ", status=" + status + ", sendTime=" + sendTime + "]";
+	}
+	
+	
 		
 }

@@ -1,6 +1,7 @@
 package messenger.proj.controllers;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +26,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import messenger.proj.config.JacksonConfiguration;
 import messenger.proj.models.ChatRoom;
 import messenger.proj.models.User;
 import messenger.proj.models.message;
@@ -43,8 +47,8 @@ public class MessageController {
 	private UserService userServ;
 
 	@Autowired
-	public MessageController(UserService userServ, SimpMessagingTemplate messagingTemplate, MessageService messageServ,
-			ChatRoomService chatRoomServ) {
+	public MessageController(UserService userServ, SimpMessagingTemplate messagingTemplate,
+			MessageService messageServ, ChatRoomService chatRoomServ) {
 		this.userServ = userServ;
 		this.messagingTemplate = messagingTemplate;
 		this.messageServ = messageServ;
@@ -56,28 +60,29 @@ public class MessageController {
 	public void processChatMessage(@Payload message message, @PathVariable("chatId") String chatId)
 			throws JsonMappingException, JsonProcessingException {
 
-		ObjectMapper objectMapper = new ObjectMapper();
+		// Jackson 2.10 and later
+		ObjectMapper objectMapper = JsonMapper.builder().findAndAddModules().build();
 		JsonNode jsonNode = objectMapper.readTree(chatId);
 
 		String extractedChatId = jsonNode.get("chatId").asText();
 		String senderId = jsonNode.get("dataSenderId").asText();
 		String recipId = jsonNode.get("dataRecipId").asText();
-		
+
 		if (!message.getContent().equals("")) {
-			
+
 			message.setChatId(extractedChatId);
 			message.setSenderId(senderId);
 			message.setRecipientId(recipId);
-			message.setSendTime(Instant.now());
+			message.setSendTime(LocalDateTime.now());
+
+			System.out.println(message.toString());
+
 			messageServ.save(extractedChatId, message);
 
 			messagingTemplate.convertAndSend("/topic/" + extractedChatId, message);
-			
+
 		}
-		
 
 	}
-
-
 
 }
