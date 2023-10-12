@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -29,7 +31,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import messenger.proj.config.JacksonConfiguration;
 import messenger.proj.models.ChatRoom;
 import messenger.proj.models.User;
 import messenger.proj.models.message;
@@ -47,8 +48,8 @@ public class MessageController {
 	private UserService userServ;
 
 	@Autowired
-	public MessageController(UserService userServ, SimpMessagingTemplate messagingTemplate,
-			MessageService messageServ, ChatRoomService chatRoomServ) {
+	public MessageController(UserService userServ, SimpMessagingTemplate messagingTemplate, MessageService messageServ,
+			ChatRoomService chatRoomServ) {
 		this.userServ = userServ;
 		this.messagingTemplate = messagingTemplate;
 		this.messageServ = messageServ;
@@ -60,28 +61,27 @@ public class MessageController {
 	public void processChatMessage(@Payload message message, @PathVariable("chatId") String chatId)
 			throws JsonMappingException, JsonProcessingException {
 
-		// Jackson 2.10 and later
-		ObjectMapper objectMapper = JsonMapper.builder().findAndAddModules().build();
-		JsonNode jsonNode = objectMapper.readTree(chatId);
+		System.out.println(message.getContent());
 
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.registerModule(new JavaTimeModule());
+
+		// Deserialize chatId as a JSON node
+		JsonNode jsonNode = objectMapper.readTree(chatId);
 		String extractedChatId = jsonNode.get("chatId").asText();
 		String senderId = jsonNode.get("dataSenderId").asText();
 		String recipId = jsonNode.get("dataRecipId").asText();
 
-		if (!message.getContent().equals("")) {
+		message.setChatId(extractedChatId);
+		message.setSenderId(senderId);
+		message.setRecipientId(recipId);
+		message.setSendTime(LocalDateTime.now());
+		
+		System.out.println(message.toString());
+		
+		messageServ.save(extractedChatId, message);
 
-			message.setChatId(extractedChatId);
-			message.setSenderId(senderId);
-			message.setRecipientId(recipId);
-			message.setSendTime(LocalDateTime.now());
-
-			System.out.println(message.toString());
-
-			messageServ.save(extractedChatId, message);
-
-			messagingTemplate.convertAndSend("/topic/" + extractedChatId, message);
-
-		}
+		messagingTemplate.convertAndSend("/topic/" + extractedChatId, message);
 
 	}
 

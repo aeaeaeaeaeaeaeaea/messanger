@@ -8,7 +8,10 @@ import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @Table("chatmessage")
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -39,7 +42,7 @@ public class message {
 	private String status;
 	
 	@Column("sendtime")
-	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	private LocalDateTime sendTime;
 
 	public message() {	
