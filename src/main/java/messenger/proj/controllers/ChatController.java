@@ -1,13 +1,12 @@
 package messenger.proj.controllers;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import messenger.proj.models.ChatRoom;
 import messenger.proj.models.ConnectionInfo;
-import messenger.proj.models.ElasticUser;
-import messenger.proj.models.User;
 import messenger.proj.models.message;
 import messenger.proj.repositories.ElasticSearchQuery;
 import messenger.proj.security.PersonDetails;
@@ -44,10 +41,10 @@ public class ChatController {
 	private final ElasticSearchQuery elasticSearchQuery;
 
 	@Autowired
-	public ChatController(ConnectionService connectionServ, RedisTemplate<String, message> redisTemplate, UserService userServ,
-			ChatRoomService chatRoomServ, MessageService messageServ, 
+	public ChatController(ConnectionService connectionServ, RedisTemplate<String, message> redisTemplate,
+			UserService userServ, ChatRoomService chatRoomServ, MessageService messageServ,
 			ElasticSearchQuery elasticSearchQuery) {
-		
+
 		this.elasticSearchQuery = elasticSearchQuery;
 		this.connectionServ = connectionServ;
 		this.redisTemplate = redisTemplate;
@@ -58,18 +55,17 @@ public class ChatController {
 
 	@PostMapping("/chat")
 	public ResponseEntity<String> createChat(@RequestParam(value = "userId", required = false) String userId,
-	        @RequestParam(value = "currentUser", required = false) String currentUser) {
+			@RequestParam(value = "currentUser", required = false) String currentUser) {
 
-	    chatRoomServ.save(currentUser, userId);
+		chatRoomServ.save(currentUser, userId);
 
-	    Optional<ChatRoom> chat = chatRoomServ.findBySenderIdAndRecipientId(currentUser, userId);
-	    Optional<ChatRoom> chat1 = chatRoomServ.findBySenderIdAndRecipientId(userId, currentUser);
+		Optional<ChatRoom> chat = chatRoomServ.findBySenderIdAndRecipientId(currentUser, userId);
+		Optional<ChatRoom> chat1 = chatRoomServ.findBySenderIdAndRecipientId(userId, currentUser);
 
-	    String chatId = chat.isPresent() ? chat.get().getId() : chat1.get().getId();
+		String chatId = chat.isPresent() ? chat.get().getId() : chat1.get().getId();
 
-	    return ResponseEntity.ok(new String(chatId));
+		return ResponseEntity.ok(new String(chatId));
 	}
-
 
 	@GetMapping("/chat/{userId}")
 	public String chat(@PathVariable("userId") String userId, Model model) {
@@ -90,9 +86,14 @@ public class ChatController {
 			return "redirect:/users";
 
 		}
-		
-		
 
+		model.addAttribute("todayFormat", new DateTimeFormatterBuilder().appendPattern("HH:mm").toFormatter());
+		model.addAttribute("formatter", new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter());
+		model.addAttribute("todayDate",
+				LocalDateTime.now().format(new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter()));
+		model.addAttribute("lastMessages", messageServ.getLastMessage(chatRoomServ.findAll(curentUserId)));
+		model.addAttribute("currentUser", curentUserId);
+		model.addAttribute("chatList", chatRoomServ.findAll(curentUserId));
 		model.addAttribute("cachedMessages", messageServ.getCaсhedMessages(userId));
 		model.addAttribute("cassandraMessages", messageServ.findByChatId(userId));
 
@@ -137,8 +138,6 @@ public class ChatController {
 		for (message m : messageServ.findByChatId(chatId)) {
 			messageServ.deleteById(m.getId(), chatId);
 		}
-		
-		
 
 		chatRoomServ.deleteById(chatId);
 
@@ -159,30 +158,30 @@ public class ChatController {
 		return "redirect:/users";
 	}
 
-	
 	@GetMapping("/users")
-	public String users(Model model, 
-						HttpServletRequest request, 
-						@RequestParam(value = "userName", required = false) String userName) {
+	public String users(Model model, HttpServletRequest request,
+			@RequestParam(value = "userName", required = false) String userName) {
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
 		String id = personDetails.getUser().getId();
-		
-	
+
 		connectionServ.userConnection(id, new ConnectionInfo(), request);
-		
+
 		if (userName != null) {
 			try {
 				model.addAttribute("searchElasticUser", elasticSearchQuery.search(userName));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
+
 		}
-		
-		
-		model.addAttribute("lastMessages", messageServ.getLastMessage(chatRoomServ.findAll(id)));	
+
+		model.addAttribute("todayFormat", new DateTimeFormatterBuilder().appendPattern("HH:mm").toFormatter());
+		model.addAttribute("formatter", new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter());
+		model.addAttribute("todayDate",
+				LocalDateTime.now().format(new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter()));
+		model.addAttribute("lastMessages", messageServ.getLastMessage(chatRoomServ.findAll(id)));
 		model.addAttribute("currentUser", id);
 		model.addAttribute("chatList", chatRoomServ.findAll(id));
 		model.addAttribute("users", userServ.findAll());

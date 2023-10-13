@@ -61,28 +61,26 @@ public class MessageController {
 	public void processChatMessage(@Payload message message, @PathVariable("chatId") String chatId)
 			throws JsonMappingException, JsonProcessingException {
 
-		System.out.println(message.getContent());
+		if (!message.getContent().equals("")) {
 
-		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.registerModule(new JavaTimeModule());
+			ObjectMapper objectMapper = new ObjectMapper();
+			objectMapper.registerModule(new JavaTimeModule());
 
-		// Deserialize chatId as a JSON node
-		JsonNode jsonNode = objectMapper.readTree(chatId);
-		String extractedChatId = jsonNode.get("chatId").asText();
-		String senderId = jsonNode.get("dataSenderId").asText();
-		String recipId = jsonNode.get("dataRecipId").asText();
+			JsonNode jsonNode = objectMapper.readTree(chatId);
+			String extractedChatId = jsonNode.get("chatId").asText();
+			String senderId = jsonNode.get("dataSenderId").asText();
+			String recipId = jsonNode.get("dataRecipId").asText();
 
-		message.setChatId(extractedChatId);
-		message.setSenderId(senderId);
-		message.setRecipientId(recipId);
-		message.setSendTime(LocalDateTime.now());
-		
-		System.out.println(message.toString());
-		
-		messageServ.save(extractedChatId, message);
+			message.setChatId(extractedChatId);
+			message.setSenderId(senderId);
+			message.setRecipientId(recipId);
+			message.setSendTime(LocalDateTime.now());
 
-		messagingTemplate.convertAndSend("/topic/" + extractedChatId, message);
+			messageServ.save(extractedChatId, message);
 
+			messagingTemplate.convertAndSend("/topic/" + extractedChatId, message);
+			
+		}
 	}
 
 }

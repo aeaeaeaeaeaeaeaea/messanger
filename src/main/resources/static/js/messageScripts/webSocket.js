@@ -22,7 +22,7 @@ function showMessage(message) {
 function sendMessage() {
 	var messageInput = $("#messageInput");
 	var message = messageInput.val();
-	stompClient.send("/app/chat/`{chatId}`/sendMessage", {}, JSON.stringify({'chatId': chatId, 'dataSenderId': dataSenderId, 'dataRecipId': dataRecipId}));
+	stompClient.send("/app/chat/`{chatId}`/sendMessage", {}, JSON.stringify({'content': message,'chatId': chatId, 'dataSenderId': dataSenderId, 'dataRecipId': dataRecipId}));
 	messageInput.val("");
 }
 

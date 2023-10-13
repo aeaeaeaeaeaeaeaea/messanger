@@ -61,14 +61,28 @@
 
 										<div class="d-flex w-100 justify-content-between">
 											<h5 class="mb-1" th:text="${chatRoom.getSenderName()}">text</h5>
-											<small
-												th:text="${lastMessages.get(chatRoom.getId()).getSendTime()}">
-												text
+
+											<div th:if="${lastMessages.get(chatRoom.getId()).getContent() != null}">
+
+												<small
+													th:if="${todayDate.equals(lastMessages.get(chatRoom.getId()).getSendTime().format(formatter))}"
+													th:text="${lastMessages.get(chatRoom.getId()).getSendTime().format(todayFormat)}">
+													text
 												</small>
+
+												<small
+													th:if="${!todayDate.equals(lastMessages.get(chatRoom.getId()).getSendTime().format(formatter))}"
+													th:text="${lastMessages.get(chatRoom.getId()).getSendTime().format(formatter)}">
+													text
+												</small>
+
+											</div>
+
 										</div>
 
 
-										<p class="mb-1" th:text="${lastMessages.get(chatRoom.getId()).getContent()}">
+										<p th:if="${lastMessages.get(chatRoom.getId()).getContent() != null}" class="mb-1"
+											th:text="${lastMessages.get(chatRoom.getId()).getContent()}">
 											text
 										</p>
 
@@ -78,21 +92,34 @@
 
 								<div th:if="${!chatRoom.getRecipientId().equals(currentUser)}">
 
-									<a 	class="chat-link list-group-item list-group-item-action" 
-										id="link"
+									<a class="chat-link list-group-item list-group-item-action" id="link"
 										th:data="${chatRoom.getId()}"
 										th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}">
 
 										<div class="d-flex w-100 justify-content-between">
 											<h5 class="mb-1" th:text="${chatRoom.getRecipientName()}">text</h5>
-											<small 
-												th:text="${lastMessages.get(chatRoom.getId()).getSendTime()}">
-												time
+
+											<div th:if="${lastMessages.get(chatRoom.getId()).getContent() != null}">
+
+												<small
+													th:if="${todayDate.equals(lastMessages.get(chatRoom.getId()).getSendTime().format(formatter))}"
+													th:text="${lastMessages.get(chatRoom.getId()).getSendTime().format(todayFormat)}">
+													text
 												</small>
+
+												<small
+													th:if="${!todayDate.equals(lastMessages.get(chatRoom.getId()).getSendTime().format(formatter))}"
+													th:text="${lastMessages.get(chatRoom.getId()).getSendTime().format(formatter)}">
+													text
+												</small>
+
+											</div>
+
 										</div>
 
 
-										<p class="mb-1" th:text="${lastMessages.get(chatRoom.getId()).getContent()}">
+										<p th:if="${lastMessages.get(chatRoom.getId()).getContent() != null}" class="mb-1"
+											th:text="${lastMessages.get(chatRoom.getId()).getContent()}">
 											text
 										</p>
 
