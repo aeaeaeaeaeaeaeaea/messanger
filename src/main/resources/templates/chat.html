@@ -33,7 +33,7 @@
 
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
 
 	<!-- Start -->
 
@@ -41,8 +41,11 @@
 
 		<div class="row">
 
+			<!-- Список чатов -->
+
 			<div class="col-3 mt-2">
 
+				<!-- Форма для поиска -->
 				<form class="col-8" action="/users" method="GET">
 					<input class="form-control" type="text" name="userName" placeholder="Search" />
 				</form>
@@ -130,12 +133,12 @@
 				</div>
 			</div>
 
-			<!-- End -->
+			<!-- Конец списка чатов -->
 
-
+			<!-- Вывод сообщений -->
 			<div class="col">
-				<div>
 
+				<div style="background-color: rgb(231, 232, 230); height: 100vh">
 
 					<div th:each="cassandraMessage : ${cassandraMessages}">
 						<div class="message-container"
@@ -154,27 +157,32 @@
 					</div>
 
 
-				</div>
 
-				<div id="chatMessages"></div>
-				<form id="messageForm">
-					<input type="text" id="messageInput" th:data="${id}" th:dataSenderId="${currentUser}"
-						th:dataRecipId="${id}" placeholder="Type your message..." />
-					<button type="submit">Send</button>
-				</form>
+					<div class="d-flex justify-content-end">
+						
+						<form class="mt-auto">
+							<input type="text" id="messageInput" th:data="${id}" th:dataSenderId="${currentUser}"
+								th:dataRecipId="${id}" placeholder="Type your message..." />
+							<button type="submit">Send</button>
+						</form>
+						
+					</div>
 
 
 
 
-				<!-- Форма для редактирования сообщения -->
-				<div id="editForm" style="display: none;">
-					<form id="messageEditForm" action="/editMessage" method="post">
-						<input type="hidden" name="messageId" id="editMessageId" value="">
-						<input type="hidden" name="chatId" id="editChatId" value="">
-						<input type="text" name="editedContent" id="editedContent"
-							placeholder="Редактировать сообщение">
-						<button type="submit">Сохранить изменения</button>
-					</form>
+					<!-- Форма для редактирования сообщения -->
+					<div id="editForm" style="display: none;">
+						<form id="messageEditForm" action="/editMessage" method="post">
+
+							<input type="hidden" name="messageId" id="editMessageId" value="">
+							<input type="hidden" name="chatId" id="editChatId" value="">
+							<input type="text" name="editedContent" id="editedContent"
+								placeholder="Редактировать сообщение">
+							<button type="submit">Сохранить изменения</button>
+						</form>
+					</div>
+
 				</div>
 
 				<!-- Модальное окно -->
@@ -188,6 +196,8 @@
 				</div>
 
 			</div>
+			<!-- Конец вывод сообщений -->
+
 
 		</div>
 	</div>
