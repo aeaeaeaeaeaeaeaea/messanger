@@ -136,70 +136,69 @@
 			<!-- Конец списка чатов -->
 
 			<!-- Вывод сообщений -->
-			<div class="col">
-
-				<div style="background-color: rgb(231, 232, 230); height: 100vh">
-
-					<div th:each="cassandraMessage : ${cassandraMessages}">
-						<div class="message-container"
-							th:classappend="${cassandraMessage.getSenderId() == currentUser ? 'my-message' : 'other-message'}">
-							<p th:text="${cassandraMessage.getContent()}" class="message-content"
-								th:data-id="${cassandraMessage.getId()}"></p>
-						</div>
-					</div>
-
-					<div th:each="cachedMessage : ${cachedMessages}">
-						<div class="message-container"
-							th:classappend="${cachedMessage.getSenderId() == currentUser ? 'my-message' : 'other-message'}">
-							<p th:text="${cachedMessage.getContent()}" class="message-content"
-								th:data-id="${cachedMessage.getId()}"></p>
-						</div>
-					</div>
+			<div class="col" style="background-color: rgb(231, 232, 230); height: 100vh">
 
 
 
-					<div class="d-flex justify-content-end">
-						
-						<form class="mt-auto">
-							<input type="text" id="messageInput" th:data="${id}" th:dataSenderId="${currentUser}"
-								th:dataRecipId="${id}" placeholder="Type your message..." />
-							<button type="submit">Send</button>
-						</form>
-						
-					</div>
-
-
-
-
-					<!-- Форма для редактирования сообщения -->
-					<div id="editForm" style="display: none;">
-						<form id="messageEditForm" action="/editMessage" method="post">
-
-							<input type="hidden" name="messageId" id="editMessageId" value="">
-							<input type="hidden" name="chatId" id="editChatId" value="">
-							<input type="text" name="editedContent" id="editedContent"
-								placeholder="Редактировать сообщение">
-							<button type="submit">Сохранить изменения</button>
-						</form>
-					</div>
-
-				</div>
-
-				<!-- Модальное окно -->
-				<div id="myModal" class="modal" style="display: none;">
-					<div class="modal-content">
-						<span class="close">&times;</span>
-						<p>Выберите действие:</p>
-						<button id="deleteButton">Удалить</button>
-						<button id="editButton">Редактировать</button>
+				<div th:each="cassandraMessage : ${cassandraMessages}">
+					<div class="message-container"
+						th:classappend="${cassandraMessage.getSenderId() == currentUser ? 'my-message' : 'other-message'}">
+						<p th:text="${cassandraMessage.getContent()}" class="message-content"
+							th:data-id="${cassandraMessage.getId()}"></p>
 					</div>
 				</div>
+
+				<div th:each="cachedMessage : ${cachedMessages}">
+					<div class="message-container"
+						th:classappend="${cachedMessage.getSenderId() == currentUser ? 'my-message' : 'other-message'}">
+						<p th:text="${cachedMessage.getContent()}" class="message-content"
+							th:data-id="${cachedMessage.getId()}"></p>
+					</div>
+				</div>
+
+
+
+
+
+
+
+				<form class="mb-0" id="messageForm">
+					<input type="text" id="messageInput" th:data="${id}" th:dataSenderId="${currentUser}"
+						th:dataRecipId="${id}" placeholder="Type your message..." />
+					<button type="submit">Send</button>
+				</form>
+
+				<!-- Форма для редактирования сообщения -->
+				<div id="editForm" style="display: none;">
+					<form id="messageEditForm" action="/editMessage" method="post">
+
+						<input type="hidden" name="messageId" id="editMessageId" value="">
+						<input type="hidden" name="chatId" id="editChatId" value="">
+						<input type="text" name="editedContent" id="editedContent"
+							placeholder="Редактировать сообщение">
+						<button type="submit">Сохранить изменения</button>
+					</form>
+				</div>
+
+
 
 			</div>
-			<!-- Конец вывод сообщений -->
 
+			<!-- Модальное окно -->
+			<div id="myModal" class="modal" style="display: none;">
+				<div class="modal-content">
+					<span class="close">&times;</span>
+					<p>Выберите действие:</p>
+					<button id="deleteButton">Удалить</button>
+					<button id="editButton">Редактировать</button>
+				</div>
+			</div>
 
 		</div>
+		<!-- Конец вывод сообщений -->
+
+
+	</div>
 	</div>
 
 

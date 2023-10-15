@@ -9,6 +9,7 @@ function connectToChat(chatId) {
 	stompClient = Stomp.over(socket);
 	stompClient.connect({}, function(frame) {
 		console.log('Connected: ' + frame);
+	
 		stompClient.subscribe('/topic/' + chatId, function(message) {
 			showMessage(JSON.parse(message.body));
 		});
