@@ -38,11 +38,9 @@
 	<!-- Start -->
 
 	<div class="container-fluid">
-
 		<div class="row">
 
 			<!-- Список чатов -->
-
 			<div class="col-3 mt-2">
 
 				<!-- Форма для поиска -->
@@ -133,15 +131,15 @@
 				</div>
 			</div>
 
-			<!-- Конец списка чатов -->
 
 			<!-- Вывод сообщений -->
 			<div class="col" style="background-color: rgb(231, 232, 230); height: 100vh">
 
 
-
-				<div class="row align-items-start" style="max-height: 90vh; height: 40vh;">
-					
+				<div class="row align-items-end">
+					<div id="message-container" style="overflow: scroll; height: 95vh; 
+						 max-height: 95vh; background-color: #e6e8e9; 
+						 overflow-x: hidden;">
 
 						<div th:each="cassandraMessage : ${cassandraMessages}">
 							<div class="message-container"
@@ -159,33 +157,36 @@
 							</div>
 						</div>
 
-					
+					</div>
 				</div>
 
 				<div class="row align-items-end" style="position: absolute; bottom: 0;">
 					<div class="col">
 
-						<form id="messageForm">
+						<form class="col-12" id="messageForm">
 							<input type="text" id="messageInput" th:data="${id}" th:dataSenderId="${currentUser}"
 								th:dataRecipId="${id}" placeholder="Type your message..." />
 							<button type="submit">Send</button>
 						</form>
 
+						<!-- Форма для редактирования сообщения -->
+						<div id="editForm" style="display: none;">
+							<form id="messageEditForm" action="/editMessage" method="post">
+
+								<input type="hidden" name="messageId" id="editMessageId" value="">
+								<input type="hidden" name="chatId" id="editChatId" value="">
+								<input type="text" name="editedContent" id="editedContent"
+									placeholder="Редактировать сообщение">
+
+								<button type="submit">Сохранить изменения</button>
+							</form>
+						</div>
+
 					</div>
 				</div>
 
 
-				<!-- Форма для редактирования сообщения -->
-				<div id="editForm" style="display: none;">
-					<form id="messageEditForm" action="/editMessage" method="post">
 
-						<input type="hidden" name="messageId" id="editMessageId" value="">
-						<input type="hidden" name="chatId" id="editChatId" value="">
-						<input type="text" name="editedContent" id="editedContent"
-							placeholder="Редактировать сообщение">
-						<button type="submit">Сохранить изменения</button>
-					</form>
-				</div>
 
 
 
@@ -202,31 +203,15 @@
 			</div>
 
 		</div>
-		<!-- Конец вывод сообщений -->
 
 
 	</div>
-	</div>
 
-
-
-
-
-
-
-
+	<script src="/js/messageScripts/messageScroll.js"></script>
 	<script src="/js/messageScripts/messageContextMenuEdit.js"></script>
 	<script src="/js/messageScripts/messageEditOrDelete.js"></script>
 	<script src="/js/messageScripts/webSocket.js"></script>
-
-	<script>
-
-		function showMessage(message) {
-			var messageClass = (message.senderId === currentUser ? "my-message" : "other-message");
-			$("#chatMessages").append("<p class='" + messageClass + "'>" + message.content + "</p>");
-		}
-
-	</script>
+	<script src="/js/messageScripts/messageColor.js"></script>
 
 
 </body>
