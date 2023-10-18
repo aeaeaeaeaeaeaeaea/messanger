@@ -38,7 +38,7 @@ $(document).ready(function() {
             method: 'POST'
         }).then((response) => {
             if (response.ok) {
-                window.location.href = `/users`;
+              /*  window.location.href = `/users`;*/
             }
         });
     }
@@ -49,7 +49,7 @@ $(document).ready(function() {
             method: 'POST'
         }).then((response) => {
             if (response.ok) {
-                window.location.href = `/users`;
+               /* window.location.href = `/users`;*/
             }
         });
     }

@@ -60,8 +60,7 @@ public class MessageController {
 	@SendTo("/topic/{chatId}")
 	public void processChatMessage(@Payload message message, @PathVariable("chatId") String chatId)
 			throws JsonMappingException, JsonProcessingException {
-		
-		System.out.println("Я ТУТ!");
+	
 
 		if (!message.getContent().equals("")) {
 

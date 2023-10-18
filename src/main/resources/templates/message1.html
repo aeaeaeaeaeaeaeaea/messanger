@@ -55,7 +55,9 @@
 
 								<div th:if="${chatRoom.getRecipientId().equals(currentUser)}">
 
-									<a class="chat-link list-group-item list-group-item-action" id="link"
+									<a  
+										class="chat-link list-group-item list-group-item-action" 
+										id="link"
 										th:data="${chatRoom.getId()}"
 										th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}">
 
@@ -81,8 +83,8 @@
 										</div>
 
 
-										<p th:if="${lastMessages.get(chatRoom.getId()).getContent() != null}" class="mb-1"
-											th:text="${lastMessages.get(chatRoom.getId()).getContent()}">
+										<p th:if="${lastMessages.get(chatRoom.getId()).getContent() != null}"
+											class="mb-1" th:text="${lastMessages.get(chatRoom.getId()).getContent()}">
 											text
 										</p>
 
@@ -92,9 +94,12 @@
 
 								<div th:if="${!chatRoom.getRecipientId().equals(currentUser)}">
 
-									<a class="chat-link list-group-item list-group-item-action" id="link"
+									<a  
+										class="chat-link list-group-item list-group-item-action" 
+										id="link"
 										th:data="${chatRoom.getId()}"
-										th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}">
+										th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}"
+									>
 
 										<div class="d-flex w-100 justify-content-between">
 											<h5 class="mb-1" th:text="${chatRoom.getRecipientName()}">text</h5>
@@ -118,8 +123,8 @@
 										</div>
 
 
-										<p th:if="${lastMessages.get(chatRoom.getId()).getContent() != null}" class="mb-1"
-											th:text="${lastMessages.get(chatRoom.getId()).getContent()}">
+										<p th:if="${lastMessages.get(chatRoom.getId()).getContent() != null}"
+											class="mb-1" th:text="${lastMessages.get(chatRoom.getId()).getContent()}">
 											text
 										</p>
 
@@ -135,15 +140,16 @@
 							<div class="modal" id="myModal" style="display: none;">
 								<div class="modal-dialog">
 									<div class="modal-content">
+
 										<div class="modal-header">
-											<h5 class="modal-title">Действия с чатом</h5>
 											<button type="button" class="close" data-dismiss="modal">&times;</button>
 										</div>
+
 										<div class="modal-body">
-											<p>Выберите действие:</p>
 											<button id="deleteButton" class="btn btn-danger">Удалить чат</button>
 											<button id="editButton" class="btn btn-primary">Очистить сообщения</button>
 										</div>
+
 									</div>
 								</div>
 							</div>
@@ -195,6 +201,8 @@
 		</div>
 
 	</div>
+
+
 
 	<!-- Скрипт для удаления чатов и очистки сообщений в них -->
 	<script src="/js/chatScripts/ChatDelete.js"></script>
