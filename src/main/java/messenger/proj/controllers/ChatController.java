@@ -54,7 +54,8 @@ public class ChatController {
 	}
 
 	@PostMapping("/chat")
-	public ResponseEntity<String> createChat(@RequestParam(value = "userId", required = false) String userId,
+	public ResponseEntity<String> createChat(
+			@RequestParam(value = "userId", required = false) String userId,
 			@RequestParam(value = "currentUser", required = false) String currentUser) {
 
 		chatRoomServ.save(currentUser, userId);
@@ -146,8 +147,6 @@ public class ChatController {
 
 	@PostMapping("/deleteChatMessage")
 	public String deleteChatMessages(@RequestParam(value = "chatId", required = false) String chatId) {
-		
-		System.out.println("Chat id: " + chatId);
 
 		for (message m : messageServ.getCaсhedMessages(chatId)) {
 			messageServ.deleteById(m.getId(), chatId);

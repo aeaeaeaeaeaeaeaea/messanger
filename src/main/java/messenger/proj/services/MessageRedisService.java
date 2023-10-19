@@ -50,6 +50,8 @@ public class MessageRedisService {
     		messages.add(redisTemplate.opsForValue().get(kString));
     	}
     	
+    	System.out.println(messages);
+    	
     	return messages;
         
     }

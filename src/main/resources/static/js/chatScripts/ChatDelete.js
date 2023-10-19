@@ -2,12 +2,13 @@ $(document).ready(function() {
     const modal = $("#myModal");
     const deleteButton = $("#deleteButton");
     const editButton = $("#editButton");
-	var chatId;
 	
     $(".chat-link").on('contextmenu', function(e) {
         e.preventDefault();
-        var mess = document.getElementById('link');
-		chatId = mess.getAttribute("data");
+        var mess = $(this);
+        var chatId = mess.attr("data");
+        deleteButton.data("chatId", chatId); // Сохраняем chatId в data атрибуте deleteButton
+        editButton.data("chatId", chatId); // Сохраняем chatId в data атрибуте editButton
         modal.css({ top: e.pageY + "px", left: e.pageX + "px" });
         modal.show();
     });
@@ -17,11 +18,13 @@ $(document).ready(function() {
     });
 
     deleteButton.on("click", function() {
+        var chatId = deleteButton.data("chatId"); // Получаем chatId из data атрибута
         deleteChat(chatId);
         modal.hide();
     });
 
     editButton.on("click", function() {
+        var chatId = editButton.data("chatId"); // Получаем chatId из data атрибута
         redirectToEditPage(chatId);
         modal.hide();
     });
@@ -38,7 +41,7 @@ $(document).ready(function() {
             method: 'POST'
         }).then((response) => {
             if (response.ok) {
-              /*  window.location.href = `/users`;*/
+                window.location.href = `/users`;
             }
         });
     }
@@ -49,8 +52,9 @@ $(document).ready(function() {
             method: 'POST'
         }).then((response) => {
             if (response.ok) {
-               /* window.location.href = `/users`;*/
+                window.location.href = `/users`;
             }
         });
     }
 });
+
