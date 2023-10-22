@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
@@ -25,11 +26,15 @@ public class MessageService {
 	private final MessageRepositroy messageRep;
 	private final MessageRedisService messageRedisServ;
 	private final RedisTemplate<String, message> redisTemplate;
+	private final RedisTemplate<String, String> redisTemplate1;
 
 	@Autowired
-	public MessageService(MessageRepositroy messageRep, MessageRedisService messageRedisServ,
-			RedisTemplate<String, message> redisTemplate) {
+	public MessageService(MessageRepositroy messageRep, 
+						  MessageRedisService messageRedisServ,
+						  RedisTemplate<String, message> redisTemplate,
+						  RedisTemplate<String, String> redisTemplate1) {
 		this.messageRep = messageRep;
+		this.redisTemplate1 = redisTemplate1;
 		this.redisTemplate = redisTemplate;
 		this.messageRedisServ = messageRedisServ;
 	}
@@ -53,6 +58,7 @@ public class MessageService {
 	public void deleteById(String messageId, String chatId) {
 		messageRep.deleteById(messageId);
 		redisTemplate.delete("message:" + chatId + ":" + messageId);
+		redisTemplate1.opsForList().remove(chatId, 0, "message:" + chatId + ":" + messageId);
 	}
 
 	@Transactional
