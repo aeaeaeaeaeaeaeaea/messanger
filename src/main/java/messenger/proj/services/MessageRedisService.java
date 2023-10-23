@@ -38,16 +38,16 @@ public class MessageRedisService {
 		
 		
 		if (list.size() >= 5) {
-			messageRep.save(redisTemplate.opsForValue().get(list.get(list.size() - 1)));
+			messageRep.save(redisTemplate.opsForValue().get(list.get(0)));
 			
-			redisTemplate.delete(list.get(list.size() - 1));
-			redisTemplate1.opsForList().remove(chatId, 0, list.get(list.size() - 1));
+			redisTemplate.delete(list.get(0));
+			redisTemplate1.opsForList().remove(chatId, 0, list.get(0));
 			
 			redisTemplate.opsForValue().set("message:" + chatId + ":" + messageId, message);
-			redisTemplate1.opsForList().leftPush(chatId, "message:" + chatId + ":" + messageId);
+			redisTemplate1.opsForList().rightPush(chatId, "message:" + chatId + ":" + messageId);
 			
 		} else {
-			redisTemplate1.opsForList().leftPush(chatId, "message:" + chatId + ":" + messageId);
+			redisTemplate1.opsForList().rightPush(chatId, "message:" + chatId + ":" + messageId);
 			redisTemplate.opsForValue().set("message:" + chatId + ":" + messageId, message);
 		}
 		
@@ -62,7 +62,9 @@ public class MessageRedisService {
     	for (String kString : list) {
     		messages.add(redisTemplate.opsForValue().get(kString));
     	}
-    	    	
+
+    	System.out.println(messages);
+    	
     	return messages;
         
     }

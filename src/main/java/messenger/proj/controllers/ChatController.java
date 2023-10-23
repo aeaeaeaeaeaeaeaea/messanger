@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.HttpClientErrorException.Forbidden;
 
 import messenger.proj.models.ChatRoom;
 import messenger.proj.models.ConnectionInfo;
@@ -86,6 +87,10 @@ public class ChatController {
 				&& !chat.get().getRecipientId().equals(curentUserId))) {
 			return "redirect:/users";
 
+		}
+		
+		for ( message m : messageServ.getCaсhedMessages(userId) ) {
+			System.out.println(m);
 		}
 
 		model.addAttribute("todayFormat", new DateTimeFormatterBuilder().appendPattern("HH:mm").toFormatter());

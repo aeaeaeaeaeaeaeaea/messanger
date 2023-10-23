@@ -84,7 +84,8 @@ public class MessageService {
 		
 		for (ChatRoom chatRoom : chats) {
 			try {
-				lastMessages.put(chatRoom.getId(), getCaсhedMessages(chatRoom.getId()).get(0));
+				List<message> messages = getCaсhedMessages(chatRoom.getId());
+				lastMessages.put(chatRoom.getId(), messages.get(messages.size() - 1));
 			} catch (IndexOutOfBoundsException e) {
 				lastMessages.put(chatRoom.getId(), new message());
 			}
