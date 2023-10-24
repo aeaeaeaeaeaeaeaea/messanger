@@ -2,6 +2,8 @@ package messenger.proj.controllers;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatterBuilder;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.HttpClientErrorException.Forbidden;
 
+import jnr.ffi.Struct.int16_t;
 import messenger.proj.models.ChatRoom;
 import messenger.proj.models.ConnectionInfo;
 import messenger.proj.models.message;
@@ -89,10 +92,15 @@ public class ChatController {
 
 		}
 		
-		for ( message m : messageServ.getCaсhedMessages(userId) ) {
-			System.out.println(m);
-		}
-
+		List<message> list = messageServ.findByChatId(userId);
+		/*
+		 * Collections.sort(list, (m1, m2) ->
+		 * m2.getSendTime().compareTo(m1.getSendTime()));
+		 * 
+		 * for (message m : list) { System.out.println(m.getContent() + "  " +
+		 * m.getSendTime()); }
+		 */
+		
 		model.addAttribute("todayFormat", new DateTimeFormatterBuilder().appendPattern("HH:mm").toFormatter());
 		model.addAttribute("formatter", new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter());
 		model.addAttribute("todayDate",
@@ -101,8 +109,7 @@ public class ChatController {
 		model.addAttribute("currentUser", curentUserId);
 		model.addAttribute("chatList", chatRoomServ.findAll(curentUserId));
 		model.addAttribute("cachedMessages", messageServ.getCaсhedMessages(userId));
-		model.addAttribute("cassandraMessages", messageServ.findByChatId(userId));
-
+		model.addAttribute("cassandraMessages", list);
 		model.addAttribute("currentUser", curentUserId);
 		model.addAttribute("id", userId);
 

@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-@Table("chatmessage")
+@Table("messages")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class message {
 	
@@ -43,7 +43,6 @@ public class message {
 	private String status;
 	
 	@Column("sendtime")
-	@Indexed
 	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	private LocalDateTime sendTime;
 

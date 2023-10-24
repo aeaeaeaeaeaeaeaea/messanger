@@ -15,10 +15,10 @@ import messenger.proj.models.message;
 @Repository
 public interface MessageRepositroy extends CassandraRepository<message, String> {
 	
-	@Query("SELECT * FROM chatmessage WHERE chatid = ?0 ALLOW FILTERING")
+	@Query("SELECT * FROM messages WHERE chatId = ?0 ORDER BY sendtime")
 	List<message> findByChatId(String chatId);
 	
-	@Query("DELETE FROM chatmessage WHERE chatid = ?0 IF EXISTS")
+	@Query("DELETE FROM messages WHERE chatid = ?0 IF EXISTS")
 	void deleteByChatId(String chatId);
 	
 }
