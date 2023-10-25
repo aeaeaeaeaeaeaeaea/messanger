@@ -1,7 +1,6 @@
 package messenger.proj.repositories;
 
-
-
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,11 +13,12 @@ import messenger.proj.models.message;
 
 @Repository
 public interface MessageRepositroy extends CassandraRepository<message, String> {
-	
+
 	@Query("SELECT * FROM messages WHERE chatId = ?0 ORDER BY sendtime")
 	List<message> findByChatId(String chatId);
-	
-	@Query("DELETE FROM messages WHERE chatid = ?0 IF EXISTS")
-	void deleteByChatId(String chatId);
-	
+
+	@Query("DELETE FROM message WHERE sendtime = ?0 AND chatId = ?1 AND id = ?2")
+	void deleteByChatId(LocalDateTime sendTime, String chatId, String id);
+
+
 }

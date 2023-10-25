@@ -56,7 +56,8 @@ public class MessageService {
 
 	@Transactional
 	public void deleteById(String messageId, String chatId) {
-		messageRep.deleteById(messageId);
+		message message =  messageRep.findById(messageId).get();
+		messageRep.deleteByChatId(message.getSendTime(), chatId,  messageId);
 		redisTemplate.delete("message:" + chatId + ":" + messageId);
 		redisTemplate1.opsForList().remove(chatId, 0, "message:" + chatId + ":" + messageId);
 	}
@@ -67,10 +68,10 @@ public class MessageService {
 		messageRep.save(message);
 	}
 
-	@Transactional
-	public void deleteByChatId(String chatId) {
-		messageRep.deleteByChatId(chatId);
-	}
+	/*
+	 * @Transactional public void deleteByChatId(String chatId, String messageId) {
+	 * messageRep.deleteByChatId(chatId); }
+	 */
 
 	public List<message> getCaсhedMessages(String chatId) {
 		return messageRedisServ.getLatestMessages(chatId);
