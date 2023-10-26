@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -29,10 +30,8 @@ public class MessageService {
 	private final RedisTemplate<String, String> redisTemplate1;
 
 	@Autowired
-	public MessageService(MessageRepositroy messageRep, 
-						  MessageRedisService messageRedisServ,
-						  RedisTemplate<String, message> redisTemplate,
-						  RedisTemplate<String, String> redisTemplate1) {
+	public MessageService(MessageRepositroy messageRep, MessageRedisService messageRedisServ,
+			RedisTemplate<String, message> redisTemplate, RedisTemplate<String, String> redisTemplate1) {
 		this.messageRep = messageRep;
 		this.redisTemplate1 = redisTemplate1;
 		this.redisTemplate = redisTemplate;
@@ -56,10 +55,23 @@ public class MessageService {
 
 	@Transactional
 	public void deleteById(String messageId, String chatId) {
-		message message =  messageRep.findById(messageId).get();
-		messageRep.deleteByChatId(message.getSendTime(), chatId,  messageId);
-		redisTemplate.delete("message:" + chatId + ":" + messageId);
-		redisTemplate1.opsForList().remove(chatId, 0, "message:" + chatId + ":" + messageId);
+
+		Optional<message> message = messageRep.findById(messageId);
+		
+		System.out.println(message.isPresent());
+
+		/* System.out.println("Send time: " + message.getSendTime()); */
+
+		System.out.println("Message id: " + messageId);
+		System.out.println("Chat id: " + chatId);
+
+		/* messageRep.deleteByChatId(chatId, messageId); */
+
+		/*
+		 * redisTemplate.delete("message:" + chatId + ":" + messageId);
+		 * redisTemplate1.opsForList().remove(chatId, 0, "message:" + chatId + ":" +
+		 * messageId);
+		 */
 	}
 
 	@Transactional
@@ -79,10 +91,9 @@ public class MessageService {
 	}
 
 	public HashMap<String, message> getLastMessage(List<ChatRoom> chats) {
-		
+
 		HashMap<String, message> lastMessages = new HashMap<>();
-		
-		
+
 		for (ChatRoom chatRoom : chats) {
 			try {
 				List<message> messages = getCaсhedMessages(chatRoom.getId());
@@ -91,9 +102,9 @@ public class MessageService {
 				lastMessages.put(chatRoom.getId(), new message());
 			}
 		}
-		
+
 		return lastMessages;
-	
+
 	}
 
 }

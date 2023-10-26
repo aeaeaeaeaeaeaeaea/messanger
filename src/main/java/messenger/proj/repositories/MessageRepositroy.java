@@ -16,9 +16,14 @@ public interface MessageRepositroy extends CassandraRepository<message, String> 
 
 	@Query("SELECT * FROM messages WHERE chatId = ?0 ORDER BY sendtime")
 	List<message> findByChatId(String chatId);
+	
+	/*
+	 * @Query("SELECT * FROM message WHERE chatId = ?0 AND sendtime = ?1 AND id = ?2"
+	 * ) List<message> findMessage(String chatId, LocalDateTime localDateTime,
+	 * String id);
+	 */
 
-	@Query("DELETE FROM message WHERE sendtime = ?0 AND chatId = ?1 AND id = ?2")
-	void deleteByChatId(LocalDateTime sendTime, String chatId, String id);
-
+	@Query("DELETE FROM message WHERE chatId = ?0 AND sendtime = ?1 AND id = ?2 IF EXISTS")
+	void deleteByChatId(String chatId, LocalDateTime localDateTime, String id);
 
 }

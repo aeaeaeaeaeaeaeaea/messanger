@@ -117,9 +117,14 @@ public class ChatController {
 	}
 
 	@PostMapping("/deleteMessage")
-	public String deleteMessage(@RequestParam("messageId") String messageId, @RequestParam("chatId") String chatId) {
+	public String deleteMessage(@RequestParam("messageId") String messageId, 
+								@RequestParam("chatId") String chatId,
+								@RequestParam("sendTime") String sendTime) {
+		
+		System.out.println("SendTime: " +  sendTime);
+		System.out.println("Message id: " + messageId);
 
-		messageServ.deleteById(messageId, chatId);
+		messageServ.deleteById(messageId, chatId); 
 
 		return "redirect:/chat/" + chatId;
 	}
