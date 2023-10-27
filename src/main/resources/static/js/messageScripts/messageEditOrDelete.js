@@ -1,9 +1,9 @@
 function deleteMessage(messageId) {
 
 	var mess = document.getElementById('message');
-	var sendTime = mess.getAttribute("th:sendtime");
-	var chatId = mess.getAttribute("th:chatId");
-	var messageId = mess.getAttribute("th:messageId");
+	var sendTime = mess.getAttribute("sendtime");
+	var chatId = mess.getAttribute("chatId");
+	var messageId = mess.getAttribute("messageId");
 
 	const deleteMessageUrl = `/deleteMessage?messageId=${messageId}&chatId=${chatId}&sendTime=${sendTime}`;
 

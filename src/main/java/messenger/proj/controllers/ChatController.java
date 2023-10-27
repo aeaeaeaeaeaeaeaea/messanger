@@ -1,14 +1,16 @@
 package messenger.proj.controllers;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.joda.time.format.DateTimeFormatter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
@@ -120,11 +122,13 @@ public class ChatController {
 	public String deleteMessage(@RequestParam("messageId") String messageId, 
 								@RequestParam("chatId") String chatId,
 								@RequestParam("sendTime") String sendTime) {
-		
-		System.out.println("SendTime: " +  sendTime);
-		System.out.println("Message id: " + messageId);
 
-		messageServ.deleteById(messageId, chatId); 
+        
+        DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        LocalDate ld = LocalDate.parse(sendTime, DATEFORMATTER);
+        LocalDateTime ldt = LocalDateTime.of(ld, LocalDateTime.now().toLocalTime());
+		
+		messageServ.deleteById(messageId, ldt, chatId); 
 
 		return "redirect:/chat/" + chatId;
 	}
@@ -150,11 +154,11 @@ public class ChatController {
 	public String deleteChat(@RequestParam(value = "chatId", required = false) String chatId) {
 
 		for (message m : messageServ.getCaсhedMessages(chatId)) {
-			messageServ.deleteById(m.getId(), chatId);
+			messageServ.deleteById(m.getId(), m.getSendTime(), chatId);
 		}
 
 		for (message m : messageServ.findByChatId(chatId)) {
-			messageServ.deleteById(m.getId(), chatId);
+			messageServ.deleteById(m.getId(), m.getSendTime(), chatId);
 		}
 
 		chatRoomServ.deleteById(chatId);
@@ -166,11 +170,11 @@ public class ChatController {
 	public String deleteChatMessages(@RequestParam(value = "chatId", required = false) String chatId) {
 
 		for (message m : messageServ.getCaсhedMessages(chatId)) {
-			messageServ.deleteById(m.getId(), chatId);
+			messageServ.deleteById(m.getId(), m.getSendTime(), chatId);
 		}
 
 		for (message m : messageServ.findByChatId(chatId)) {
-			messageServ.deleteById(m.getId(), chatId);
+			messageServ.deleteById(m.getId(), m.getSendTime(), chatId);
 		}
 
 		return "redirect:/users";

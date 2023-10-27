@@ -147,10 +147,13 @@
 
 						<div th:each="cassandraMessage : ${cassandraMessages}">
 							<div class="message-container"
-								th:classappend="${cassandraMessage.getSenderId() == currentUser ? 'my-message' : 'other-message'}">
+								th:classappend=
+								"${cassandraMessage.getSenderId() == currentUser ? 'my-message' : 'other-message'}">
+								
 								<p 	
 								
-									th:text="${cassandraMessage.getContent()}" 
+									th:text="${cassandraMessage.getContent()} + ' ID:' + ${cassandraMessage.getId()} + 
+											' ChatId:' + ${cassandraMessage.getChatId()} + ' SendTime:' + ${cassandraMessage.getSendTime()}" 
 									
 									id="message"
 									th:sendtime="${cassandraMessage.getSendTime()}"
@@ -158,9 +161,8 @@
 									th:chatId="${cassandraMessage.getChatId()}"
 									
 									class="message-content"
-								>
+								></p>
 								
-								</p>
 							</div>
 						</div>
 

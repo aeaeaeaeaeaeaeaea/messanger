@@ -1,5 +1,6 @@
 package messenger.proj.services;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -54,24 +55,17 @@ public class MessageService {
 	}
 
 	@Transactional
-	public void deleteById(String messageId, String chatId) {
-
-		Optional<message> message = messageRep.findById(messageId);
+	public void deleteById(String messageId, LocalDateTime localDateTime, String chatId) {
 		
-		System.out.println(message.isPresent());
-
-		/* System.out.println("Send time: " + message.getSendTime()); */
-
 		System.out.println("Message id: " + messageId);
+		System.out.println("Date time: " + localDateTime);
 		System.out.println("Chat id: " + chatId);
 
-		/* messageRep.deleteByChatId(chatId, messageId); */
+		messageRep.deleteByChatId(chatId, localDateTime, messageId);
 
-		/*
-		 * redisTemplate.delete("message:" + chatId + ":" + messageId);
-		 * redisTemplate1.opsForList().remove(chatId, 0, "message:" + chatId + ":" +
-		 * messageId);
-		 */
+		redisTemplate.delete("message:" + chatId + ":" + messageId);
+		redisTemplate1.opsForList().remove(chatId, 0, "message:" + chatId + ":" + messageId);
+
 	}
 
 	@Transactional

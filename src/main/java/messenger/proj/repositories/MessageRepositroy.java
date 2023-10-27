@@ -23,7 +23,7 @@ public interface MessageRepositroy extends CassandraRepository<message, String> 
 	 * String id);
 	 */
 
-	@Query("DELETE FROM message WHERE chatId = ?0 AND sendtime = ?1 AND id = ?2 IF EXISTS")
+	@Query("DELETE FROM messages WHERE chatId = ?0 AND sendtime = ?1 AND id = ?2 IF EXISTS")
 	void deleteByChatId(String chatId, LocalDateTime localDateTime, String id);
 
 }
