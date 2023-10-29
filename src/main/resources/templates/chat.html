@@ -152,8 +152,7 @@
 								
 								<p 	
 								
-									th:text="${cassandraMessage.getContent()} + ' ID:' + ${cassandraMessage.getId()} + 
-											' ChatId:' + ${cassandraMessage.getChatId()} + ' SendTime:' + ${cassandraMessage.getSendTime()}" 
+									th:text="${cassandraMessage.getContent()}" 
 									
 									id="message"
 									th:sendtime="${cassandraMessage.getSendTime()}"
@@ -172,8 +171,11 @@
 								<p 
 									
 									th:text="${cachedMessage.getContent()}" 
-									class="message-content"
-									th:data-id="${cachedMessage.getId()}">
+									
+									id="message"
+									th:sendtime="${cachedMessage.getSendTime()}"
+									th:messageId="${cachedMessage.getId()}"
+									th:chatId="${cachedMessage.getChatId()}">
 									
 								</p>
 							</div>

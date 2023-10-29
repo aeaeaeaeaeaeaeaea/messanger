@@ -13,7 +13,7 @@ function deleteMessage(messageId) {
 	}).then((response) => {
 		// Если запрос выполнен успешно, удаляем элемент списка файлов
 		if (response.ok) {
-			//window.location.href = `/chat/${chatId}`;
+			window.location.href = `/chat/${chatId}`;
 		}
 	});
 

@@ -2,6 +2,7 @@ package messenger.proj.controllers;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -103,6 +104,10 @@ public class ChatController {
 		 * m.getSendTime()); }
 		 */
 		
+		// Временно
+		model.addAttribute("f", new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd HH:mm:ss").toFormatter());
+		//
+		
 		model.addAttribute("todayFormat", new DateTimeFormatterBuilder().appendPattern("HH:mm").toFormatter());
 		model.addAttribute("formatter", new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter());
 		model.addAttribute("todayDate",
@@ -122,11 +127,8 @@ public class ChatController {
 	public String deleteMessage(@RequestParam("messageId") String messageId, 
 								@RequestParam("chatId") String chatId,
 								@RequestParam("sendTime") String sendTime) {
-
-        
-        DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-        LocalDate ld = LocalDate.parse(sendTime, DATEFORMATTER);
-        LocalDateTime ldt = LocalDateTime.of(ld, LocalDateTime.now().toLocalTime());
+       
+        LocalDateTime ldt = LocalDateTime.parse(sendTime);
 		
 		messageServ.deleteById(messageId, ldt, chatId); 
 

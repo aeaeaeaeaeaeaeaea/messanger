@@ -43,7 +43,7 @@ public class message {
 	private String status;
 	
 	@Column("sendtime")
-	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime sendTime;
 
 	public message() {	
