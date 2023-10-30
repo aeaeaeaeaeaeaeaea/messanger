@@ -1,9 +1,8 @@
 function deleteMessage(messageId) {
 
-	var mess = document.getElementById('message');
+	var mess = document.getElementById(messageId);
 	var sendTime = mess.getAttribute("sendtime");
 	var chatId = mess.getAttribute("chatId");
-	var messageId = mess.getAttribute("messageId");
 
 	const deleteMessageUrl = `/deleteMessage?messageId=${messageId}&chatId=${chatId}&sendTime=${sendTime}`;
 
@@ -22,15 +21,16 @@ function deleteMessage(messageId) {
 
 function editMessage(messageId) {
 
-	var mess = document.getElementById('messageInput');
-	var chatId = mess.getAttribute("data");
+	var mess = document.getElementById(messageId);
+	var sendTime = mess.getAttribute("sendtime");
+	var chatId = mess.getAttribute("chatId");
 
 	$.ajax({
 		type: "POST",
-		url: "/editMessage?messageId=" + messageId, // Замените на путь к вашему @PostMapping
+		url: `/editMessage?messageId=${messageId}&chatId=${chatId}&sendTime=${sendTime}`, 
 		success: function() {
 			console.log("Редактирование сообщения");
-			// Откройте модальное окно с формой редактирования или выполните другие действия
+			
 		}
 	});
 }

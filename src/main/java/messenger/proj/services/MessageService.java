@@ -42,7 +42,11 @@ public class MessageService {
 	public List<message> findAll() {
 		return messageRep.findAll();
 	}
-
+	
+	public Optional<message> findById(String messageId) {
+		return messageRep.findById(messageId);
+	}
+ 
 	@Transactional
 	public void save(String chatId, message message) {
 		String id = UUID.randomUUID().toString();
@@ -57,10 +61,6 @@ public class MessageService {
 	@Transactional
 	public void deleteById(String messageId, LocalDateTime localDateTime, String chatId) {
 		
-		System.out.println("Message id: " + messageId);
-		System.out.println("Date time: " + localDateTime);
-		System.out.println("Chat id: " + chatId);
-
 		messageRep.deleteByChatId(chatId, localDateTime, messageId);
 
 		redisTemplate.delete("message:" + chatId + ":" + messageId);

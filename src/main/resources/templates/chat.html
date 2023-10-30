@@ -54,12 +54,8 @@
 
 						<div th:if="${chatRoom.getRecipientId().equals(currentUser)}">
 
-							<a  
-							    class="chat-link list-group-item list-group-item-action" 
-								id="link"
-								th:data="${chatRoom.getId()}" 
-								th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}"
-							>
+							<a class="chat-link list-group-item list-group-item-action" id="link"
+								th:data="${chatRoom.getId()}" th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}">
 
 								<div class="d-flex w-100 justify-content-between">
 									<h5 class="mb-1" th:text="${chatRoom.getSenderName()}">text</h5>
@@ -145,23 +141,29 @@
 						 max-height: 95vh; background-color: #e6e8e9; 
 						 overflow-x: hidden;">
 
+						<!-- Модальное окно -->
+						<div id="myModal" class="modal" style="display: none;">
+							<div class="modal-content">
+								<span class="close">&times;</span>
+								<p>Выберите действие:</p>
+								<button id="deleteButton">Удалить</button>
+								<button id="editButton">Редактировать</button>
+							</div>
+						</div>
+
 						<div th:each="cassandraMessage : ${cassandraMessages}">
 							<div class="message-container"
-								th:classappend=
-								"${cassandraMessage.getSenderId() == currentUser ? 'my-message' : 'other-message'}">
-								
-								<p 	
-								
+								th:classappend="${cassandraMessage.getSenderId() == currentUser ? 'my-message' : 'other-message'}">
+
+								<p  
 									th:text="${cassandraMessage.getContent()}" 
-									
-									id="message"
+									th:id="${cassandraMessage.getId()}"
 									th:sendtime="${cassandraMessage.getSendTime()}"
-									th:messageId="${cassandraMessage.getId()}"
-									th:chatId="${cassandraMessage.getChatId()}"
-									
-									class="message-content"
-								></p>
+									th:chatId="${cassandraMessage.getChatId()}" 
+									class="message-content">
 								
+								</p>
+
 							</div>
 						</div>
 
@@ -169,14 +171,12 @@
 							<div class="message-container"
 								th:classappend="${cachedMessage.getSenderId() == currentUser ? 'my-message' : 'other-message'}">
 								<p 
-									
 									th:text="${cachedMessage.getContent()}" 
-									
-									id="message"
-									th:sendtime="${cachedMessage.getSendTime()}"
-									th:messageId="${cachedMessage.getId()}"
-									th:chatId="${cachedMessage.getChatId()}">
-									
+									 
+									 th:id="${cachedMessage.getId()}"
+									 th:sendtime="${cachedMessage.getSendTime()}"
+									 th:chatId="${cachedMessage.getChatId()}"
+									 class="message-content">
 								</p>
 							</div>
 						</div>
@@ -187,26 +187,17 @@
 				<div class="col" style="position: absolute; bottom: 0;">
 
 
-					<form  id="messageForm">
-						
-						<input
-							style="width: 100%;"
-							type="text" id="messageInput" 
-							
-							th:data="${id}"
-							th:dataSenderId="${currentUser}"
-							
-							placeholder="Type your message..." 
-						/>
-				
+					<form id="messageForm">
+
+						<input style="width: 100%;" type="text" id="messageInput" th:data="${id}"
+							th:dataSenderId="${currentUser}" placeholder="Type your message..." />
+
 					</form>
 
 					<!-- Форма для редактирования сообщения -->
 					<div id="editForm" style="display: none;">
 						<form id="messageEditForm" action="/editMessage" method="post">
 
-							<input type="hidden" name="messageId" id="editMessageId" value="">
-							<input type="hidden" name="chatId" id="editChatId" value="">
 							<input type="text" name="editedContent" id="editedContent"
 								placeholder="Редактировать сообщение">
 
@@ -220,15 +211,7 @@
 
 			</div>
 
-			<!-- Модальное окно -->
-			<div id="myModal" class="modal" style="display: none;">
-				<div class="modal-content">
-					<span class="close">&times;</span>
-					<p>Выберите действие:</p>
-					<button id="deleteButton">Удалить</button>
-					<button id="editButton">Редактировать</button>
-				</div>
-			</div>
+
 
 		</div>
 

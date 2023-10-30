@@ -6,7 +6,7 @@ $(function() {
 
 	$(".message-content").on('contextmenu', function(e) {
 		e.preventDefault();
-		messageId = $(this).attr("data-id");
+		messageId = $(this).attr("messageId");
 		modal.css({ top: e.pageY + "px", left: e.pageX + "px" });
 		modal.show();
 	});
@@ -22,9 +22,7 @@ $(function() {
 
 	editButton.on("click", function() {
 		var messageContent = $(".message-content[data-id='" + messageId + "']").text();
-		$("#editedContent").val(messageContent);
-		$("#editChatId").val(chatId);
-		$("#editMessageId").val(messageId);
+		editMessage(messageId);
 
 		$("#editForm").show();
 		$("#messageForm").hide();

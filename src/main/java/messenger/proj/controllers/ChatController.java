@@ -138,6 +138,8 @@ public class ChatController {
 	@PostMapping("/editMessage")
 	public String editMessage(@ModelAttribute("message") message message, @RequestParam("chatId") String chatId,
 			@RequestParam("messageId") String messageId, @RequestParam("editedContent") String editedContent) {
+		
+		System.out.println("MESSAGE EDIT " + message);
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
