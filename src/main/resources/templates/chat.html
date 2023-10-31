@@ -155,13 +155,10 @@
 							<div class="message-container"
 								th:classappend="${cassandraMessage.getSenderId() == currentUser ? 'my-message' : 'other-message'}">
 
-								<p  
-									th:text="${cassandraMessage.getContent()}" 
-									th:id="${cassandraMessage.getId()}"
+								<p th:text="${cassandraMessage.getContent()}" th:id="${cassandraMessage.getId()}"
 									th:sendtime="${cassandraMessage.getSendTime()}"
-									th:chatId="${cassandraMessage.getChatId()}" 
-									class="message-content">
-								
+									th:chatId="${cassandraMessage.getChatId()}" class="message-content">
+
 								</p>
 
 							</div>
@@ -170,13 +167,9 @@
 						<div th:each="cachedMessage : ${cachedMessages}">
 							<div class="message-container"
 								th:classappend="${cachedMessage.getSenderId() == currentUser ? 'my-message' : 'other-message'}">
-								<p 
-									th:text="${cachedMessage.getContent()}" 
-									 
-									 th:id="${cachedMessage.getId()}"
-									 th:sendtime="${cachedMessage.getSendTime()}"
-									 th:chatId="${cachedMessage.getChatId()}"
-									 class="message-content">
+								<p th:text="${cachedMessage.getContent()}" th:id="${cachedMessage.getId()}"
+									th:sendtime="${cachedMessage.getSendTime()}"
+									th:chatId="${cachedMessage.getChatId()}" class="message-content">
 								</p>
 							</div>
 						</div>
@@ -195,15 +188,13 @@
 					</form>
 
 					<!-- Форма для редактирования сообщения -->
-					<div id="editForm" style="display: none;">
-						<form id="messageEditForm" action="/editMessage" method="post">
+					<form id="editForm" style="display: none">
+						<input type="text" id="editMessageInput" name="editedMessage"
+							placeholder="Редактировать сообщение">
+						<button id="editSubmitButton" type="submit">Сохранить</button>
+					</form>
 
-							<input type="text" name="editedContent" id="editedContent"
-								placeholder="Редактировать сообщение">
 
-							<button type="submit">Сохранить изменения</button>
-						</form>
-					</div>
 
 
 				</div>

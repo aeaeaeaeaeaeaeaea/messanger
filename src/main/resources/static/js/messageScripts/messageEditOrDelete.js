@@ -20,6 +20,8 @@ function deleteMessage(messageId) {
 }
 
 function editMessage(messageId) {
+	
+/*	console.log("Edited message id " + messageId);*/
 
 	var mess = document.getElementById(messageId);
 	var sendTime = mess.getAttribute("sendtime");

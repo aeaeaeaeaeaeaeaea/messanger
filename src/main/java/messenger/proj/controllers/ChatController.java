@@ -136,21 +136,29 @@ public class ChatController {
 	}
 
 	@PostMapping("/editMessage")
-	public String editMessage(@ModelAttribute("message") message message, @RequestParam("chatId") String chatId,
-			@RequestParam("messageId") String messageId, @RequestParam("editedContent") String editedContent) {
+	public String editMessage(
+			@RequestParam("messageId") String messageId, 
+			@RequestParam("chatId") String chatId,
+			@RequestParam("sendTime") String sendTime,
+			@RequestParam("content") String content) {
 		
-		System.out.println("MESSAGE EDIT " + message);
+		
+		/*
+		 * System.out.println("CHAT ID " + chatId); System.out.println("MESSAGE ID " +
+		 * messageId); System.out.println("SEND TIME " + sendTime);
+		 */
+		System.out.println("CONTENT " + content);
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
 
-		message.setId(messageId);
-		message.setContent(editedContent);
-		message.setChatId(chatId);
-		message.setSenderId(personDetails.getUser().getId());
-
-		messageServ.edit(message, messageId);
-
+		/*
+		 * message.setId(messageId); message.setContent(editedContent);
+		 * message.setChatId(chatId);
+		 * message.setSenderId(personDetails.getUser().getId());
+		 * 
+		 * messageServ.edit(message, messageId);
+		 */
 		return "redirect:/chat/" + chatId;
 	}
 
