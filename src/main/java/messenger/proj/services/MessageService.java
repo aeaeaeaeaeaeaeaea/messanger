@@ -70,14 +70,16 @@ public class MessageService {
 
 	@Transactional
 	public void edit(message message, String messageId) {
-		message.setId(messageId);
-		messageRep.save(message);
+		List<message> messages = getCaсhedMessages(message.getChatId());
+		
+		if (messages.contains(message)) {
+			redisTemplate.opsForValue().set("message:" + message.getChatId() + ":" + messageId, message);
+		} else {
+			messageRep.save(message);
+		}
+		
 	}
 
-	/*
-	 * @Transactional public void deleteByChatId(String chatId, String messageId) {
-	 * messageRep.deleteByChatId(chatId); }
-	 */
 
 	public List<message> getCaсhedMessages(String chatId) {
 		return messageRedisServ.getLatestMessages(chatId);

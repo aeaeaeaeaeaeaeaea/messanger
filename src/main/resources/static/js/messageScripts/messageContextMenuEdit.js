@@ -3,6 +3,7 @@ $(function() {
 	var deleteButton = $("#deleteButton");
 	var editButton = $("#editButton");
 	var messageId;
+	const editMessageInput = document.getElementById("editMessageInput");
 
 	$(".message-content").on('contextmenu', function(e) {
 		e.preventDefault();
@@ -26,8 +27,19 @@ $(function() {
 		$("#messageForm").hide();
 		modal.hide();
 
+		var mess = document.getElementById(messageId);
+		var sendTime = mess.getAttribute("sendtime");
+		var chatId = mess.getAttribute("chatId");
+		var content = mess.getAttribute("content");
+		
+		console.log("Content " + content);
+
+		editMessageInput.value = content;
+
 		$("#editForm").on("submit", function(event) {
 			event.preventDefault(); // Предотвратить стандартное поведение отправки формы
+
+
 
 			var editedMessage = $("#editMessageInput").val(); // Получить данные из формы
 			var dataToSend = {
@@ -35,18 +47,14 @@ $(function() {
 				messageContent: editedMessage
 			};
 
-			var mess = document.getElementById(messageId);
-			var sendTime = mess.getAttribute("sendtime");
-			var chatId = mess.getAttribute("chatId");
 
-			console.log("Message id: " + messageId);
-			console.log("Edited mesage " + editedMessage);
+
 
 			$.ajax({
 				type: "POST",
 				url: `/editMessage?messageId=${messageId}&chatId=${chatId}&sendTime=${sendTime}&content=${editedMessage}`,
 				success: function() {
-					console.log("Редактирование сообщения");
+					window.location.href = `/chat/${chatId}`;
 
 				}
 			});

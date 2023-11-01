@@ -155,9 +155,13 @@
 							<div class="message-container"
 								th:classappend="${cassandraMessage.getSenderId() == currentUser ? 'my-message' : 'other-message'}">
 
-								<p th:text="${cassandraMessage.getContent()}" th:id="${cassandraMessage.getId()}"
+								<p  
+									th:text="${cassandraMessage.getContent()}"
+									th:content = "${cassandraMessage.getContent()}"
+								    th:id="${cassandraMessage.getId()}"
 									th:sendtime="${cassandraMessage.getSendTime()}"
-									th:chatId="${cassandraMessage.getChatId()}" class="message-content">
+									th:chatId="${cassandraMessage.getChatId()}" 
+									class="message-content">
 
 								</p>
 
@@ -167,9 +171,14 @@
 						<div th:each="cachedMessage : ${cachedMessages}">
 							<div class="message-container"
 								th:classappend="${cachedMessage.getSenderId() == currentUser ? 'my-message' : 'other-message'}">
-								<p th:text="${cachedMessage.getContent()}" th:id="${cachedMessage.getId()}"
+								<p 
+									th:text="${cachedMessage.getContent()}" 
+									th:content = "${cachedMessage.getContent()}"
+									th:id="${cachedMessage.getId()}"
 									th:sendtime="${cachedMessage.getSendTime()}"
-									th:chatId="${cachedMessage.getChatId()}" class="message-content">
+									th:chatId="${cachedMessage.getChatId()}" 
+									class="message-content">
+									
 								</p>
 							</div>
 						</div>

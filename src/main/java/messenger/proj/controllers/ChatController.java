@@ -11,7 +11,6 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
@@ -61,8 +60,7 @@ public class ChatController {
 	}
 
 	@PostMapping("/chat")
-	public ResponseEntity<String> createChat(
-			@RequestParam(value = "userId", required = false) String userId,
+	public ResponseEntity<String> createChat(@RequestParam(value = "userId", required = false) String userId,
 			@RequestParam(value = "currentUser", required = false) String currentUser) {
 
 		chatRoomServ.save(currentUser, userId);
@@ -94,7 +92,7 @@ public class ChatController {
 			return "redirect:/users";
 
 		}
-		
+
 		List<message> list = messageServ.findByChatId(userId);
 		/*
 		 * Collections.sort(list, (m1, m2) ->
@@ -103,11 +101,11 @@ public class ChatController {
 		 * for (message m : list) { System.out.println(m.getContent() + "  " +
 		 * m.getSendTime()); }
 		 */
-		
+
 		// Временно
 		model.addAttribute("f", new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd HH:mm:ss").toFormatter());
 		//
-		
+
 		model.addAttribute("todayFormat", new DateTimeFormatterBuilder().appendPattern("HH:mm").toFormatter());
 		model.addAttribute("formatter", new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter());
 		model.addAttribute("todayDate",
@@ -124,41 +122,43 @@ public class ChatController {
 	}
 
 	@PostMapping("/deleteMessage")
-	public String deleteMessage(@RequestParam("messageId") String messageId, 
-								@RequestParam("chatId") String chatId,
-								@RequestParam("sendTime") String sendTime) {
-       
-        LocalDateTime ldt = LocalDateTime.parse(sendTime);
-		
-		messageServ.deleteById(messageId, ldt, chatId); 
+	public String deleteMessage(@RequestParam("messageId") String messageId, @RequestParam("chatId") String chatId,
+			@RequestParam("sendTime") String sendTime) {
+
+		LocalDateTime ldt = LocalDateTime.parse(sendTime);
+
+		messageServ.deleteById(messageId, ldt, chatId);
 
 		return "redirect:/chat/" + chatId;
 	}
 
 	@PostMapping("/editMessage")
-	public String editMessage(
-			@RequestParam("messageId") String messageId, 
-			@RequestParam("chatId") String chatId,
-			@RequestParam("sendTime") String sendTime,
-			@RequestParam("content") String content) {
-		
-		
+	public String editMessage(	
+								@RequestParam("messageId") String messageId, 
+								@RequestParam("chatId") String chatId,
+								@RequestParam("sendTime") String sendTime, 
+								@RequestParam("content") String content) {
+
 		/*
 		 * System.out.println("CHAT ID " + chatId); System.out.println("MESSAGE ID " +
 		 * messageId); System.out.println("SEND TIME " + sendTime);
 		 */
-		System.out.println("CONTENT " + content);
-
+		
+		message message = new message();
+		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
+		
+		LocalDateTime ldt = LocalDateTime.parse(sendTime);
+		
+		message.setId(messageId);
+		message.setContent(content);
+		message.setChatId(chatId);
+		message.setSendTime(ldt);
+		message.setSenderId(personDetails.getUser().getId());
 
-		/*
-		 * message.setId(messageId); message.setContent(editedContent);
-		 * message.setChatId(chatId);
-		 * message.setSenderId(personDetails.getUser().getId());
-		 * 
-		 * messageServ.edit(message, messageId);
-		 */
+		messageServ.edit(message, messageId);
+
 		return "redirect:/chat/" + chatId;
 	}
 

@@ -2,6 +2,7 @@ package messenger.proj.models;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.Indexed;
@@ -159,6 +160,30 @@ public class message {
 				+ ", senderName=" + senderName + ", recipientName=" + recipientName + ", content=" + content
 				+ ", status=" + status + ", sendTime=" + sendTime + "]";
 	}
+
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(chatId, id, sendTime);
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		message other = (message) obj;
+		
+		return  Objects.equals(chatId, other.chatId) 
+				&& Objects.equals(id, other.id) 
+				&& Objects.equals(sendTime, other.sendTime);
+	}
+	
+	
 	
 	
 		

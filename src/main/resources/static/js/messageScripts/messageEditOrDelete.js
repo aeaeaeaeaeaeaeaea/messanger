@@ -19,20 +19,3 @@ function deleteMessage(messageId) {
 
 }
 
-function editMessage(messageId) {
-	
-/*	console.log("Edited message id " + messageId);*/
-
-	var mess = document.getElementById(messageId);
-	var sendTime = mess.getAttribute("sendtime");
-	var chatId = mess.getAttribute("chatId");
-
-	$.ajax({
-		type: "POST",
-		url: `/editMessage?messageId=${messageId}&chatId=${chatId}&sendTime=${sendTime}`, 
-		success: function() {
-			console.log("Редактирование сообщения");
-			
-		}
-	});
-}
