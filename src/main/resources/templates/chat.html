@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html style="height:100%">
 
 <head>
 	<meta charset="UTF-8">
@@ -31,31 +31,144 @@
 		}
 	</style>
 
+	<link rel="stylesheet"
+		href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css"
+		integrity="sha384-DhY6onE6f3zzKbjUPRc2hOzGAdEf4/Dz+WJwBvEYL/lkkIsI3ihufq9hk9K4lVoK" crossorigin="anonymous">
+	<link rel="stylesheet" href="styles.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<style media="screen">
+		/* Refs
+  Doodle image:
+  https://www.freepik.com/free-vector/doodle-travel-background_3731537.htm#page=1&query=doodle%20background&position=7
+  */
+		small {
+			font-size: 13px;
+		}
+
+		body {
+			font-size: 15px;
+		}
+
+		.text-large {
+			font-size: 18px !important;
+		}
+
+		.text-xlarge {
+			font-size: 24px !important;
+		}
+
+		/* .dropdown-reset button { font-size: inherit; }
+  .dropdown-reset button:after { display: none; } */
+		.bg-theme-color {
+			background: #5683a4
+		}
+
+		.fx-fadein {
+			animation: opac .25s;
+		}
+
+		@keyframes opac {
+			from {
+				opacity: 0
+			}
+
+			to {
+				opacity: 1
+			}
+		}
+	</style>
+
 </head>
 
 <body class="d-flex flex-column min-vh-100">
 
-	<!-- Start -->
+	<div class="d-flex flex-column bg-light" style="height:100%">
+		<div class="row g-0" style="height:100%">
+
+			<!-- SIDEBAR -->
+			<div class="col-5 col-md-4 flex-column border-right" style="height:100%">
+				<div class="d-flex bg-theme-color px-3 py-2">
+					<div class="flex-grow-1">
+
+						<!--<img src="https://www.w3schools.com/w3images/avatar3.png" class="rounded-circle" width="40"
+							alt="">-->
+
+					</div>
+
+
+				</div>
+
+				<div class="px-3 py-2 bg-white">
+					<div class="d-flex bg-lightgray rounded-lg border-0">
+						<div class="ml-1 px-2 py-2 text-gray">
+							<i class="zmdi zmdi-search text-large"></i>
+						</div>
+
+						<form class="col-8" action="/users" method="GET">
+							<input class="border-0 bg-lightgray" type="text" name="userName"
+								placeholder="Search or start new chat" />
+						</form>
+
+						<div class="p-2">&nbsp;</div>
+					</div>
+				</div>
+
+				<div class="flex-grow-1 scroll">
+
+					<ul th:each="chatRoom : ${chatList}" class="list-group">
+
+						<li th:if="${chatRoom.getRecipientId().equals(currentUser)}"
+							class="list-group-item border-0 d-flex">
+
+							<div class="text-large ml-3 flex-grow-1">
+								
+								<a class="chat-link list-group-item list-group-item-action" id="link"
+									th:data="${chatRoom.getId()}"
+									th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}">
+									
+									<small class="text-gray text-right"><i class="zmdi zmdi-check-all"
+											style="font-size:16px!important"></i>
+										Lorem ipsum dolor sit...</small>
+							</div>
+							
+							<div class="text-gray">
+								<small>08:45</small><br>
+
+
+
+							</div>
+						</li>
+
+					</ul>
+
+				</div>
+			</div>
+
+
+		</div>
+	</div>
+
+	<!--	 Start 
 
 	<div class="container-fluid">
 		<div class="row">
 
-			<!-- Список чатов -->
+			 Список чатов 
 			<div class="col-3 mt-2">
 
-				<!-- Форма для поиска -->
+				Форма для поиска 
 				<form class="col-8" action="/users" method="GET">
 					<input class="form-control" type="text" name="userName" placeholder="Search" />
 				</form>
 
 				<div class="mt-2">
 
-					<div th:each="chatRoom : ${chatList}">
+					<div >
 
-						<div th:if="${chatRoom.getRecipientId().equals(currentUser)}">
+						
 
-							<a class="chat-link list-group-item list-group-item-action" id="link"
-								th:data="${chatRoom.getId()}" th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}">
+							
 
 								<div class="d-flex w-100 justify-content-between">
 									<h5 class="mb-1" th:text="${chatRoom.getSenderName()}">text</h5>
@@ -132,16 +245,18 @@
 			</div>
 
 
-			<!-- Вывод сообщений -->
+			 Вывод сообщений 
 			<div class="col" style="background-color: rgb(231, 232, 230); height: 100vh">
 
 
+
 				<div class="row align-items-end">
+
 					<div id="message-container" style="overflow: scroll; height: 95vh; 
 						 max-height: 95vh; background-color: #e6e8e9; 
 						 overflow-x: hidden;">
 
-						<!-- Модальное окно -->
+						Модальное окно 
 						<div id="myModal" class="modal" style="display: none;">
 							<div class="modal-content">
 								<span class="close">&times;</span>
@@ -155,13 +270,10 @@
 							<div class="message-container"
 								th:classappend="${cassandraMessage.getSenderId() == currentUser ? 'my-message' : 'other-message'}">
 
-								<p  
-									th:text="${cassandraMessage.getContent()}"
-									th:content = "${cassandraMessage.getContent()}"
-								    th:id="${cassandraMessage.getId()}"
+								<p th:text="${cassandraMessage.getContent()}"
+									th:content="${cassandraMessage.getContent()}" th:id="${cassandraMessage.getId()}"
 									th:sendtime="${cassandraMessage.getSendTime()}"
-									th:chatId="${cassandraMessage.getChatId()}" 
-									class="message-content">
+									th:chatId="${cassandraMessage.getChatId()}" class="message-content">
 
 								</p>
 
@@ -171,52 +283,47 @@
 						<div th:each="cachedMessage : ${cachedMessages}">
 							<div class="message-container"
 								th:classappend="${cachedMessage.getSenderId() == currentUser ? 'my-message' : 'other-message'}">
-								<p 
-									th:text="${cachedMessage.getContent()}" 
-									th:content = "${cachedMessage.getContent()}"
-									th:id="${cachedMessage.getId()}"
-									th:sendtime="${cachedMessage.getSendTime()}"
-									th:chatId="${cachedMessage.getChatId()}" 
-									class="message-content">
-									
+								<p th:text="${cachedMessage.getContent()}" th:content="${cachedMessage.getContent()}"
+									th:id="${cachedMessage.getId()}" th:sendtime="${cachedMessage.getSendTime()}"
+									th:chatId="${cachedMessage.getChatId()}" class="message-content">
+
 								</p>
 							</div>
 						</div>
 
 					</div>
+
 				</div>
 
-				<div class="col" style="position: absolute; bottom: 0;">
 
 
-					<form id="messageForm">
+				<div class="row">
 
-						<input style="width: 100%;" type="text" id="messageInput" th:data="${id}"
-							th:dataSenderId="${currentUser}" placeholder="Type your message..." />
+					<div class="col" style="position: absolute; bottom: 0;">
 
-					</form>
+						<form id="messageForm">
+							<input type="text" id="messageInput" th:data="${id}" th:dataSenderId="${currentUser}"
+								placeholder="Type your message..." />
+						</form>
 
-					<!-- Форма для редактирования сообщения -->
-					<form id="editForm" style="display: none">
-						<input type="text" id="editMessageInput" name="editedMessage"
-							placeholder="Редактировать сообщение">
-						<button id="editSubmitButton" type="submit">Сохранить</button>
-					</form>
+						 Форма для редактирования сообщения 
+						<form id="editForm" style="display: none">
+							<input type="text" id="editMessageInput" name="editedMessage"
+								placeholder="Редактировать сообщение">
+							<button id="editSubmitButton" type="submit">Сохранить</button>
+						</form>
 
-
-
+					</div>
 
 				</div>
 
 
 			</div>
 
-
-
 		</div>
-
-
 	</div>
+	-->
+
 
 	<script src="/js/messageScripts/messageScroll.js"></script>
 	<script src="/js/messageScripts/messageContextMenuEdit.js"></script>
