@@ -12,25 +12,6 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
-	<style>
-		.my-message {
-			background-color: lightblue;
-			padding: 5px;
-			margin: 5px;
-			border-radius: 5px;
-			clear: both;
-		}
-
-		.other-message {
-			background-color: lightgreen;
-			padding: 5px;
-			margin: 5px;
-			border-radius: 5px;
-			float: left;
-			clear: both;
-		}
-	</style>
-
 	<link rel="stylesheet"
 		href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css"
@@ -81,13 +62,14 @@
 
 </head>
 
-<body class="d-flex flex-column min-vh-100">
+
+<body class="body d-flex flex-column h-100" style="overflow: hidden;">
 
 	<div class="d-flex flex-column bg-light" style="height:100%">
 		<div class="row g-0" style="height:100%">
 
 			<!-- SIDEBAR -->
-			<div class="col-5 col-md-4 flex-column border-right" style="height:100%">
+			<div class="col-5 col-md-4 flex-column border-right overflow-auto" style="height:100%">
 				<div class="d-flex bg-theme-color px-3 py-2">
 					<div class="flex-grow-1">
 
@@ -253,64 +235,60 @@
 
 				</div>
 
-				<div class="flex-grow-1">
+				<div class="flex-grow-1 vh-100 overflow-auto" style="height: 90vh; max-height: 90vh;">
 					<br>
 
 					<!-- Сообщения -->
-					<div>
+					<div id="message-container" class="message" >
 
-						<div id="message-container" class="message">
-
-							<div id="myModal" class="modal" style="display: none;">
-								<div class="modal-content">
-									<span class="close">&times;</span>
-									<p>Выберите действие:</p>
-									<button id="deleteButton">Удалить</button>
-									<button id="editButton">Редактировать</button>
-								</div>
+						<div id="myModal" class="modal" style="display: none;">
+							<div class="modal-content">
+								<span class="close">&times;</span>
+								<p>Выберите действие:</p>
+								<button id="deleteButton">Удалить</button>
+								<button id="editButton">Редактировать</button>
 							</div>
+						</div>
 
-							<div th:each="cassandraMessage : ${cassandraMessages}">
+						<div th:each="cassandraMessage : ${cassandraMessages}">
 
-								<div class="d-inline-block bg-white rounded-lg py-1 px-2 shadow">
+							<div class="d-inline-block bg-white rounded-lg py-1 px-2 shadow">
 
-									<p th:text="${cassandraMessage.getContent()}"
-										th:content="${cassandraMessage.getContent()}"
-										th:id="${cassandraMessage.getId()}"
-										th:sendtime="${cassandraMessage.getSendTime()}"
-										th:chatId="${cassandraMessage.getChatId()}" class="message-content">
+								<p th:text="${cassandraMessage.getContent()}"
+									th:content="${cassandraMessage.getContent()}" th:id="${cassandraMessage.getId()}"
+									th:sendtime="${cassandraMessage.getSendTime()}"
+									th:chatId="${cassandraMessage.getChatId()}" class="message-content">
 
-									</p>
-
-								</div>
+								</p>
 
 							</div>
-
-							<div th:each="cachedMessage : ${cachedMessages}">
-
-								<div class="d-inline-block bg-white rounded-lg py-1 px-2 shadow">
-
-									<p th:text="${cachedMessage.getContent()}"
-										th:content="${cachedMessage.getContent()}" th:id="${cachedMessage.getId()}"
-										th:sendtime="${cachedMessage.getSendTime()}"
-										th:chatId="${cachedMessage.getChatId()}" class="message-content">
-
-									</p>
-
-								</div>
-
-							</div>
-
-
-
-
-							<!-- Время 
-							<small class="p-1 text-gray text-small">08:50</small>
-							-->
 
 						</div>
 
+						<div th:each="cachedMessage : ${cachedMessages}">
+
+							<div class="d-inline-block bg-white rounded-lg py-1 px-2 shadow">
+
+								<p th:text="${cachedMessage.getContent()}" th:content="${cachedMessage.getContent()}"
+									th:id="${cachedMessage.getId()}" th:sendtime="${cachedMessage.getSendTime()}"
+									th:chatId="${cachedMessage.getChatId()}" class="message-content">
+
+								</p>
+
+							</div>
+
+						</div>
+
+
+
+
+						<!-- Время 
+							<small class="p-1 text-gray text-small">08:50</small>
+							-->
+
 					</div>
+
+
 
 				</div>
 				<!-- Конец сообщений -->
@@ -318,7 +296,7 @@
 
 
 				<!-- Нижняя панель -->
-				<div class="d-flex align-items-center bg-gray px-2 py-1 border-bottom">
+				<div class="d-flex mt-auto align-items-center bg-gray px-2 py-1 border-bottom">
 
 					<!-- Смайлик -->
 					<button class="btn mx-1">
@@ -340,15 +318,7 @@
 							<input id="messageInput" type="text" class="d-block border-0 rounded-pill px-3 py-2"
 								th:data="${id}" style="width:90%" th:dataSenderId="${currentUser}"
 								placeholder="Type a message" name="editedMessage">
-							<!-- Кнопка отправки сообщений -->
-							<div class="text-right mx-1">
-								<div class="d-inline-block" style="width:auto">
-									<button class="btn">
-										<i class="zmdi zmdi-mail-send text-xlarge text-gray">
-										</i>
-									</button>
-								</div>
-							</div>
+
 						</form>
 					</div>
 					<!-- Конец -->
@@ -361,14 +331,7 @@
 							<input id="editMessageInput" type="text" class="d-block border-0 rounded-pill px-3 py-2"
 								style="width:90%" placeholder="Type a message" name="editedMessage">
 							<!-- Кнопка отправки сообщений -->
-							<div class="text-right mx-1">
-								<div class="d-inline-block" style="width:auto">
-									<button class="btn">
-										<i class="zmdi zmdi-mail-send text-xlarge text-gray">
-										</i>
-									</button>
-								</div>
-							</div>
+
 						</form>
 					</div>
 					<!-- Конец кнопки отправки сообщений -->
@@ -384,30 +347,7 @@
 	</div>
 
 
-	<!--	 Start 
 
-	
-
-
-
-
-
-				<div class="row">
-
-					<div class="col" style="position: absolute; bottom: 0;">
-
-						
-
-					</div>
-
-				</div>
-
-
-			</div>
-
-		</div>
-	</div>
-	-->
 
 
 	<script src="/js/messageScripts/messageScroll.js"></script>
