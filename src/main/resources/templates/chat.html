@@ -16,7 +16,7 @@
 		href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css"
 		integrity="sha384-DhY6onE6f3zzKbjUPRc2hOzGAdEf4/Dz+WJwBvEYL/lkkIsI3ihufq9hk9K4lVoK" crossorigin="anonymous">
-	<link rel="stylesheet" href="styles.css">
+
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style media="screen">
 		/* Refs
@@ -225,7 +225,7 @@
 
 			</div>
 
-			<div class="col-7 col-md-8 flex-column" style="height:100%; background:url(images/bg-doodle.jpg)">
+			<div class="col-7 col-md-8 flex-column" style="height:100%;">
 
 				<div class="d-flex bg-gray px-3 py-2 border-bottom">
 
@@ -234,14 +234,15 @@
 					</div>
 
 				</div>
-				
-				111
 
-				<div class="flex-grow-1 vh-100 overflow-auto" style="height: 90vh; max-height: 90vh;">
+
+
+				<div id="message-container" class="flex-grow-1 vh-100 overflow-auto"
+					style="height: 90vh; max-height: 90vh;">
 					<br>
 
 					<!-- Сообщения -->
-					<div id="message-container" class="message" >
+					<div class="message">
 
 						<div id="myModal" class="modal" style="display: none;">
 							<div class="modal-content">
@@ -316,25 +317,45 @@
 
 					<!-- Форма для отправки сообщений -->
 					<div class="p-1 flex-grow-1 mx-1">
-						<form id="messageForm">
-							<input id="messageInput" type="text" class="d-block border-0 rounded-pill px-3 py-2"
-								th:data="${id}" style="width:90%" th:dataSenderId="${currentUser}"
-								placeholder="Type a message" name="editedMessage">
+
+						<form class="flex-grow-1 d-flex align-items-center" id="messageForm" style="width: 100%;" >
+							
+							<input 
+								id="messageInput" 
+								type="text" 
+								class="d-block border-0 rounded-pill px-3 py-2"
+								th:data="${id}"
+								th:dataSenderId="${currentUser}"
+								placeholder="Type a message" 
+								name="editedMessage">
+
+							<button class="btn"><i class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
 
 						</form>
+
 					</div>
 					<!-- Конец -->
 
 
+
 					<!-- Форма для отправки сообщений -->
 					<div class="p-1 flex-grow-1 mx-1">
+						
 						<!-- Форма для редактирования сообщения -->
-						<form id="editForm" style="display: none">
-							<input id="editMessageInput" type="text" class="d-block border-0 rounded-pill px-3 py-2"
-								style="width:90%" placeholder="Type a message" name="editedMessage">
-							<!-- Кнопка отправки сообщений -->
+						<form class="p-1 flex-grow-1 mx-1"  style="display: none" id="editForm">
+							
+							<input 
+								id="editMessageInput" 
+								type="text" 
+								class="d-block border-0 rounded-pill px-3 py-2"
+								placeholder="Type a message" 
+								name="editedMessage"
+							>
+
+							<button class="btn"><i class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
 
 						</form>
+						
 					</div>
 					<!-- Конец кнопки отправки сообщений -->
 
@@ -343,6 +364,7 @@
 
 				</div>
 				<!-- Конец нижней панели -->
+				
 			</div>
 		</div>
 
