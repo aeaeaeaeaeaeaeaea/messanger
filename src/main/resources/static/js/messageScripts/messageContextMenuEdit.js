@@ -22,9 +22,10 @@ $(function() {
 	});
 
 	editButton.on("click", function() {
-
-		$("#editForm").show();
+		console.log($("#messageForm"));
 		$("#messageForm").hide();
+		$("#editForm").show();
+		console.log($("#messageForm"));
 		modal.hide();
 
 		var mess = document.getElementById(messageId);
@@ -59,9 +60,9 @@ $(function() {
 				}
 			});
 
-			$("#editForm").hide();
+		/*	$("#editForm").hide();
 			$("#messageForm").show();
-			modal.hide();
+			modal.hide();*/
 		});
 
 

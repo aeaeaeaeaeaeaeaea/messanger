@@ -19,10 +19,6 @@
 
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style media="screen">
-		/* Refs
-  Doodle image:
-  https://www.freepik.com/free-vector/doodle-travel-background_3731537.htm#page=1&query=doodle%20background&position=7
-  */
 		small {
 			font-size: 13px;
 		}
@@ -244,15 +240,6 @@
 					<!-- Сообщения -->
 					<div class="message">
 
-						<div id="myModal" class="modal" style="display: none;">
-							<div class="modal-content">
-								<span class="close">&times;</span>
-								<p>Выберите действие:</p>
-								<button id="deleteButton">Удалить</button>
-								<button id="editButton">Редактировать</button>
-							</div>
-						</div>
-
 						<div th:each="cassandraMessage : ${cassandraMessages}">
 
 							<div class="d-inline-block bg-white rounded-lg py-1 px-2 shadow">
@@ -316,55 +303,49 @@
 					<!-- Конец скрепки -->
 
 					<!-- Форма для отправки сообщений -->
-					<div class="p-1 flex-grow-1 mx-1">
 
-						<form class="flex-grow-1 d-flex align-items-center" id="messageForm" style="width: 100%;" >
-							
-							<input 
-								id="messageInput" 
-								type="text" 
-								class="d-block border-0 rounded-pill px-3 py-2"
-								th:data="${id}"
-								th:dataSenderId="${currentUser}"
-								placeholder="Type a message" 
-								name="editedMessage">
+					<form class="p-1 flex-grow-1 mx-1" id="messageForm">
 
-							<button class="btn"><i class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
+						<input style="width: 90%;" id="messageInput" type="text"
+							class="d-block border-0 rounded-pill px-3 py-2" th:data="${id}"
+							th:dataSenderId="${currentUser}" placeholder="Type a message" name="editedMessage">
 
-						</form>
+						<button class="btn"><i class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
 
-					</div>
+					</form>
+
+
 					<!-- Конец -->
 
 
 
-					<!-- Форма для отправки сообщений -->
-					<div class="p-1 flex-grow-1 mx-1">
-						
-						<!-- Форма для редактирования сообщения -->
-						<form class="p-1 flex-grow-1 mx-1"  style="display: none" id="editForm">
-							
-							<input 
-								id="editMessageInput" 
-								type="text" 
-								class="d-block border-0 rounded-pill px-3 py-2"
-								placeholder="Type a message" 
-								name="editedMessage"
-							>
+					<!-- Форма для редактирования сообщения -->
 
-							<button class="btn"><i class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
+					<form class="p-1 flex-grow-1 mx-1" style="display: none" id="editForm">
 
-						</form>
-						
-					</div>
-					<!-- Конец кнопки отправки сообщений -->
+						<input style="width: 90%;" id="editMessageInput" type="text"
+							class="d-block border-0 rounded-pill px-3 py-2" placeholder="Type a message"
+							name="editedMessage">
 
+						<button class="btn"><i class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
 
-					<!-- Конец кнопки отправки сообщений -->
+					</form>
+
+					<!-- Конец формы редактирований сообщений -->
 
 				</div>
 				<!-- Конец нижней панели -->
-				
+
+
+				<div id="myModal" class="modal" style="display: none;">
+					<div class="modal-content">
+						<span class="close">&times;</span>
+						<p>Выберите действие:</p>
+						<button id="deleteButton">Удалить</button>
+						<button id="editButton">Редактировать</button>
+					</div>
+				</div>
+
 			</div>
 		</div>
 
