@@ -304,15 +304,16 @@
 
 					<!-- Форма для отправки сообщений -->
 
-					<form class="p-1 flex-grow-1 mx-1" id="messageForm">
 
+
+
+					<form class="p-1 flex-grow-1 mx-1" id="messageForm" style="width: 100%;">
 						<input style="width: 90%;" id="messageInput" type="text"
-							class="d-block border-0 rounded-pill px-3 py-2" th:data="${id}"
+							class="d-inline border-0 rounded-pill px-3 py-2" th:data="${id}"
 							th:dataSenderId="${currentUser}" placeholder="Type a message" name="editedMessage">
-
-						<button class="btn"><i class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
-
+						<button class="btn d-inline"><i class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
 					</form>
+
 
 
 					<!-- Конец -->
@@ -321,15 +322,17 @@
 
 					<!-- Форма для редактирования сообщения -->
 
-					<form class="p-1 flex-grow-1 mx-1" style="display: none" id="editForm">
+					<form class="p-1 flex-grow-1 mx-1" style="display: none; width: 100%;" id="editForm">
 
 						<input style="width: 90%;" id="editMessageInput" type="text"
 							class="d-block border-0 rounded-pill px-3 py-2" placeholder="Type a message"
 							name="editedMessage">
 
-						<button class="btn"><i class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
+						<button class="btn d-inline"><i class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
 
 					</form>
+					
+					
 
 					<!-- Конец формы редактирований сообщений -->
 
