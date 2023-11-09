@@ -87,12 +87,11 @@
 
 						<!-- Форма для поиска user'ов -->
 						<form class="col-8" action="/users" method="GET">
-							<input class="border-0 bg-lightgray" type="text" name="userName"
+							<input class="d-inline border-0 rounded-pill px-3 py-2" type="text" name="userName"
 								placeholder="Search or start new chat" />
 						</form>
 
-						<div class="p-2">&nbsp;
-						</div>
+						
 
 					</div>
 
@@ -308,10 +307,12 @@
 
 
 					<form class="p-1 flex-grow-1 mx-1" id="messageForm" style="width: 100%;">
+						
 						<input style="width: 90%;" id="messageInput" type="text"
 							class="d-inline border-0 rounded-pill px-3 py-2" th:data="${id}"
 							th:dataSenderId="${currentUser}" placeholder="Type a message" name="editedMessage">
-						<button class="btn d-inline"><i class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
+							
+						<button class="btn"><i class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
 					</form>
 
 
@@ -324,16 +325,20 @@
 
 					<form class="p-1 flex-grow-1 mx-1" style="display: none; width: 100%;" id="editForm">
 
-						<input style="width: 90%;" id="editMessageInput" type="text"
-							class="d-block border-0 rounded-pill px-3 py-2" placeholder="Type a message"
+						<input 
+							style="width: 90%;" 
+							id="editMessageInput" 
+							type="text"
+							class="d-inline border-0 rounded-pill px-3 py-2" 
+							placeholder="Type a message"
 							name="editedMessage">
 
-						<button class="btn d-inline"><i class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
+						<button class="btn"><i class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
 
 					</form>
 					
 					
-gggs
+
 					<!-- Конец формы редактирований сообщений -->
 
 				</div>
