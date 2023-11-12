@@ -41,6 +41,8 @@ public class ChatRoomService {
 		
 		Optional<User> currentUser = userService.findById(currentUserId);
 		Optional<User> recipient = userService.findById(recipientId);
+		
+	
 
 		Optional<ChatRoom> chatRoom2 = chatRoomRep.findBySenderIdAndRecipientId(recipientId, currentUserId);
 		Optional<ChatRoom> chatRoom1 = chatRoomRep.findBySenderIdAndRecipientId(currentUserId, recipientId);

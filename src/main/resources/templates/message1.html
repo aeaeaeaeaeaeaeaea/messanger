@@ -64,7 +64,7 @@
 		<div class="row g-0" style="height:100%">
 
 			<!-- SIDEBAR -->
-			<div class="col-5 col-md-4 flex-column border-right overflow-auto" style="height:100%">
+			<div class="col-5 col-md-4 flex-column border-right overflow-auto" style="height:100vh">
 				<div class="d-flex bg-theme-color px-3 py-2">
 					<div class="flex-grow-1">
 
@@ -229,10 +229,21 @@
 
 							<div th:if="${user.getId() != currentUser}">
 
-								<a class="chat-create list-group-item list-group-item-action" id="chat"
-									th:userId="${user.getId()}" th:currentUser="${currentUser}"
-									th:text="${user.getUsername()} + ' ' + ${user.getId()}">
-									text</a>
+								<li class="list-group-item border-0 d-flex">
+
+									<!-- Кнопка создания чата -->
+									<div class="chat-link text-large ml-3 flex-grow-1">
+
+										<a class="chat-create list-group-item list-group-item-action" id="chat"
+											th:userId="${user.getId()}" th:currentUser="${currentUser}"
+											th:text="${user.getUsername()} + ' ' + ${user.getId()}">
+											text
+										</a>
+
+									</div>
+									<!-- Конец -->
+
+								</li>
 
 							</div>
 
@@ -244,42 +255,50 @@
 
 				<div th:if="${searchElasticUser != null}">
 
-					<ul th:each="user : ${searchElasticUser}">
+					<div class="flex-grow-1 scroll">
 
-						<div th:if="${user.getId() != currentUser}">
+						<ul th:each="user : ${searchElasticUser}" class="list-group">
 
-							<a class="chat-create list-group-item list-group-item-action" id="chat"
-								th:userId="${user.getId()}" th:currentUser="${currentUser}"
-								th:text="${user.getUserName()}">text</a>
+							<li class="list-group-item border-0 d-flex" th:if="${user.getId() != currentUser}">
 
-						</div>
 
-					</u>
+								<div class="chat-link text-large ml-3 flex-grow-1">
+									<a class="chat-create list-group-item list-group-item-action" id="chat"
+										th:userId="${user.getId()}" th:currentUser="${currentUser}"
+										th:text="${user.getUserName()}">text
+									</a>
+								</div>
+
+
+							</li>
+						</ul>
+
+					</div>
 
 				</div>
-				
-				
 
 			</div>
 
-		</div>
+			<!-- Empty space -->
+			<div class="col-7 col-md-8 flex-column" style="height:100vh;">
 
-		<div class="col-7 col-md-8 flex-column" style="height:100%;">
+				<div style="background-color: rgb(248, 248, 248); height: 100vh"
+					class="d-flex justify-content-center align-items-center">
 
-			<div style="background-color: rgb(248, 248, 248); height: 100vh"
-				class="d-flex justify-content-center align-items-center">
+					<p class="text-center">Select a chat to start messaging</p>
 
-				<p class="text-center">Select a chat to start messaging</p>
+				</div>
 
 			</div>
+			<!-- End of empty space -->
+
+
+
 
 		</div>
-
-
-
-	</div>
 	</div>
 
+	<!-- Modal window for an editing and deleting chat -->
 	<div class="modal" id="myModal" style="display: none;">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -296,24 +315,7 @@
 			</div>
 		</div>
 	</div>
-
-
-
-	<!--
-
-					
-
-						
-
-								
-
-
-					 Поиск по nickname'ам user'ов с помощью elasticSearch 
-					
-
--->
-
-
+	<!-- End -->
 
 	<!-- Скрипт для удаления чатов и очистки сообщений в них -->
 	<script src="/js/chatScripts/ChatDelete.js"></script>
