@@ -60,9 +60,13 @@ public class ChatController {
 	}
 
 	@PostMapping("/chat")
-	public ResponseEntity<String> createChat(@RequestParam(value = "userId", required = false) String userId,
-			@RequestParam(value = "currentUser", required = false) String currentUser) {
-
+	public ResponseEntity<String> createChat(
+											@RequestParam(value = "userId", required = false) String userId,
+											@RequestParam(value = "currentUser", required = false) String currentUser) {
+			
+		System.out.println("USER ID " + userId);
+		System.err.println("CURRENT USER ID " + currentUser);
+		
 		chatRoomServ.save(currentUser, userId);
 
 		Optional<ChatRoom> chat = chatRoomServ.findBySenderIdAndRecipientId(currentUser, userId);

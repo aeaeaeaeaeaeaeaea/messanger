@@ -7,16 +7,13 @@ $(document).ready(function() {
 		var currentUser = mess.getAttribute("currentUser");
 
 		const deleteFileUrl = `/chat?userId=${userId}&currentUser=${currentUser}`;
+		
+		console.log("USER ID " + userId)
 
 		fetch(deleteFileUrl, {
 			method: 'POST'
-		}).then((response) => {
-			if (response.ok) {
-				// В этом случае response уже содержит строку chatId, не требующую парсинга JSON
-				return response.text(); // Возвращаем текст ответа
-			}
 		}).then((chatId) => {
-			window.location.href = `/chat/${chatId}`;
+			/*window.location.href = `/chat/${chatId}`;*/
 		});
 
 	});
