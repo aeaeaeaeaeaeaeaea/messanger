@@ -7,7 +7,7 @@ $(document).ready(function() {
 		var currentUser = mess.getAttribute("currentUser");
 
 		const deleteFileUrl = `/chat?userId=${userId}&currentUser=${currentUser}`;
-		
+		//
 		console.log("USER ID " + userId)
 
 		fetch(deleteFileUrl, {
