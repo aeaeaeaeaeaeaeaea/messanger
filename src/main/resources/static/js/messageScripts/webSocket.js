@@ -31,6 +31,7 @@ $(function() {
 	$("form#messageForm").on('submit', function(e) {
 		e.preventDefault();
 		sendMessage();
+		window.location.href = `/chat/${chatId}`;
 	});
 	connectToChat(chatId); // Замените на фактический ID чата
 });

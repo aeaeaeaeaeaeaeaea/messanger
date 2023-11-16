@@ -63,17 +63,14 @@ public class ChatController {
 	public ResponseEntity<String> createChat(
 											@RequestParam(value = "userId", required = false) String userId,
 											@RequestParam(value = "currentUser", required = false) String currentUser) {
-			
-		System.out.println("USER ID " + userId);
-		System.err.println("CURRENT USER ID " + currentUser);
-		
+	
 		chatRoomServ.save(currentUser, userId);
 
 		Optional<ChatRoom> chat = chatRoomServ.findBySenderIdAndRecipientId(currentUser, userId);
 		Optional<ChatRoom> chat1 = chatRoomServ.findBySenderIdAndRecipientId(userId, currentUser);
 
 		String chatId = chat.isPresent() ? chat.get().getId() : chat1.get().getId();
-
+		
 		return ResponseEntity.ok(new String(chatId));
 	}
 
@@ -98,23 +95,17 @@ public class ChatController {
 		}
 
 		List<message> list = messageServ.findByChatId(userId);
-		/*
-		 * Collections.sort(list, (m1, m2) ->
-		 * m2.getSendTime().compareTo(m1.getSendTime()));
-		 * 
-		 * for (message m : list) { System.out.println(m.getContent() + "  " +
-		 * m.getSendTime()); }
-		 */
-
-		// Временно
+		
 		model.addAttribute("f", new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd HH:mm:ss").toFormatter());
-		//
+		
 
 		model.addAttribute("todayFormat", new DateTimeFormatterBuilder().appendPattern("HH:mm").toFormatter());
 		model.addAttribute("formatter", new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter());
 		model.addAttribute("todayDate",
 				LocalDateTime.now().format(new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter()));
+		
 		model.addAttribute("lastMessages", messageServ.getLastMessage(chatRoomServ.findAll(curentUserId)));
+		
 		model.addAttribute("currentUser", curentUserId);
 		model.addAttribute("chatList", chatRoomServ.findAll(curentUserId));
 		model.addAttribute("cachedMessages", messageServ.getCaсhedMessages(userId));

@@ -41,16 +41,10 @@ public class ChatRoomService {
 		
 		Optional<User> currentUser = userService.findById(currentUserId);
 		Optional<User> recipient = userService.findById(recipientId);
-		
-		System.out.println("RECIPIENT " + recipient.get().getUsername());
-		System.out.println("CURRENT " + currentUser.get().getUsername());
 
 		Optional<ChatRoom> chatRoom2 = chatRoomRep.findBySenderIdAndRecipientId(recipientId, currentUserId);
 		Optional<ChatRoom> chatRoom1 = chatRoomRep.findBySenderIdAndRecipientId(currentUserId, recipientId);
 		
-		System.out.println("CHAT 2 " + chatRoom2.isPresent());
-		System.out.println("CHAT 1 " + chatRoom1.isPresent());
-	
 		if (!chatRoom2.isPresent() && !chatRoom1.isPresent()) {
 
 			ChatRoom chatRoom = new ChatRoom();

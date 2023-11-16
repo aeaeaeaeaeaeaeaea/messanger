@@ -101,7 +101,7 @@
 					<div th:if="${!chatList.isEmpty()}">
 
 						<div class="flex-grow-1 scroll">
-							
+
 							<ul th:each="chatRoom : ${chatList}" class="list-group">
 
 								<!-- Для SenderId -->
@@ -220,7 +220,7 @@
 
 
 							</ul>
-							
+
 						</div>
 
 					</div>
@@ -236,8 +236,11 @@
 									<!-- Кнопка создания чата -->
 									<div class="chat-link text-large ml-3 flex-grow-1">
 
-										<a class="chat-create list-group-item list-group-item-action" id="chat"
-											th:userId="${user.getId()}" th:currentUser="${currentUser}"
+										<a 	
+											class="chat-create" 
+											id="chat" 
+											th:data-user-id="${user.getId()}"
+											th:data-current-user="${currentUser}"
 											th:text="${user.getUsername()} + ' ' + ${user.getId()}">
 											text
 										</a>
@@ -264,20 +267,18 @@
 							<li class="list-group-item border-0 d-flex" th:if="${user.getId() != currentUser}">
 
 								<div class="chat-link text-large ml-3 flex-grow-1">
-									
-									<a  
-										class="chat-create" 
-										id="chat"
-										th:userId="${user.getId()}" 
-										th:currentUser="${currentUser}"
+
+									<a class="chat-create" th:data-user-id="${user.getId()}"
+										th:data-current-user="${currentUser}"
 										th:text="${user.getUserName()} + ' ' + ${user.getId()}">
 										text
 									</a>
-									
+
+
 								</div>
 
 							</li>
-							
+
 						</ul>
 
 					</div>
