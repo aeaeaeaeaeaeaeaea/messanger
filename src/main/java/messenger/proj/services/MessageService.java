@@ -2,9 +2,13 @@ package messenger.proj.services;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -42,11 +46,11 @@ public class MessageService {
 	public List<message> findAll() {
 		return messageRep.findAll();
 	}
-	
+
 	public Optional<message> findById(String messageId) {
 		return messageRep.findById(messageId);
 	}
- 
+
 	@Transactional
 	public void save(String chatId, message message) {
 		String id = UUID.randomUUID().toString();
@@ -60,7 +64,7 @@ public class MessageService {
 
 	@Transactional
 	public void deleteById(String messageId, LocalDateTime localDateTime, String chatId) {
-		
+
 		messageRep.deleteByChatId(chatId, localDateTime, messageId);
 
 		redisTemplate.delete("message:" + chatId + ":" + messageId);
@@ -71,22 +75,21 @@ public class MessageService {
 	@Transactional
 	public void edit(message message, String messageId) {
 		List<message> messages = getCaсhedMessages(message.getChatId());
-		
+
 		if (messages.contains(message)) {
 			redisTemplate.opsForValue().set("message:" + message.getChatId() + ":" + messageId, message);
 		} else {
 			messageRep.save(message);
 		}
-		
-	}
 
+	}
 
 	public List<message> getCaсhedMessages(String chatId) {
 		return messageRedisServ.getLatestMessages(chatId);
 
 	}
 
-	public HashMap<String, message> getLastMessage(List<ChatRoom> chats) {
+	public Map<String, message> getLastMessage(List<ChatRoom> chats) {
 
 		HashMap<String, message> lastMessages = new HashMap<>();
 
@@ -97,6 +100,22 @@ public class MessageService {
 			} catch (IndexOutOfBoundsException e) {
 				lastMessages.put(chatRoom.getId(), new message());
 			}
+		}
+
+		if (lastMessages.size() != 0) {
+
+			List<Map.Entry<String, message>> list = new ArrayList<>(lastMessages.entrySet());
+
+			Collections.sort(list, Comparator.comparing(entry -> entry.getValue().getSendTime()));
+			Collections.reverse(list);
+
+			Map<String, message> sortedHashMap = new LinkedHashMap<>();
+			for (Map.Entry<String, message> entry : list) {
+				sortedHashMap.put(entry.getKey(), entry.getValue());
+			}
+
+			return sortedHashMap;
+
 		}
 
 		return lastMessages;
