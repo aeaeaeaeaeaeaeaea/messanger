@@ -102,129 +102,127 @@
 
 						<div class="flex-grow-1 scroll">
 
-							<!--<div th:each="chat : ${lastMessages}">-->
-
-								<ul th:each="chatRoom : ${chatList}" class="list-group">
-
-									<!-- Для SenderId -->
-									<div th:if="${chatRoom.getSenderId().equals(currentUser)}">
-
-										<li class="list-group-item border-0 d-flex">
-
-											<!-- Ссылка на чат и последенее сообщение -->
-											<div class="chat-link text-large ml-3 flex-grow-1">
-
-												<a id="link" th:text="${chatRoom.getRecipientName()}"
-													th:data="${chatRoom.getId()}"
-													th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}">
-												</a>
 
 
-												<br />
-												<small class="text-gray text-right">
+							<ul th:each="chatRoom : ${chatList}" class="list-group">
 
-													<i class="zmdi zmdi-check-all" style="font-size:16px!important"
-														th:if="${lastMessages.get(chatRoom.getId()).getContent() != null}"
-														th:text="${lastMessages.get(chatRoom.getId()).getContent()}">
-													</i>
+								<!-- Для SenderId -->
+								<div th:if="${chatRoom.getSenderId().equals(currentUser)}">
 
-												</small>
-											</div>
-											<!-- -->
+									<li class="list-group-item border-0 d-flex">
 
-											<!-- Время последнего сообщения -->
-											<div class="text-gray">
+										<!-- Ссылка на чат и последенее сообщение -->
+										<div class="chat-link text-large ml-3 flex-grow-1">
 
-												<small
-													th:if="${lastMessages.get(chatRoom.getId()).getContent() != null}">
-
-													<small
-														th:if="${todayDate.equals(lastMessages.get(chatRoom.getId()).getSendTime().format(formatter))}"
-														th:text="${lastMessages.get(chatRoom.getId()).getSendTime().format(todayFormat)}">
-														text
-													</small>
-
-													<small
-														th:if="${!todayDate.equals(lastMessages.get(chatRoom.getId()).getSendTime().format(formatter))}"
-														th:text="${lastMessages.get(chatRoom.getId()).getSendTime().format(formatter)}">
-														text
-													</small>
+											<a id="link" th:text="${chatRoom.getRecipientName()}"
+												th:data="${chatRoom.getId()}"
+												th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}">
+											</a>
 
 
-												</small>
+											<br />
+											<small class="text-gray text-right">
 
-												<br>
+												<i class="zmdi zmdi-check-all" style="font-size:16px!important"
+													th:if="${lastMessages.get(chatRoom.getId()).getContent() != null}"
+													th:text="${lastMessages.get(chatRoom.getId()).getContent()}">
+												</i>
 
-											</div>
-											<!-- Конец -->
+											</small>
+										</div>
+										<!-- -->
 
-										</li>
+										<!-- Время последнего сообщения -->
+										<div class="text-gray">
 
-									</div>
-									<!-- Конец -->
-
-									<!-- Для RecipientId -->
-									<div th:if="${chatRoom.getRecipientId().equals(currentUser)}">
-
-										<li class="list-group-item border-0 d-flex">
-
-											<!-- Ссылка на чат и последенее сообщение -->
-											<div class="chat-link text-large ml-3 flex-grow-1">
-
-												<a id="link" th:text="${chatRoom.getSenderName()}"
-													th:data="${chatRoom.getId()}"
-													th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}">
-
-												</a>
-
-												<br />
-
-												<small class="text-gray text-right">
-
-													<i class="zmdi zmdi-check-all" style="font-size:16px!important"
-														th:if="${lastMessages.get(chatRoom.getId()).getContent() != null}"
-														th:text="${lastMessages.get(chatRoom.getId()).getContent()}">
-
-													</i>
-
-												</small>
-											</div>
-											<!-- -->
-
-											<!-- Время последнего сообщения -->
-											<div class="text-gray">
+											<small th:if="${lastMessages.get(chatRoom.getId()).getContent() != null}">
 
 												<small
-													th:if="${lastMessages.get(chatRoom.getId()).getContent() != null}">
-
-													<small
-														th:if="${todayDate.equals(lastMessages.get(chatRoom.getId()).getSendTime().format(formatter))}"
-														th:text="${lastMessages.get(chatRoom.getId()).getSendTime().format(todayFormat)}">
-														text
-													</small>
-
-													<small
-														th:if="${!todayDate.equals(lastMessages.get(chatRoom.getId()).getSendTime().format(formatter))}"
-														th:text="${lastMessages.get(chatRoom.getId()).getSendTime().format(formatter)}">
-														text
-													</small>
-
-
+													th:if="${todayDate.equals(lastMessages.get(chatRoom.getId()).getSendTime().format(formatter))}"
+													th:text="${lastMessages.get(chatRoom.getId()).getSendTime().format(todayFormat)}">
+													text
 												</small>
 
-												<br>
-
-											</div>
-											<!-- Конец -->
-
-										</li>
-
-									</div>
-									<!-- Конец -->
+												<small
+													th:if="${!todayDate.equals(lastMessages.get(chatRoom.getId()).getSendTime().format(formatter))}"
+													th:text="${lastMessages.get(chatRoom.getId()).getSendTime().format(formatter)}">
+													text
+												</small>
 
 
-								</ul>
-							<!--</div>-->
+											</small>
+
+											<br>
+
+										</div>
+										<!-- Конец -->
+
+									</li>
+
+								</div>
+								<!-- Конец -->
+
+								<!-- Для RecipientId -->
+								<div th:if="${chatRoom.getRecipientId().equals(currentUser)}">
+
+									<li class="list-group-item border-0 d-flex">
+
+										<!-- Ссылка на чат и последенее сообщение -->
+										<div class="chat-link text-large ml-3 flex-grow-1">
+
+											<a id="link" th:text="${chatRoom.getSenderName()}"
+												th:data="${chatRoom.getId()}"
+												th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}">
+
+											</a>
+
+											<br />
+
+											<small class="text-gray text-right">
+
+												<i class="zmdi zmdi-check-all" style="font-size:16px!important"
+													th:if="${lastMessages.get(chatRoom.getId()).getContent() != null}"
+													th:text="${lastMessages.get(chatRoom.getId()).getContent()}">
+
+												</i>
+
+											</small>
+										</div>
+										<!-- -->
+
+										<!-- Время последнего сообщения -->
+										<div class="text-gray">
+
+											<small th:if="${lastMessages.get(chatRoom.getId()).getContent() != null}">
+
+												<small
+													th:if="${todayDate.equals(lastMessages.get(chatRoom.getId()).getSendTime().format(formatter))}"
+													th:text="${lastMessages.get(chatRoom.getId()).getSendTime().format(todayFormat)}">
+													text
+												</small>
+
+												<small
+													th:if="${!todayDate.equals(lastMessages.get(chatRoom.getId()).getSendTime().format(formatter))}"
+													th:text="${lastMessages.get(chatRoom.getId()).getSendTime().format(formatter)}">
+													text
+												</small>
+
+
+											</small>
+
+											<br>
+
+										</div>
+										<!-- Конец -->
+
+									</li>
+
+								</div>
+								<!-- Конец -->
+
+
+							</ul>
+
 
 						</div>
 

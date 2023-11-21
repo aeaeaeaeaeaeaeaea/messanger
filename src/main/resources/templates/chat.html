@@ -91,7 +91,7 @@
 								placeholder="Search or start new chat" />
 						</form>
 
-						
+
 
 					</div>
 
@@ -241,39 +241,63 @@
 
 						<div th:each="cassandraMessage : ${cassandraMessages}">
 
-							<div class="d-inline-block bg-white rounded-lg py-1 px-2 shadow">
+							<div class="message__wrapper d-flex align-items-end mb-2 mt-2"
+								style="background-color: rgb(233, 233, 233); word-break: break-word;">
+								<div class="message__wrapper-box position-relative p-2">
+									<div class="message__wrapper-top d-flex justify-content-between align-items-center">
+										<p class="message__user-name text-danger">Lifehack</p>
+										<span class="message__reply"></span>
+									</div>
 
-								<p th:text="${cassandraMessage.getContent()}"
-									th:content="${cassandraMessage.getContent()}" th:id="${cassandraMessage.getId()}"
-									th:sendtime="${cassandraMessage.getSendTime()}"
-									th:chatId="${cassandraMessage.getChatId()}" class="message-content">
+									<div class="message__wrapper-bottom d-flex align-items-end justify-content-between">
 
-								</p>
 
+										<p 	
+											class="message__wrapper-text"
+											th:text="${cassandraMessage.getContent()}"
+											th:content="${cassandraMessage.getContent()}"
+											th:id="${cassandraMessage.getId()}"
+											th:sendtime="${cassandraMessage.getSendTime()}"
+											th:chatId="${cassandraMessage.getChatId()}"
+										>
+										</p>
+
+										<div class="message__wrapper-bottom-right d-flex align-items-center">
+											<time class="message__time" datetime="9:14">9:14 AM</time>
+											<span class="message__status"></span>
+										</div>
+										
+									</div>
+
+								</div>
 							</div>
 
 						</div>
 
 						<div th:each="cachedMessage : ${cachedMessages}">
 
-							<div class="d-inline-block bg-white rounded-lg py-1 px-2 shadow">
+							<div class="d-inline-block rounded-lg py-1 px-2 position-relative"
+								style="background-color: rgb(233, 233, 233); max-width: 50%; word-break: break-word; display: flex; flex-direction: column;">
 
 								<p th:text="${cachedMessage.getContent()}" th:content="${cachedMessage.getContent()}"
 									th:id="${cachedMessage.getId()}" th:sendtime="${cachedMessage.getSendTime()}"
-									th:chatId="${cachedMessage.getChatId()}" class="message-content">
+									th:chatId="${cachedMessage.getChatId()}" class="text-dark message-content">
 
 								</p>
 
+								<small class="p-1 text-gray text-small" style="align-self: flex-end;">08:50</small>
 							</div>
+
+
 
 						</div>
 
 
 
 
-						<!-- Время 
-							<small class="p-1 text-gray text-small">08:50</small>
-							-->
+
+
+
 
 					</div>
 
@@ -307,11 +331,11 @@
 
 
 					<form class="p-1 flex-grow-1 mx-1" id="messageForm" style="width: 100%;">
-						
+
 						<input style="width: 90%;" id="messageInput" type="text"
 							class="d-inline border-0 rounded-pill px-3 py-2" th:data="${id}"
 							th:dataSenderId="${currentUser}" placeholder="Type a message" name="editedMessage">
-							
+
 						<button class="btn"><i class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
 					</form>
 
@@ -325,19 +349,15 @@
 
 					<form class="p-1 flex-grow-1 mx-1" style="display: none; width: 100%;" id="editForm">
 
-						<input 
-							style="width: 90%;" 
-							id="editMessageInput" 
-							type="text"
-							class="d-inline border-0 rounded-pill px-3 py-2" 
-							placeholder="Type a message"
+						<input style="width: 90%;" id="editMessageInput" type="text"
+							class="d-inline border-0 rounded-pill px-3 py-2" placeholder="Type a message"
 							name="editedMessage">
 
 						<button class="btn"><i class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
 
 					</form>
-					
-					
+
+
 
 					<!-- Конец формы редактирований сообщений -->
 
