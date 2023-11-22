@@ -8,6 +8,8 @@
 		integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 
+	<link rel="stylesheet" href="/css/styles.css">
+
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
@@ -242,33 +244,31 @@
 						<div th:each="cassandraMessage : ${cassandraMessages}">
 
 							<div class="message__wrapper d-flex align-items-end mb-2 mt-2"
-								style="background-color: rgb(233, 233, 233); word-break: break-word;">
+								style="word-break: break-word;">
 								<div class="message__wrapper-box position-relative p-2">
 									<div class="message__wrapper-top d-flex justify-content-between align-items-center">
-										<p class="message__user-name text-danger">Lifehack</p>
+										<p class="message__user-name ">Lifehack</p>
 										<span class="message__reply"></span>
 									</div>
 
 									<div class="message__wrapper-bottom d-flex align-items-end justify-content-between">
 
 
-										<p 	
-											class="message__wrapper-text"
+										<p class="message__wrapper-text message-content"
 											th:text="${cassandraMessage.getContent()}"
 											th:content="${cassandraMessage.getContent()}"
 											th:id="${cassandraMessage.getId()}"
 											th:sendtime="${cassandraMessage.getSendTime()}"
-											th:chatId="${cassandraMessage.getChatId()}"
-										>
+											th:chatId="${cassandraMessage.getChatId()}">
 										</p>
 
 										<div class="message__wrapper-bottom-right d-flex align-items-center">
-											<time class="message__time" datetime="9:14">9:14 AM</time>
+											<time class="message__time" th:text="${cassandraMessage.getSendTime().format(todayFormat)}">11</time>
 											<span class="message__status"></span>
 										</div>
-										
-									</div>
 
+									</div>
+									<span class="message__curve"></span>
 								</div>
 							</div>
 
@@ -276,19 +276,33 @@
 
 						<div th:each="cachedMessage : ${cachedMessages}">
 
-							<div class="d-inline-block rounded-lg py-1 px-2 position-relative"
-								style="background-color: rgb(233, 233, 233); max-width: 50%; word-break: break-word; display: flex; flex-direction: column;">
+							<div class="message__wrapper d-flex align-items-end mb-2 mt-2"
+								style="word-break: break-word;">
+								<div class="message__wrapper-box position-relative p-2">
+									<div class="message__wrapper-top d-flex justify-content-between align-items-center">
+										<p class="message__user-name ">Lifehack</p>
+										<span class="message__reply"></span>
+									</div>
 
-								<p th:text="${cachedMessage.getContent()}" th:content="${cachedMessage.getContent()}"
-									th:id="${cachedMessage.getId()}" th:sendtime="${cachedMessage.getSendTime()}"
-									th:chatId="${cachedMessage.getChatId()}" class="text-dark message-content">
+									<div class="message__wrapper-bottom d-flex align-items-end justify-content-between">
 
-								</p>
+										<p th:text="${cachedMessage.getContent()}"
+											th:content="${cachedMessage.getContent()}" th:id="${cachedMessage.getId()}"
+											th:sendtime="${cachedMessage.getSendTime()}"
+											th:chatId="${cachedMessage.getChatId()}"
+											class="message__wrapper-text message-content">
 
-								<small class="p-1 text-gray text-small" style="align-self: flex-end;">08:50</small>
+										</p>
+
+										<div class="message__wrapper-bottom-right d-flex align-items-center">
+											<time class="message__time" th:text="${cachedMessage.getSendTime().format(todayFormat)}"></time>
+											<span class="message__status"></span>
+										</div>
+
+									</div>
+									<span class="message__curve"></span>
+								</div>
 							</div>
-
-
 
 						</div>
 
