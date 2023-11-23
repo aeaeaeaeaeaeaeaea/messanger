@@ -124,7 +124,7 @@
 											<small class="text-gray text-right">
 
 												<i class="zmdi zmdi-check-all" style="font-size:16px!important"
-													th:if="${lastMessages.get(chatRoom.getId()).getContent() != null}"
+													th:if="${lastMessages.get(chatRoom.getId()) != null}"
 													th:text="${lastMessages.get(chatRoom.getId()).getContent()}">
 												</i>
 
@@ -135,7 +135,7 @@
 										<!-- Время последнего сообщения -->
 										<div class="text-gray">
 
-											<small th:if="${lastMessages.get(chatRoom.getId()).getContent() != null}">
+											<small th:if="${lastMessages.get(chatRoom.getId()) != null}">
 
 												<small
 													th:if="${todayDate.equals(lastMessages.get(chatRoom.getId()).getSendTime().format(formatter))}"

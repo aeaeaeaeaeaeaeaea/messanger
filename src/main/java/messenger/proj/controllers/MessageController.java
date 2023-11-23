@@ -76,8 +76,12 @@ public class MessageController {
 			message.setSenderId(senderId);
 			message.setRecipientId(recipId);
 			message.setSendTime(LocalDateTime.now());
+			
+			message.setSenderName(userServ.findById(senderId).get().getUsername());
 
 			messageServ.save(extractedChatId, message);
+			
+			System.out.println("SENDERNAME " + message.getSenderName());
 
 			messagingTemplate.convertAndSend("/topic/" + extractedChatId, message);
 			

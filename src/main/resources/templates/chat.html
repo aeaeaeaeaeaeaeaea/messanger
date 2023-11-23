@@ -120,7 +120,7 @@
 									<small class="text-gray text-right">
 
 										<i class="zmdi zmdi-check-all" style="font-size:16px!important"
-											th:if="${lastMessages.get(chatRoom.getId()).getContent() != null}"
+											th:if="${lastMessages.get(chatRoom.getId()) != null}"
 											th:text="${lastMessages.get(chatRoom.getId()).getContent()}">
 										</i>
 
@@ -131,7 +131,7 @@
 								<!-- Время последнего сообщения -->
 								<div class="text-gray">
 
-									<small th:if="${lastMessages.get(chatRoom.getId()).getContent() != null}">
+									<small th:if="${lastMessages.get(chatRoom.getId()) != null}">
 
 										<small
 											th:if="${todayDate.equals(lastMessages.get(chatRoom.getId()).getSendTime().format(formatter))}"
@@ -247,7 +247,7 @@
 								style="word-break: break-word;">
 								<div class="message__wrapper-box position-relative p-2">
 									<div class="message__wrapper-top d-flex justify-content-between align-items-center">
-										<p class="message__user-name ">Lifehack</p>
+										<p class="message__user-name" th:text="${cassandraMessage.getSenderName()}">Lifehack</p>
 										<span class="message__reply"></span>
 									</div>
 
@@ -280,7 +280,7 @@
 								style="word-break: break-word;">
 								<div class="message__wrapper-box position-relative p-2">
 									<div class="message__wrapper-top d-flex justify-content-between align-items-center">
-										<p class="message__user-name ">Lifehack</p>
+										<p class="message__user-name" th:text="${cachedMessage.getSenderName()}">Lifehack</p>
 										<span class="message__reply"></span>
 									</div>
 
@@ -305,18 +305,7 @@
 							</div>
 
 						</div>
-
-
-
-
-
-
-
-
 					</div>
-
-
-
 				</div>
 				<!-- Конец сообщений -->
 
@@ -340,10 +329,6 @@
 					<!-- Конец скрепки -->
 
 					<!-- Форма для отправки сообщений -->
-
-
-
-
 					<form class="p-1 flex-grow-1 mx-1" id="messageForm" style="width: 100%;">
 
 						<input style="width: 90%;" id="messageInput" type="text"
@@ -352,9 +337,6 @@
 
 						<button class="btn"><i class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
 					</form>
-
-
-
 					<!-- Конец -->
 
 

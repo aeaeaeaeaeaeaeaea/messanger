@@ -98,24 +98,24 @@ public class MessageService {
 				List<message> messages = getCaсhedMessages(chatRoom.getId());
 				lastMessages.put(chatRoom.getId(), messages.get(messages.size() - 1));
 			} catch (IndexOutOfBoundsException e) {
-				lastMessages.put(chatRoom.getId(), new message());
+				/* lastMessages.put(chatRoom.getId(), new message()); */
 			}
 		}
 
 		if (lastMessages.size() != 0) {
 
 			List<Map.Entry<String, message>> list = new ArrayList<>(lastMessages.entrySet());
-
+			
 			Collections.sort(list, Comparator.comparing(entry -> entry.getValue().getSendTime()));
 			Collections.reverse(list);
 
 			Map<String, message> sortedHashMap = new LinkedHashMap<>();
+			
 			for (Map.Entry<String, message> entry : list) {
 				sortedHashMap.put(entry.getKey(), entry.getValue());
 			}
-
+			
 			return sortedHashMap;
-
 		}
 
 		return lastMessages;

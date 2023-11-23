@@ -214,11 +214,14 @@ public class ChatController {
 		model.addAttribute("formatter", new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter());
 		model.addAttribute("todayDate",
 				LocalDateTime.now().format(new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter()));
+		
 		model.addAttribute("lastMessages", messageServ.getLastMessage(chatRoomServ.findAll(curentUserId)));
 		
 		
 		model.addAttribute("currentUser", curentUserId);
+		
 		model.addAttribute("chatList", chatRoomServ.lastMessageOrder(curentUserId));
+		
 		model.addAttribute("users", userServ.findAll());
 
 		return "message1";
