@@ -30,6 +30,7 @@ $(function() {
 
 		var mess = document.getElementById(messageId);
 		var sendTime = mess.getAttribute("sendtime");
+		var senderName = mess.getAttribute("senderName");
 		var chatId = mess.getAttribute("chatId");
 		var content = mess.getAttribute("content");
 		
@@ -49,11 +50,9 @@ $(function() {
 			};
 
 
-
-
 			$.ajax({
 				type: "POST",
-				url: `/editMessage?messageId=${messageId}&chatId=${chatId}&sendTime=${sendTime}&content=${editedMessage}`,
+				url: `/editMessage?messageId=${messageId}&chatId=${chatId}&sendTime=${sendTime}&content=${editedMessage}&senderName=${senderName}`,
 				success: function() {
 					window.location.href = `/chat/${chatId}`;
 

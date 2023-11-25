@@ -81,8 +81,6 @@ public class MessageController {
 
 			messageServ.save(extractedChatId, message);
 			
-			System.out.println("SENDERNAME " + message.getSenderName());
-
 			messagingTemplate.convertAndSend("/topic/" + extractedChatId, message);
 			
 		}

@@ -176,7 +176,7 @@
 									<small class="text-gray text-right">
 
 										<i class="zmdi zmdi-check-all" style="font-size:16px!important"
-											th:if="${lastMessages.get(chatRoom.getId()).getContent() != null}"
+											th:if="${lastMessages.get(chatRoom.getId()) != null}"
 											th:text="${lastMessages.get(chatRoom.getId()).getContent()}">
 
 										</i>
@@ -188,7 +188,7 @@
 								<!-- Время последнего сообщения -->
 								<div class="text-gray">
 
-									<small th:if="${lastMessages.get(chatRoom.getId()).getContent() != null}">
+									<small th:if="${lastMessages.get(chatRoom.getId()) != null}">
 
 										<small
 											th:if="${todayDate.equals(lastMessages.get(chatRoom.getId()).getSendTime().format(formatter))}"
@@ -254,7 +254,9 @@
 									<div class="message__wrapper-bottom d-flex align-items-end justify-content-between">
 
 
-										<p class="message__wrapper-text message-content"
+										<p  
+											class="message__wrapper-text message-content"
+											th:senderName="${cassandraMessage.getSenderName()}"
 											th:text="${cassandraMessage.getContent()}"
 											th:content="${cassandraMessage.getContent()}"
 											th:id="${cassandraMessage.getId()}"
@@ -273,7 +275,6 @@
 							</div>
 
 						</div>
-//
 						<div th:each="cachedMessage : ${cachedMessages}">
 
 							<div class="message__wrapper d-flex align-items-end mb-2 mt-2"
@@ -286,8 +287,11 @@
 
 									<div class="message__wrapper-bottom d-flex align-items-end justify-content-between">
 
-										<p th:text="${cachedMessage.getContent()}"
-											th:content="${cachedMessage.getContent()}" th:id="${cachedMessage.getId()}"
+										<p 
+											th:text="${cachedMessage.getContent()}"
+											th:senderName="${cachedMessage.getSenderName()}"
+											th:content="${cachedMessage.getContent()}" 
+											th:id="${cachedMessage.getId()}"
 											th:sendtime="${cachedMessage.getSendTime()}"
 											th:chatId="${cachedMessage.getChatId()}"
 											class="message__wrapper-text message-content">

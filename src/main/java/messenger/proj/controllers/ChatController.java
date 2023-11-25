@@ -106,11 +106,6 @@ public class ChatController {
 
 		model.addAttribute("lastMessages", messageServ.getLastMessage(chatRoomServ.findAll(curentUserId)));
 		
-		
-		
-		
-	
-
 		model.addAttribute("currentUser", curentUserId);
 
 		model.addAttribute("chatList", chatRoomServ.lastMessageOrder(curentUserId));
@@ -135,8 +130,11 @@ public class ChatController {
 	}
 
 	@PostMapping("/editMessage")
-	public String editMessage(@RequestParam("messageId") String messageId, @RequestParam("chatId") String chatId,
-			@RequestParam("sendTime") String sendTime, @RequestParam("content") String content) {
+	public String editMessage(@RequestParam("messageId") String messageId, 
+							  @RequestParam("chatId") String chatId,
+							  @RequestParam("sendTime") String sendTime, 
+							  @RequestParam("content") String content,
+							  @RequestParam("senderName") String senderName) {
 
 		/*
 		 * System.out.println("CHAT ID " + chatId); System.out.println("MESSAGE ID " +
@@ -154,6 +152,7 @@ public class ChatController {
 		message.setContent(content);
 		message.setChatId(chatId);
 		message.setSendTime(ldt);
+		message.setSenderName(senderName);
 		message.setSenderId(personDetails.getUser().getId());
 
 		messageServ.edit(message, messageId);
