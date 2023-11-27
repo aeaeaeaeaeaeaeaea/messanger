@@ -24,261 +24,266 @@
 
 <body class="body d-flex flex-column h-100" style="overflow: hidden;">
 
-	<div class="d-flex flex-column bg-light" style="height:100%">
-		<div class="row g-0" style="height:100%">
+	<main class="main overflow-hidden">
 
-			<!-- SIDEBAR -->
-			<div class="col-5 col-md-4 flex-column border-right overflow-auto" style="height:100vh">
-				<div class="d-flex bg-theme-color px-3 py-2">
-					<div class="flex-grow-1">
+		<div class="d-flex flex-column bg-light" style="height:100%">
+			<div class="row g-0" style="height:100%">
 
-						<!--<img src="https://www.w3schools.com/w3images/avatar3.png" class="rounded-circle" width="40"
+				<!-- SIDEBAR -->
+				<div class="col-5 col-md-4 flex-column border-right overflow-auto" style="height:100vh">
+					<div class="d-flex bg-theme-color px-3 py-2">
+						<div class="flex-grow-1">
+
+							<!--<img src="https://www.w3schools.com/w3images/avatar3.png" class="rounded-circle" width="40"
 							alt="">-->
 
-					</div>
-
-
-				</div>
-
-				<div class="px-3 py-2 bg-white">
-
-					<div class="d-flex bg-lightgray rounded-lg border-0">
-
-						<button class="btn main-left__header-menu border-0 bg-transparent mr-3 p-0" type="button"
-							data-toggle="modal" data-target="#main-modal">
-
-							<img src="/img/menu.svg" alt="" width="20" height="20">
-
-						</button>
-
-						<div class="ml-1 px-2 py-2 text-gray">
-							<i class="zmdi zmdi-search text-large"></i>
 						</div>
 
-						<!-- Форма для поиска user'ов -->
-						<form class="col-8" action="/users" method="GET">
-							<input class="d-inline border-0 rounded-pill px-3 py-2" type="text" name="userName"
-								placeholder="Search or start new chat" />
-						</form>
-
-
 
 					</div>
 
-				</div>
+					<div class="px-3 py-2 bg-white">
 
-				<div th:if="${searchElasticUser == null}">
+						<div class="d-flex bg-lightgray rounded-lg border-0">
 
-					<div th:if="${!chatList.isEmpty()}">
+							<button onclick="showModal()"
+								class="btn main-left__header-menu border-0 bg-transparent mr-3 p-0" type="button"
+								data-toggle="modal" data-target="#main-modal">
 
-						<div class="flex-grow-1 scroll">
+								<img src="/img/menu.svg" alt="" width="20" height="20">
 
+							</button>
 
+							<div class="ml-1 px-2 py-2 text-gray">
+								<i class="zmdi zmdi-search text-large"></i>
+							</div>
 
-							<ul th:each="chatRoom : ${chatList}" class="list-group">
+							<!-- Форма для поиска user'ов -->
+							<form class="col-8" action="/users" method="GET">
+								<input class="d-inline border-0 rounded-pill px-3 py-2" type="text" name="userName"
+									placeholder="Search or start new chat" />
+							</form>
 
-								<!-- Для SenderId -->
-								<div th:if="${chatRoom.getSenderId().equals(currentUser)}">
-
-									<li class="list-group-item border-0 d-flex">
-
-										<!-- Ссылка на чат и последенее сообщение -->
-										<div class="chat-link text-large ml-3 flex-grow-1">
-
-											<a id="link" th:text="${chatRoom.getRecipientName()}"
-												th:data="${chatRoom.getId()}"
-												th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}">
-											</a>
-
-
-											<br />
-											<small class="text-gray text-right">
-
-												<i class="zmdi zmdi-check-all" style="font-size:16px!important"
-													th:if="${lastMessages.get(chatRoom.getId()) != null}"
-													th:text="${lastMessages.get(chatRoom.getId()).getContent()}">
-												</i>
-
-											</small>
-										</div>
-										<!-- -->
-
-										<!-- Время последнего сообщения -->
-										<div class="text-gray">
-
-											<small th:if="${lastMessages.get(chatRoom.getId()) != null}">
-
-												<small
-													th:if="${todayDate.equals(lastMessages.get(chatRoom.getId()).getSendTime().format(formatter))}"
-													th:text="${lastMessages.get(chatRoom.getId()).getSendTime().format(todayFormat)}">
-													text
-												</small>
-
-												<small
-													th:if="${!todayDate.equals(lastMessages.get(chatRoom.getId()).getSendTime().format(formatter))}"
-													th:text="${lastMessages.get(chatRoom.getId()).getSendTime().format(formatter)}">
-													text
-												</small>
-
-
-											</small>
-
-											<br>
-
-										</div>
-										<!-- Конец -->
-
-									</li>
-
-								</div>
-								<!-- Конец -->
-
-								<!-- Для RecipientId -->
-								<div th:if="${chatRoom.getRecipientId().equals(currentUser)}">
-
-									<li class="list-group-item border-0 d-flex">
-
-										<!-- Ссылка на чат и последенее сообщение -->
-										<div class="chat-link text-large ml-3 flex-grow-1">
-
-											<a id="link" th:text="${chatRoom.getSenderName()}"
-												th:data="${chatRoom.getId()}"
-												th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}">
-
-											</a>
-
-											<br />
-
-											<small class="text-gray text-right">
-
-												<i class="zmdi zmdi-check-all" style="font-size:16px!important"
-													th:if="${lastMessages.get(chatRoom.getId()) != null}"
-													th:text="${lastMessages.get(chatRoom.getId()).getContent()}">
-
-												</i>
-
-											</small>
-										</div>
-										<!-- -->
-
-										<!-- Время последнего сообщения -->
-										<div class="text-gray">
-
-											<small th:if="${lastMessages.get(chatRoom.getId()) != null}">
-
-												<small
-													th:if="${todayDate.equals(lastMessages.get(chatRoom.getId()).getSendTime().format(formatter))}"
-													th:text="${lastMessages.get(chatRoom.getId()).getSendTime().format(todayFormat)}">
-													text
-												</small>
-
-												<small
-													th:if="${!todayDate.equals(lastMessages.get(chatRoom.getId()).getSendTime().format(formatter))}"
-													th:text="${lastMessages.get(chatRoom.getId()).getSendTime().format(formatter)}">
-													text
-												</small>
-
-
-											</small>
-
-											<br>
-
-										</div>
-										<!-- Конец -->
-
-									</li>
-
-								</div>
-								<!-- Конец -->
-
-
-							</ul>
 
 
 						</div>
 
 					</div>
 
-					<div th:if="${chatList.isEmpty()}">
+					<div th:if="${searchElasticUser == null}">
 
-						<ul th:each="user : ${users}">
+						<div th:if="${!chatList.isEmpty()}">
 
-							<div th:if="${user.getId() != currentUser}">
+							<div class="flex-grow-1 scroll">
 
-								<li class="list-group-item border-0 d-flex">
 
-									<!-- Кнопка создания чата -->
-									<div class="chat-link text-large ml-3 flex-grow-1">
 
-										<a class="chat-create" id="chat" th:data-user-id="${user.getId()}"
-											th:data-current-user="${currentUser}"
-											th:text="${user.getUsername()} + ' ' + ${user.getId()}">
-											text
-										</a>
+								<ul th:each="chatRoom : ${chatList}" class="list-group">
+
+									<!-- Для SenderId -->
+									<div th:if="${chatRoom.getSenderId().equals(currentUser)}">
+
+										<li class="list-group-item border-0 d-flex">
+
+											<!-- Ссылка на чат и последенее сообщение -->
+											<div class="chat-link text-large ml-3 flex-grow-1">
+
+												<a id="link" th:text="${chatRoom.getRecipientName()}"
+													th:data="${chatRoom.getId()}"
+													th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}">
+												</a>
+
+
+												<br />
+												<small class="text-gray text-right">
+
+													<i class="zmdi zmdi-check-all" style="font-size:16px!important"
+														th:if="${lastMessages.get(chatRoom.getId()) != null}"
+														th:text="${lastMessages.get(chatRoom.getId()).getContent()}">
+													</i>
+
+												</small>
+											</div>
+											<!-- -->
+
+											<!-- Время последнего сообщения -->
+											<div class="text-gray">
+
+												<small th:if="${lastMessages.get(chatRoom.getId()) != null}">
+
+													<small
+														th:if="${todayDate.equals(lastMessages.get(chatRoom.getId()).getSendTime().format(formatter))}"
+														th:text="${lastMessages.get(chatRoom.getId()).getSendTime().format(todayFormat)}">
+														text
+													</small>
+
+													<small
+														th:if="${!todayDate.equals(lastMessages.get(chatRoom.getId()).getSendTime().format(formatter))}"
+														th:text="${lastMessages.get(chatRoom.getId()).getSendTime().format(formatter)}">
+														text
+													</small>
+
+
+												</small>
+
+												<br>
+
+											</div>
+											<!-- Конец -->
+
+										</li>
 
 									</div>
 									<!-- Конец -->
 
-								</li>
+									<!-- Для RecipientId -->
+									<div th:if="${chatRoom.getRecipientId().equals(currentUser)}">
+
+										<li class="list-group-item border-0 d-flex">
+
+											<!-- Ссылка на чат и последенее сообщение -->
+											<div class="chat-link text-large ml-3 flex-grow-1">
+
+												<a id="link" th:text="${chatRoom.getSenderName()}"
+													th:data="${chatRoom.getId()}"
+													th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}">
+
+												</a>
+
+												<br />
+
+												<small class="text-gray text-right">
+
+													<i class="zmdi zmdi-check-all" style="font-size:16px!important"
+														th:if="${lastMessages.get(chatRoom.getId()) != null}"
+														th:text="${lastMessages.get(chatRoom.getId()).getContent()}">
+
+													</i>
+
+												</small>
+											</div>
+											<!-- -->
+
+											<!-- Время последнего сообщения -->
+											<div class="text-gray">
+
+												<small th:if="${lastMessages.get(chatRoom.getId()) != null}">
+
+													<small
+														th:if="${todayDate.equals(lastMessages.get(chatRoom.getId()).getSendTime().format(formatter))}"
+														th:text="${lastMessages.get(chatRoom.getId()).getSendTime().format(todayFormat)}">
+														text
+													</small>
+
+													<small
+														th:if="${!todayDate.equals(lastMessages.get(chatRoom.getId()).getSendTime().format(formatter))}"
+														th:text="${lastMessages.get(chatRoom.getId()).getSendTime().format(formatter)}">
+														text
+													</small>
+
+
+												</small>
+
+												<br>
+
+											</div>
+											<!-- Конец -->
+
+										</li>
+
+									</div>
+									<!-- Конец -->
+
+
+								</ul>
+
 
 							</div>
 
-						</ul>
+						</div>
 
-					</div>
+						<div th:if="${chatList.isEmpty()}">
 
-				</div>
+							<ul th:each="user : ${users}">
 
-				<div th:if="${searchElasticUser != null}">
+								<div th:if="${user.getId() != currentUser}">
 
-					<div class="flex-grow-1 scroll">
+									<li class="list-group-item border-0 d-flex">
 
-						<ul th:each="user : ${searchElasticUser}" class="list-group">
+										<!-- Кнопка создания чата -->
+										<div class="chat-link text-large ml-3 flex-grow-1">
 
-							<li class="list-group-item border-0 d-flex" th:if="${user.getId() != currentUser}">
+											<a class="chat-create" id="chat" th:data-user-id="${user.getId()}"
+												th:data-current-user="${currentUser}"
+												th:text="${user.getUsername()} + ' ' + ${user.getId()}">
+												text
+											</a>
 
-								<div class="chat-link text-large ml-3 flex-grow-1">
+										</div>
+										<!-- Конец -->
 
-									<a class="chat-create" th:data-user-id="${user.getId()}"
-										th:data-current-user="${currentUser}"
-										th:text="${user.getUserName()} + ' ' + ${user.getId()}">
-										text
-									</a>
-
+									</li>
 
 								</div>
 
-							</li>
+							</ul>
 
-						</ul>
+						</div>
+
+					</div>
+
+					<div th:if="${searchElasticUser != null}">
+
+						<div class="flex-grow-1 scroll">
+
+							<ul th:each="user : ${searchElasticUser}" class="list-group">
+
+								<li class="list-group-item border-0 d-flex" th:if="${user.getId() != currentUser}">
+
+									<div class="chat-link text-large ml-3 flex-grow-1">
+
+										<a class="chat-create" th:data-user-id="${user.getId()}"
+											th:data-current-user="${currentUser}"
+											th:text="${user.getUserName()} + ' ' + ${user.getId()}">
+											text
+										</a>
+
+
+									</div>
+
+								</li>
+
+							</ul>
+
+						</div>
 
 					</div>
 
 				</div>
 
-			</div>
+				<!-- Empty space -->
+				<div class="col-7 col-md-8 flex-column" style="height:100vh;">
 
-			<!-- Empty space -->
-			<div class="col-7 col-md-8 flex-column" style="height:100vh;">
+					<div style="background-color: rgb(248, 248, 248); height: 100vh"
+						class="d-flex justify-content-center align-items-center">
 
-				<div style="background-color: rgb(248, 248, 248); height: 100vh"
-					class="d-flex justify-content-center align-items-center">
+						<p class="text-center">Select a chat to start messaging</p>
 
-					<p class="text-center">Select a chat to start messaging</p>
+					</div>
 
 				</div>
-
+				<!-- End of empty space -->
 			</div>
-			<!-- End of empty space -->
 		</div>
-	</div>
+
+	</main>
 
 	<div class="modal fade p-0 show" id="main-modal" tabindex="-1" aria-labelledby="exampleModalLabel"
-		style="display: block;" aria-modal="true" role="dialog">
+		style="display: none;" aria-modal="true" role="dialog">
 		<div class="modal-dialog m-0 rounded-0">
 			<div class="modal-content vh-100 rounded-0">
 				<div class="modal-body p-0 vh-100 overflow-hidden">
-					<div class="p-4 bg-info">
+					<div class="p-4 bg-info" style="color: black;">
 						<div class="d-flex align-items-center justify-content-between w-100 mb-4">
 							<img class="rounded-pill" src="img/my-picture.jpg" alt="user" width="50" height="50">
 							<a class="saved-massage" href="#seved-massage">
@@ -371,17 +376,14 @@
 									Desktop</a>
 								<a class="modal-telegram__link text-secondary" href="#">Version 2.6.1 - About</a>
 							</div>
+							
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	
-	<script>
-		
-	</script>
-		
+
 
 
 	<!-- Modal window for an editing and deleting chat -->
@@ -407,11 +409,33 @@
 	<script src="/js/chatScripts/ChatDelete.js"></script>
 	<!-- Скрипт для создания чатов -->
 	<script src="/js/chatScripts/ChatCreate.js"></script>
-	
-	<script src="/js/scripts/bootstrap.bundle.min.js"></script>
-	<script src="/js/scripts/main.js"></script>
-	
 
+	<script src="/js/scripts/bootstrap.bundle.min.js"></script>
+	<script>
+		// Функция для отображения модального окна
+		function showModal() {
+			var modal = document.getElementById("main-modal");
+			modal.style.display = "block";
+			// Добавляем обработчик событий для клика по документу
+			document.addEventListener('click', closeIfOutsideModal);
+		}
+
+		// Функция для скрытия модального окна
+		function hideModal() {
+			var modal = document.getElementById("main-modal");
+			modal.style.display = "none";
+			// Удаляем обработчик событий после закрытия модального окна
+			document.removeEventListener('click', closeIfOutsideModal);
+		}
+
+		// Функция для закрытия модального окна при клике вне его
+		function closeIfOutsideModal(event) {
+			var modal = document.getElementById("main-modal");
+			if (!modal.contains(event.target)) {
+				hideModal();
+			}
+		}
+	</script>
 
 </body>
 
