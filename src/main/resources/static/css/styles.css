@@ -513,6 +513,10 @@ body::-webkit-scrollbar-thumb {
   display: block;
 }
 
+.fff {
+	background-color: rgb(239, 239, 239);
+}
+
 @media only screen and (max-width: 1140px) {
   .emoji__col {
     display: none !important;
