@@ -96,7 +96,8 @@ public class ChatController {
 		}
 
 		List<message> list = messageServ.findByChatId(userId);
-
+			
+		model.addAttribute("username", userServ.findById(curentUserId).get().getUsername());
 		model.addAttribute("f", new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd HH:mm:ss").toFormatter());
 
 		model.addAttribute("todayFormat", new DateTimeFormatterBuilder().appendPattern("HH:mm").toFormatter());
@@ -112,7 +113,7 @@ public class ChatController {
 
 		model.addAttribute("cachedMessages", messageServ.getCaсhedMessages(userId));
 		model.addAttribute("cassandraMessages", list);
-		model.addAttribute("currentUser", curentUserId);
+		
 		model.addAttribute("id", userId);
 
 		return "chat";
@@ -216,7 +217,7 @@ public class ChatController {
 		
 		model.addAttribute("lastMessages", messageServ.getLastMessage(chatRoomServ.findAll(curentUserId)));
 		
-		
+		model.addAttribute("username", userServ.findById(curentUserId).get().getUsername());
 		model.addAttribute("currentUser", curentUserId);
 		
 		model.addAttribute("chatList", chatRoomServ.lastMessageOrder(curentUserId));

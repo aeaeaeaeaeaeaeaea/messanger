@@ -7,8 +7,8 @@
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
 		integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-	
-	
+
+
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
@@ -358,10 +358,10 @@
 		<div class="modal-dialog m-0 rounded-0">
 			<div class="modal-content vh-100 rounded-0">
 				<div class="modal-body p-0 vh-100 overflow-hidden">
-					
+
 					<div class="p-4 fff">
-						
-						
+
+
 						<div class="d-flex align-items-center justify-content-between w-100 mb-4">
 							<img class="rounded-pill" src="img/my-picture.jpg" alt="user" width="50" height="50">
 							<a class="saved-massage" href="#seved-massage">
@@ -369,23 +369,23 @@
 									width="35" height="35">
 							</a>
 						</div>
-						
+
 						<div class="">
-							<a class="btn d-flex align-items-center justify-content-between text-white p-0"
+							<a class="btn d-flex align-items-center justify-content-between text-dark p-0"
 								data-toggle="collapse" href="#new-account" role="button" aria-expanded="false"
 								aria-controls="collapseExample">
 								<div class="d-flex flex-column align-items-start">
-									<p class="mb-0 font-weight-bold">Rashidov Abdulloh</p>
+									<p class="mb-0 font-weight-bold" th:text="${username}">Rashidov Abdulloh</p>
 									<span class="modal-phone__number">+998 90 000 00 00</span>
 								</div>
-								<img src="img/arrow-icon-white.svg" alt="arrow" width="20" height="20">
+								<img src="/img/arrow.svg" alt="arrow" width="20" height="20">
 							</a>
 						</div>
-						
+
 					</div>
-					
+
 					<div class="modal-scroll vh-100 d-flex flex-column flex-grow-1">
-						
+
 						<div class="collapse" id="new-account">
 							<div class="card card-body border-0 p-4">
 								<a class="nav-xxl nav-link active rounded-0 w-100 p-0 mb-3" data-toggle="pill"
@@ -419,38 +419,38 @@
 								</a>
 							</div>
 						</div>
-						
+
 						<div class="p-4 ">
 							<a class="d-flex align-items-center text-decoration-none mb-3" href="#">
-								<img class="mr-3" src="img/group-icon.svg" alt="new group" width="20" height="20">
+								<img class="mr-3" src="/img/group-icon.svg" alt="new group" width="20" height="20">
 								<h5 class="modal-text__item mb-0">New Group</h5>
 							</a>
 							<a class="d-flex align-items-center text-decoration-none mb-3" href="#">
-								<img class="mr-3" src="img/cahnel-icon.svg" alt="new group" width="20" height="20">
+								<img class="mr-3" src="/img/cahnel-icon.svg" alt="new group" width="20" height="20">
 								<h5 class="modal-text__item mb-0">New Channel</h5>
 							</a>
-							
+
 							<a class="d-flex align-items-center text-decoration-none mb-3" href="#">
-								<img class="mr-3" src="img/settings-icon.svg" alt="new group" width="20" height="20">
+								<img class="mr-3" src="/img/settings-icon.svg" alt="new group" width="20" height="20">
 								<h5 class="modal-text__item mb-0">Settings</h5>
 							</a>
-							<a class="d-flex align-items-center text-decoration-none justify-content-between" href="#">
+							<a class="d-flex align-items-center text-decoration-none justify-content-between">
 								<div class="d-flex align-items-center">
-									<img class="mr-3" src="img/moon-icon.svg" alt="new group" width="20" height="20">
+									<img class="mr-3" src="/img/moon-icon.svg" alt="new group" width="20" height="20">
 									<h5 class="modal-text__item mb-0">Night Mode</h5>
 								</div>
 								<div class="custom-control custom-switch">
-									<input type="checkbox" class="custom-control-input" id="customSwitch1">
+									<input type="checkbox" class="form-check-input" role="switch" id="customSwitch1">
 									<label class="custom-control-label" for="customSwitch1"></label>
 								</div>
 							</a>
 
-							
+
 
 						</div>
-						
+
 					</div>
-					
+
 				</div>
 			</div>
 		</div>
@@ -464,31 +464,7 @@
 	<script src="/js/messageScripts/messageColor.js"></script>
 
 	<script src="/js/scripts/bootstrap.bundle.min.js"></script>
-	<script>
-		// Функция для отображения модального окна
-		function showModal() {
-			var modal = document.getElementById("main-modal");
-			modal.style.display = "block";
-			// Добавляем обработчик событий для клика по документу
-			document.addEventListener('click', closeIfOutsideModal);
-		}
-
-		// Функция для скрытия модального окна
-		function hideModal() {
-			var modal = document.getElementById("main-modal");
-			modal.style.display = "none";
-			// Удаляем обработчик событий после закрытия модального окна
-			document.removeEventListener('click', closeIfOutsideModal);
-		}
-
-		// Функция для закрытия модального окна при клике вне его
-		function closeIfOutsideModal(event) {
-			var modal = document.getElementById("main-modal");
-			if (!modal.contains(event.target)) {
-				hideModal();
-			}
-		}
-	</script>
+	<script src="/js/scripts/sidebarScript.js"></script>
 
 
 </body>
