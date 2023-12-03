@@ -82,9 +82,10 @@
 							<li class="list-group-item border-0 d-flex">
 
 								<!-- Ссылка на чат и последенее сообщение -->
-								<div class="chat-link text-large ml-3 flex-grow-1">
+								<div class="c text-large ml-3 flex-grow-1">
 
-									<a id="link" th:text="${chatRoom.getRecipientName()}" th:data="${chatRoom.getId()}"
+									<a id="chat-link" th:text="${chatRoom.getRecipientName()}"
+										th:data="${chatRoom.getId()}"
 										th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}">
 									</a>
 
@@ -137,11 +138,11 @@
 							<li class="list-group-item border-0 d-flex">
 
 								<!-- Ссылка на чат и последенее сообщение -->
-								<div class="chat-link text-large ml-3 flex-grow-1">
+								<div class="c text-large ml-3 flex-grow-1">
 
-									<a id="link" th:text="${chatRoom.getSenderName()}" th:data="${chatRoom.getId()}"
+									<a class="chat-link" th:text="${chatRoom.getSenderName()}"
+										th:data="${chatRoom.getId()}"
 										th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}">
-
 									</a>
 
 									<br />
@@ -339,14 +340,7 @@
 				<!-- Конец нижней панели -->
 
 
-				<div id="myModal" class="modal" style="display: none;">
-					<div class="modal-content">
-						<span class="close">&times;</span>
-						<p>Выберите действие:</p>
-						<button id="deleteButton">Удалить</button>
-						<button id="editButton">Редактировать</button>
-					</div>
-				</div>
+
 
 			</div>
 		</div>
@@ -364,24 +358,24 @@
 
 						<div class="d-flex align-items-center justify-content-between w-100 mb-4">
 							<img class="rounded-pill" src="img/my-picture.jpg" alt="user" width="50" height="50">
-							
+
 						</div>
 
 						<div class="">
-							
+
 							<a class="btn d-flex align-items-center justify-content-between text-dark p-0"
 								data-toggle="collapse" href="#new-account" role="button" aria-expanded="false"
 								aria-controls="collapseExample">
-								
+
 								<div class="d-flex flex-column align-items-start">
 									<p class="mb-0 font-weight-bold" th:text="${username}">Rashidov Abdulloh</p>
 									<span class="modal-phone__number"></span>
 								</div>
-								
+
 								<img src="/img/arrow.svg" alt="arrow" width="20" height="20">
-								
+
 							</a>
-							
+
 						</div>
 
 					</div>
@@ -393,14 +387,14 @@
 								<a class="nav-xxl nav-link active rounded-0 w-100 p-0 mb-3" data-toggle="pill"
 									href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">
 									<div class="media align-items-center">
-										
+
 										<!--<div class="position-relative">
 											<img src="/img/Abdulloh-aka.jpg" class="rounded-pill mr-3" alt="mayoq hub"
 												width="30" height="30">
 											<span class="p-2 rounded-pill bg-info position-absolute"
 												style="bottom: 0; right: 14px;"></span>
 										</div>-->
-										
+
 										<div class="media-body d-flex align-items-center justify-content-between">
 											<h5 class="text-secondary mb-0 add-account-item">Abdulloh</h5>
 											<span
@@ -412,12 +406,12 @@
 								<a class="nav-xxl nav-link active rounded-0 w-100 p-0" data-toggle="pill"
 									href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">
 									<div class="media align-items-center">
-										
+
 										<div class="">
 											<img src="/img/account.svg" class="rounded-pill mr-3" alt="account"
 												width="20" height="20">
 										</div>
-										
+
 										<div class="media-body d-flex align-items-center justify-content-between">
 											<h5 class="text-dark mb-0 add-account-item">Add Account</h5>
 										</div>
@@ -462,12 +456,39 @@
 		</div>
 	</div>
 
+	<div class="modal" id="myModal" style="display: none;">
+		<div class="modal-dialog">
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+
+				<div class="modal-body">
+					<button id="deleteButton" class="btn btn-danger">Удалить чат</button>
+					<button id="editButton" class="btn btn-primary">Очистить сообщения</button>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
 
 	<script src="/js/messageScripts/messageScroll.js"></script>
 	<script src="/js/messageScripts/messageContextMenuEdit.js"></script>
 	<script src="/js/messageScripts/messageEditOrDelete.js"></script>
 	<script src="/js/messageScripts/webSocket.js"></script>
 	<script src="/js/messageScripts/messageColor.js"></script>
+
+	<!-- Скрипт для удаления чатов и очистки сообщений в них -->
+	<script src="/js/chatScripts/ChatDelete.js"></script>
+
+	<script src="/js/scripts/bootstrap.bundle.min.js"></script>
+	<script src="/js/scripts/sidebarScript.js"></script>
+	
+	
+	<!-- Скрипт для создания чатов -->
+	<script src="/js/chatScripts/ChatCreate.js"></script>
 
 	<script src="/js/scripts/bootstrap.bundle.min.js"></script>
 	<script src="/js/scripts/sidebarScript.js"></script>

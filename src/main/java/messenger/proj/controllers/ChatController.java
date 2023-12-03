@@ -163,6 +163,8 @@ public class ChatController {
 
 	@PostMapping("/deleteChat")
 	public String deleteChat(@RequestParam(value = "chatId", required = false) String chatId) {
+		
+		System.out.println("CHAT ID " + chatId);
 
 		for (message m : messageServ.getCaсhedMessages(chatId)) {
 			messageServ.deleteById(m.getId(), m.getSendTime(), chatId);
