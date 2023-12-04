@@ -82,10 +82,15 @@
 							<li class="list-group-item border-0 d-flex">
 
 								<!-- Ссылка на чат и последенее сообщение -->
-								<div class="c text-large ml-3 flex-grow-1">
+								<div 
+									class="chat-link text-large ml-3 flex-grow-1"
+									th:data="${chatRoom.getId()}"
+									th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}"
+								>
 
-									<a id="chat-link" th:text="${chatRoom.getRecipientName()}"
-										th:data="${chatRoom.getId()}"
+									<a 
+										id="c" 
+										th:text="${chatRoom.getRecipientName()}"
 										th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}">
 									</a>
 
@@ -138,11 +143,17 @@
 							<li class="list-group-item border-0 d-flex">
 
 								<!-- Ссылка на чат и последенее сообщение -->
-								<div class="c text-large ml-3 flex-grow-1">
+								<div 
+									class="chat-link text-large ml-3 flex-grow-1"
+									th:data="${chatRoom.getId()}"
+									th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}"	
+								>
 
-									<a class="chat-link" th:text="${chatRoom.getSenderName()}"
-										th:data="${chatRoom.getId()}"
-										th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}">
+									<a 
+										class="c" 
+										th:text="${chatRoom.getSenderName()}"
+										th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}"
+									>
 									</a>
 
 									<br />
