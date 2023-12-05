@@ -1,7 +1,7 @@
 $(function() {
-	var modal = $("#myModal");
-	var deleteButton = $("#deleteButton");
-	var editButton = $("#editButton");
+	var modal = $("#myModal1");
+	var deleteButton = $("#deleteButton1");
+	var editButton = $("#editButton1");
 	var messageId;
 	const editMessageInput = document.getElementById("editMessageInput");
 
