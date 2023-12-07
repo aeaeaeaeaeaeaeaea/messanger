@@ -96,7 +96,7 @@
 
 												<a 
 													class="c"
-													th:text="${chatRoom.getRecipientName()} + '  ' + ${chatRoom.getId()}"
+													th:text="${chatRoom.getRecipientName()}"
 													th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}"
 												>
 												</a>
@@ -159,7 +159,7 @@
 
 												<a 
 													class="c"
-													th:text="${chatRoom.getSenderName()} + '  ' + ${chatRoom.getId()}"
+													th:text="${chatRoom.getSenderName()}"
 													th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}"
 												>	
 												</a>

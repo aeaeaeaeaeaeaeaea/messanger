@@ -82,15 +82,10 @@
 							<li class="list-group-item border-0 d-flex">
 
 								<!-- Ссылка на чат и последенее сообщение -->
-								<div 
-									class="chat-link text-large ml-3 flex-grow-1"
-									th:data="${chatRoom.getId()}"
-									th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}"
-								>
+								<div class="chat-link text-large ml-3 flex-grow-1" th:data="${chatRoom.getId()}"
+									th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}">
 
-									<a 
-										id="c" 
-										th:text="${chatRoom.getRecipientName()}"
+									<a id="c" th:text="${chatRoom.getRecipientName()}"
 										th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}">
 									</a>
 
@@ -143,17 +138,11 @@
 							<li class="list-group-item border-0 d-flex">
 
 								<!-- Ссылка на чат и последенее сообщение -->
-								<div 
-									class="chat-link text-large ml-3 flex-grow-1"
-									th:data="${chatRoom.getId()}"
-									th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}"	
-								>
+								<div class="chat-link text-large ml-3 flex-grow-1" th:data="${chatRoom.getId()}"
+									th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}">
 
-									<a 
-										class="c" 
-										th:text="${chatRoom.getSenderName()}"
-										th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}"
-									>
+									<a class="c" th:text="${chatRoom.getSenderName()}"
+										th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}">
 									</a>
 
 									<br />
@@ -230,7 +219,16 @@
 
 							<div class="message__wrapper d-flex align-items-end mb-2 mt-2"
 								style="word-break: break-word;">
-								<div class="message__wrapper-box position-relative p-2">
+
+								<div class="message-content message__wrapper-box position-relative p-2"
+									th:senderName="${cassandraMessage.getSenderName()}"
+									th:text="${cassandraMessage.getContent()}"
+									th:content="${cassandraMessage.getContent()}" 
+									th:id="${cassandraMessage.getId()}"
+									th:sendtime="${cassandraMessage.getSendTime()}"
+									th:chatId="${cassandraMessage.getChatId()}"
+								>
+
 									<div class="message__wrapper-top d-flex justify-content-between align-items-center">
 										<p class="message__user-name" th:text="${cassandraMessage.getSenderName()}">
 											Lifehack</p>
@@ -240,13 +238,10 @@
 									<div class="message__wrapper-bottom d-flex align-items-end justify-content-between">
 
 
-										<p class="message__wrapper-text message-content"
+										<p class="message__wrapper-text"
 											th:senderName="${cassandraMessage.getSenderName()}"
 											th:text="${cassandraMessage.getContent()}"
-											th:content="${cassandraMessage.getContent()}"
-											th:id="${cassandraMessage.getId()}"
-											th:sendtime="${cassandraMessage.getSendTime()}"
-											th:chatId="${cassandraMessage.getChatId()}">
+											>
 										</p>
 
 										<div class="message__wrapper-bottom-right d-flex align-items-center">
@@ -265,7 +260,17 @@
 
 							<div class="message__wrapper d-flex align-items-end mb-2 mt-2"
 								style="word-break: break-word;">
-								<div class="message__wrapper-box position-relative p-2">
+								
+								<div 	
+									class="message-content message__wrapper-box position-relative p-2"
+									th:senderName="${cachedMessage.getSenderName()}"
+									th:content="${cachedMessage.getContent()}" 
+									th:id="${cachedMessage.getId()}"
+									th:sendtime="${cachedMessage.getSendTime()}"
+									th:chatId="${cachedMessage.getChatId()}"
+								>
+
+
 									<div class="message__wrapper-top d-flex justify-content-between align-items-center">
 										<p class="message__user-name" th:text="${cachedMessage.getSenderName()}">
 											Lifehack</p>
@@ -274,13 +279,12 @@
 
 									<div class="message__wrapper-bottom d-flex align-items-end justify-content-between">
 
-										<p th:text="${cachedMessage.getContent()}"
+										<p 	
+											th:text="${cachedMessage.getContent()}"
 											th:senderName="${cachedMessage.getSenderName()}"
-											th:content="${cachedMessage.getContent()}" th:id="${cachedMessage.getId()}"
-											th:sendtime="${cachedMessage.getSendTime()}"
-											th:chatId="${cachedMessage.getChatId()}"
-											class="message__wrapper-text message-content">
-
+											
+											class="message__wrapper-text"
+										>
 										</p>
 
 										<div class="message__wrapper-bottom-right d-flex align-items-center">
@@ -358,6 +362,7 @@
 
 	</div>
 
+	<!-- Боковая панель (открывается при нажатии на кнопку) -->
 	<div class="modal fade p-0 show" id="main-modal" tabindex="-1" aria-labelledby="exampleModalLabel"
 		style="display: none;" aria-modal="true" role="dialog">
 		<div class="modal-dialog m-0 rounded-0">
@@ -467,6 +472,7 @@
 		</div>
 	</div>
 
+	<!-- Модальное окно для удаления чатов и сообщений -->
 	<div class="modal" id="myModal" style="display: none;">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -483,23 +489,23 @@
 			</div>
 		</div>
 	</div>
-	
-	 <!-- Модальное окно -->
-    <div class="modal" id="myModal1" style="display: none;">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Действия с чатом</h5>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <p>Выберите действие:</p>
-                    <button id="deleteButton1" class="btn btn-danger">Удалить</button>
-                    <button id="editButton1" class="btn btn-primary">Редактировать</button>
-                </div>
-            </div>
-        </div>
-    </div>
+
+	<!-- Модальное окно для редакитрования сообщений и их удалений -->
+	<div class="modal" id="myModal1" style="display: none;">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Действия с чатом</h5>
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+				<div class="modal-body">
+					<p>Выберите действие:</p>
+					<button id="deleteButton1" class="btn btn-danger">Удалить</button>
+					<button id="editButton1" class="btn btn-primary">Редактировать</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 
 	<script src="/js/messageScripts/messageScroll.js"></script>
@@ -513,8 +519,8 @@
 
 	<script src="/js/scripts/bootstrap.bundle.min.js"></script>
 	<script src="/js/scripts/sidebarScript.js"></script>
-	
-	
+
+
 	<!-- Скрипт для создания чатов -->
 	<script src="/js/chatScripts/ChatCreate.js"></script>
 

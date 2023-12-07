@@ -141,13 +141,18 @@ public class ChatController {
 		 * System.out.println("CHAT ID " + chatId); System.out.println("MESSAGE ID " +
 		 * messageId); System.out.println("SEND TIME " + sendTime);
 		 */
+		LocalDateTime ldt = LocalDateTime.parse(sendTime);
+		
+		
+		if (content.trim().isEmpty()) {
+			messageServ.deleteById(messageId, ldt, chatId);
+			return "redirect:/chat/" + chatId;
+		}
 
 		message message = new message();
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
-
-		LocalDateTime ldt = LocalDateTime.parse(sendTime);
 
 		message.setId(messageId);
 		message.setContent(content);
@@ -164,7 +169,7 @@ public class ChatController {
 	@PostMapping("/deleteChat")
 	public String deleteChat(@RequestParam(value = "chatId", required = false) String chatId) {
 		
-		System.out.println("CHAT ID " + chatId);
+	
 
 		for (message m : messageServ.getCaсhedMessages(chatId)) {
 			messageServ.deleteById(m.getId(), m.getSendTime(), chatId);
@@ -182,7 +187,7 @@ public class ChatController {
 	@PostMapping("/deleteChatMessage")
 	public String deleteChatMessages(@RequestParam(value = "chatId", required = false) String chatId) {
 		
-		System.out.println("CHECK");
+		
 
 		for (message m : messageServ.getCaсhedMessages(chatId)) {
 			messageServ.deleteById(m.getId(), m.getSendTime(), chatId);
