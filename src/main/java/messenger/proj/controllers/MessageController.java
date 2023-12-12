@@ -76,6 +76,7 @@ public class MessageController {
 			message.setSenderId(senderId);
 			message.setRecipientId(recipId);
 			message.setSendTime(LocalDateTime.now());
+			message.setStatus("Unread");
 			
 			message.setSenderName(userServ.findById(senderId).get().getUsername());
 

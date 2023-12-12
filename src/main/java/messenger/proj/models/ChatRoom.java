@@ -40,7 +40,6 @@ public class ChatRoom {
 
 	public ChatRoom(String id, String senderId, String senderName, String recipientName, String recipientId) {
 		this.id = id;
-		
 		this.senderName = senderName;
 		this.recipientName = recipientName;
 		this.senderId = senderId;

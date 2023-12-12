@@ -118,6 +118,12 @@
 											th:text="${lastMessages.get(chatRoom.getId()).getSendTime().format(formatter)}">
 											text
 										</small>
+										
+										</br>
+										
+										<small th:text="${unreadMessages}">
+
+										</small>
 
 
 									</small>
@@ -223,11 +229,9 @@
 								<div class="message-content message__wrapper-box position-relative p-2"
 									th:senderName="${cassandraMessage.getSenderName()}"
 									th:text="${cassandraMessage.getContent()}"
-									th:content="${cassandraMessage.getContent()}" 
-									th:id="${cassandraMessage.getId()}"
+									th:content="${cassandraMessage.getContent()}" th:id="${cassandraMessage.getId()}"
 									th:sendtime="${cassandraMessage.getSendTime()}"
-									th:chatId="${cassandraMessage.getChatId()}"
-								>
+									th:chatId="${cassandraMessage.getChatId()}">
 
 									<div class="message__wrapper-top d-flex justify-content-between align-items-center">
 										<p class="message__user-name" th:text="${cassandraMessage.getSenderName()}">
@@ -240,8 +244,7 @@
 
 										<p class="message__wrapper-text"
 											th:senderName="${cassandraMessage.getSenderName()}"
-											th:text="${cassandraMessage.getContent()}"
-											>
+											th:text="${cassandraMessage.getContent()}">
 										</p>
 
 										<div class="message__wrapper-bottom-right d-flex align-items-center">
@@ -260,15 +263,12 @@
 
 							<div class="message__wrapper d-flex align-items-end mb-2 mt-2"
 								style="word-break: break-word;">
-								
-								<div 	
-									class="message-content message__wrapper-box position-relative p-2"
+
+								<div class="message-content message__wrapper-box position-relative p-2"
 									th:senderName="${cachedMessage.getSenderName()}"
-									th:content="${cachedMessage.getContent()}" 
-									th:id="${cachedMessage.getId()}"
+									th:content="${cachedMessage.getContent()}" th:id="${cachedMessage.getId()}"
 									th:sendtime="${cachedMessage.getSendTime()}"
-									th:chatId="${cachedMessage.getChatId()}"
-								>
+									th:chatId="${cachedMessage.getChatId()}">
 
 
 									<div class="message__wrapper-top d-flex justify-content-between align-items-center">
@@ -279,12 +279,9 @@
 
 									<div class="message__wrapper-bottom d-flex align-items-end justify-content-between">
 
-										<p 	
-											th:text="${cachedMessage.getContent()}"
+										<p th:text="${cachedMessage.getContent()}"
 											th:senderName="${cachedMessage.getSenderName()}"
-											
-											class="message__wrapper-text"
-										>
+											class="message__wrapper-text">
 										</p>
 
 										<div class="message__wrapper-bottom-right d-flex align-items-center">
@@ -303,7 +300,6 @@
 				</div>
 				<!-- Конец сообщений -->
 
-//
 
 				<!-- Нижняя панель -->
 				<div class="d-flex mt-auto align-items-center bg-gray px-2 py-1 border-bottom">

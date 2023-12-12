@@ -35,6 +35,7 @@ import messenger.proj.repositories.ElasticSearchQuery;
 import messenger.proj.security.PersonDetails;
 import messenger.proj.services.ChatRoomService;
 import messenger.proj.services.ConnectionService;
+import messenger.proj.services.MessageRedisService;
 import messenger.proj.services.MessageService;
 import messenger.proj.services.UserService;
 
@@ -47,13 +48,16 @@ public class ChatController {
 	private final RedisTemplate<String, message> redisTemplate;
 	private final ConnectionService connectionServ;
 	private final ElasticSearchQuery elasticSearchQuery;
+	private final MessageRedisService messageRedisService;
+	private int countUnreadMessages = 0;
 
 	@Autowired
 	public ChatController(ConnectionService connectionServ, RedisTemplate<String, message> redisTemplate,
-			UserService userServ, ChatRoomService chatRoomServ, MessageService messageServ,
-			ElasticSearchQuery elasticSearchQuery) {
+			MessageRedisService messageRedisService, UserService userServ, ChatRoomService chatRoomServ,
+			MessageService messageServ, ElasticSearchQuery elasticSearchQuery) {
 
 		this.elasticSearchQuery = elasticSearchQuery;
+		this.messageRedisService = messageRedisService;
 		this.connectionServ = connectionServ;
 		this.redisTemplate = redisTemplate;
 		this.chatRoomServ = chatRoomServ;
@@ -95,8 +99,20 @@ public class ChatController {
 
 		}
 
+		
+
+		for (message message : messageRedisService.getLatestMessages(userId)) {
+			// Убрать проверку на null
+			if (message.getStatus() != null && !message.getSenderId().equals(curentUserId)
+					&& message.getStatus().equals("Unread")) {
+				countUnreadMessages++;
+			}
+		}
+
+		model.addAttribute("unreadMessages", countUnreadMessages);
+
 		List<message> list = messageServ.findByChatId(userId);
-			
+
 		model.addAttribute("username", userServ.findById(curentUserId).get().getUsername());
 		model.addAttribute("f", new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd HH:mm:ss").toFormatter());
 
@@ -106,14 +122,14 @@ public class ChatController {
 				LocalDateTime.now().format(new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter()));
 
 		model.addAttribute("lastMessages", messageServ.getLastMessage(chatRoomServ.findAll(curentUserId)));
-		
+
 		model.addAttribute("currentUser", curentUserId);
 
 		model.addAttribute("chatList", chatRoomServ.lastMessageOrder(curentUserId));
 
 		model.addAttribute("cachedMessages", messageServ.getCaсhedMessages(userId));
 		model.addAttribute("cassandraMessages", list);
-		
+
 		model.addAttribute("id", userId);
 
 		return "chat";
@@ -131,19 +147,16 @@ public class ChatController {
 	}
 
 	@PostMapping("/editMessage")
-	public String editMessage(@RequestParam("messageId") String messageId, 
-							  @RequestParam("chatId") String chatId,
-							  @RequestParam("sendTime") String sendTime, 
-							  @RequestParam("content") String content,
-							  @RequestParam("senderName") String senderName) {
+	public String editMessage(@RequestParam("messageId") String messageId, @RequestParam("chatId") String chatId,
+			@RequestParam("sendTime") String sendTime, @RequestParam("content") String content,
+			@RequestParam("senderName") String senderName) {
 
 		/*
 		 * System.out.println("CHAT ID " + chatId); System.out.println("MESSAGE ID " +
 		 * messageId); System.out.println("SEND TIME " + sendTime);
 		 */
 		LocalDateTime ldt = LocalDateTime.parse(sendTime);
-		
-		
+
 		if (content.trim().isEmpty()) {
 			messageServ.deleteById(messageId, ldt, chatId);
 			return "redirect:/chat/" + chatId;
@@ -168,8 +181,6 @@ public class ChatController {
 
 	@PostMapping("/deleteChat")
 	public String deleteChat(@RequestParam(value = "chatId", required = false) String chatId) {
-		
-	
 
 		for (message m : messageServ.getCaсhedMessages(chatId)) {
 			messageServ.deleteById(m.getId(), m.getSendTime(), chatId);
@@ -186,8 +197,6 @@ public class ChatController {
 
 	@PostMapping("/deleteChatMessage")
 	public String deleteChatMessages(@RequestParam(value = "chatId", required = false) String chatId) {
-		
-		
 
 		for (message m : messageServ.getCaсhedMessages(chatId)) {
 			messageServ.deleteById(m.getId(), m.getSendTime(), chatId);
@@ -219,18 +228,24 @@ public class ChatController {
 
 		}
 
+		
+
+		
+
+		model.addAttribute("unreadMessages", countUnreadMessages);
+
 		model.addAttribute("todayFormat", new DateTimeFormatterBuilder().appendPattern("HH:mm").toFormatter());
 		model.addAttribute("formatter", new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter());
 		model.addAttribute("todayDate",
 				LocalDateTime.now().format(new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter()));
-		
+
 		model.addAttribute("lastMessages", messageServ.getLastMessage(chatRoomServ.findAll(curentUserId)));
-		
+
 		model.addAttribute("username", userServ.findById(curentUserId).get().getUsername());
 		model.addAttribute("currentUser", curentUserId);
-		
+
 		model.addAttribute("chatList", chatRoomServ.lastMessageOrder(curentUserId));
-		
+
 		model.addAttribute("users", userServ.findAll());
 
 		return "message1";
