@@ -71,6 +71,10 @@ public class MessageController {
 			String extractedChatId = jsonNode.get("chatId").asText();
 			String senderId = jsonNode.get("dataSenderId").asText();
 			String recipId = jsonNode.get("dataRecipId").asText();
+			
+			System.out.println("Recipient ID " + recipId);
+			System.out.println("Sender ID " + senderId);
+
 
 			message.setChatId(extractedChatId);
 			message.setSenderId(senderId);

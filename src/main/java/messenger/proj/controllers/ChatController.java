@@ -99,7 +99,7 @@ public class ChatController {
 
 		}
 
-		
+		countUnreadMessages = 0;
 
 		for (message message : messageRedisService.getLatestMessages(userId)) {
 			// Убрать проверку на null
@@ -108,6 +108,8 @@ public class ChatController {
 				countUnreadMessages++;
 			}
 		}
+		
+	
 
 		model.addAttribute("unreadMessages", countUnreadMessages);
 
@@ -126,6 +128,7 @@ public class ChatController {
 		model.addAttribute("currentUser", curentUserId);
 
 		model.addAttribute("chatList", chatRoomServ.lastMessageOrder(curentUserId));
+		model.addAttribute("recipientId", chat.get().getRecipientId());
 
 		model.addAttribute("cachedMessages", messageServ.getCaсhedMessages(userId));
 		model.addAttribute("cassandraMessages", list);

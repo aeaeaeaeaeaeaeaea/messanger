@@ -36,10 +36,16 @@ public class ChatRoom {
 	@Column("recipientid")
 	private String recipientId;
 	
+	@Column("unreadRecipientMessages")
+	private int unreadRecipientMessages;
+	
+	@Column("unreadSenderMessages")
+	private int unreadSenderMessages;
 	
 
-	public ChatRoom(String id, String senderId, String senderName, String recipientName, String recipientId) {
+	public ChatRoom(String id, int unreadSenderMessages,  int unreadRecipientMessages, String senderId, String senderName, String recipientName, String recipientId) {
 		this.id = id;
+		this.unreadRecipientMessages = unreadRecipientMessages;
 		this.senderName = senderName;
 		this.recipientName = recipientName;
 		this.senderId = senderId;
@@ -91,6 +97,22 @@ public class ChatRoom {
 
 	public void setSenderName(String senderName) {
 		this.senderName = senderName;
+	}
+
+	public int getUnreadRecipientMessages() {
+		return unreadRecipientMessages;
+	}
+
+	public void setUnreadRecipientMessages(int unreadRecipientMessages) {
+		this.unreadRecipientMessages = unreadRecipientMessages;
+	}
+
+	public int getUnreadSenderMessages() {
+		return unreadSenderMessages;
+	}
+
+	public void setUnreadSenderMessages(int unreadSenderMessages) {
+		this.unreadSenderMessages = unreadSenderMessages;
 	}
 
 	

@@ -181,6 +181,12 @@
 											th:text="${lastMessages.get(chatRoom.getId()).getSendTime().format(formatter)}">
 											text
 										</small>
+										
+										<br/>
+										
+										<small th:text="${unreadMessages}">
+
+										</small>
 
 
 									</small>
@@ -322,8 +328,14 @@
 					<form class="p-1 flex-grow-1 mx-1" id="messageForm" style="width: 100%;">
 
 						<input style="width: 90%;" id="messageInput" type="text"
-							class="d-inline border-0 rounded-pill px-3 py-2" th:data="${id}"
-							th:dataSenderId="${currentUser}" placeholder="Type a message" name="editedMessage">
+							class="d-inline border-0 rounded-pill px-3 py-2" 
+							
+							th:data="${id}"
+							th:dataSenderId="${currentUser}" 
+							th:dataRecipId="${recipientId}"
+							
+							placeholder="Type a message" 
+							name="editedMessage">
 
 						<button class="btn"><i class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
 					</form>

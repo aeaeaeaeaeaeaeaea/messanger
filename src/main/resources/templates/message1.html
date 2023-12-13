@@ -88,22 +88,18 @@
 										<li class="list-group-item border-0 d-flex">
 
 											<!-- Ссылка на чат и последенее сообщение -->
-											<div 
-												class="chat-link text-large ml-3 flex-grow-1"
+											<div class="chat-link text-large ml-3 flex-grow-1"
 												th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}"
 												th:data="${chatRoom.getId()}">
 
 
-												<a 
-													class="c"
-													th:text="${chatRoom.getRecipientName()}"
-													th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}"
-												>
+												<a class="c" th:text="${chatRoom.getRecipientName()}"
+													th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}">
 												</a>
 
 
-												<br/>
-												
+												<br />
+
 												<small class="text-gray text-right">
 
 													<i class="zmdi zmdi-check-all" style="font-size:16px!important"
@@ -131,11 +127,11 @@
 														th:text="${lastMessages.get(chatRoom.getId()).getSendTime().format(formatter)}">
 														text
 													</small>
-													
+
 													</br>
-													
+
 													<small th:text="${unreadMessages}">
-														
+
 													</small>
 
 
@@ -157,17 +153,12 @@
 										<li class="list-group-item border-0 d-flex">
 
 											<!-- Ссылка на чат и последенее сообщение -->
-											<div 
-												class="chat-link text-large ml-3 flex-grow-1"
+											<div class="chat-link text-large ml-3 flex-grow-1"
 												th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}"
-												th:data="${chatRoom.getId()}"
-											>
+												th:data="${chatRoom.getId()}">
 
-												<a 
-													class="c"
-													th:text="${chatRoom.getSenderName()}"
-													th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}"
-												>	
+												<a class="c" th:text="${chatRoom.getSenderName()}"
+													th:href="@{/chat/{chatId}(chatId = ${chatRoom.getId()})}">
 												</a>
 
 												<br />
@@ -200,8 +191,13 @@
 														th:text="${lastMessages.get(chatRoom.getId()).getSendTime().format(formatter)}">
 														text
 													</small>
+													
+													<br/>
 
+													<small th:text="${unreadMessages}">
 
+													</small>
+													
 												</small>
 
 												<br>
