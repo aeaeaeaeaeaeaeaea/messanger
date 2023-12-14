@@ -36,10 +36,10 @@ public class ChatRoom {
 	@Column("recipientid")
 	private String recipientId;
 	
-	@Column("unreadRecipientMessages")
+	@Column("unreadrecipientmessages")
 	private int unreadRecipientMessages;
 	
-	@Column("unreadSenderMessages")
+	@Column("unreadsendermessages")
 	private int unreadSenderMessages;
 	
 

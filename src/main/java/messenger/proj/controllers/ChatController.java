@@ -99,14 +99,16 @@ public class ChatController {
 
 		}
 
-		countUnreadMessages = 0;
-
-		for (message message : messageRedisService.getLatestMessages(userId)) {
-			// Убрать проверку на null
-			if (message.getStatus() != null && !message.getSenderId().equals(curentUserId)
-					&& message.getStatus().equals("Unread")) {
-				countUnreadMessages++;
-			}
+		
+		
+		
+		
+		if (chat.get().getSenderId().equals(curentUserId)) {
+			model.addAttribute("recipientId", chat.get().getRecipientId());
+			model.addAttribute("currentUser", chat.get().getSenderId());
+		} else if (chat.get().getRecipientId().equals(curentUserId)) {			
+			model.addAttribute("currentUser", chat.get().getRecipientId());
+			model.addAttribute("recipientId", chat.get().getSenderId());
 		}
 		
 	
@@ -125,10 +127,10 @@ public class ChatController {
 
 		model.addAttribute("lastMessages", messageServ.getLastMessage(chatRoomServ.findAll(curentUserId)));
 
-		model.addAttribute("currentUser", curentUserId);
+		
 
 		model.addAttribute("chatList", chatRoomServ.lastMessageOrder(curentUserId));
-		model.addAttribute("recipientId", chat.get().getRecipientId());
+		
 
 		model.addAttribute("cachedMessages", messageServ.getCaсhedMessages(userId));
 		model.addAttribute("cassandraMessages", list);

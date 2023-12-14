@@ -62,6 +62,8 @@ public class ChatRoomService {
 			chatRoom.setRecipientId(recipientId);
 			chatRoom.setSenderName(currentUser.get().getUsername());
 			chatRoom.setRecipientName(recipient.get().getUsername());
+			chatRoom.setUnreadRecipientMessages(0);
+			chatRoom.setUnreadSenderMessages(0);
 			chatRoomRep.save(chatRoom);
 		}
 

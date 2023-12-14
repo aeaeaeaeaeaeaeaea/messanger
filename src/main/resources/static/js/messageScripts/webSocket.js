@@ -4,6 +4,8 @@ var chatId = mess.getAttribute("data");
 var dataSenderId = mess.getAttribute("dataSenderId");
 var dataRecipId = mess.getAttribute("dataRecipId");
 
+
+
 function connectToChat(chatId) {
 	var socket = new SockJS('/chat/' + chatId);
 	stompClient = Stomp.over(socket);
