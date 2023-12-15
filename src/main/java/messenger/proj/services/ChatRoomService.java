@@ -68,6 +68,10 @@ public class ChatRoomService {
 		}
 
 	}
+	
+	public void chatUnreadMessagesUpdate(ChatRoom chatRoom) {
+		chatRoomRep.save(chatRoom);
+	}
 
 	public Optional<ChatRoom> findBySenderIdAndRecipientId(String senderId, String recipientId) {
 

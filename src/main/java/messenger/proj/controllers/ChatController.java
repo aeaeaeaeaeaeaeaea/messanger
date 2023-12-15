@@ -99,10 +99,6 @@ public class ChatController {
 
 		}
 
-		
-		
-		
-		
 		if (chat.get().getSenderId().equals(curentUserId)) {
 			model.addAttribute("recipientId", chat.get().getRecipientId());
 			model.addAttribute("currentUser", chat.get().getSenderId());
@@ -111,7 +107,21 @@ public class ChatController {
 			model.addAttribute("recipientId", chat.get().getSenderId());
 		}
 		
-	
+		chat.get().setUnreadRecipientMessages(0);
+		chat.get().setUnreadSenderMessages(0);
+		chatRoomServ.chatUnreadMessagesUpdate(chat.get());
+		
+	    for (message message : messageRedisService.getLatestMessages(userId)) {
+	    	if (message.getStatus().equals("Unread") && message.getSenderId().equals(chat.get().getSenderId())) {
+	    		//Увеличиваем счетчик для unreadRecipientMessages
+	    		chat.get().setUnreadRecipientMessages(chat.get().getUnreadRecipientMessages() + 1);
+	    		chatRoomServ.chatUnreadMessagesUpdate(chat.get());
+	    	} else if (message.getStatus().equals("Unread") && message.getRecipientId().equals(chat.get().getSenderId())) {
+	    		//Увеличиваем счетчик для unreadSenderMessages
+	    		chat.get().setUnreadSenderMessages(chat.get().getUnreadSenderMessages() + 1);
+	    		chatRoomServ.chatUnreadMessagesUpdate(chat.get());
+	    	}
+	    }
 
 		model.addAttribute("unreadMessages", countUnreadMessages);
 
