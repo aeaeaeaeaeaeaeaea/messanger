@@ -33,11 +33,13 @@ public class MessageService {
 	private final MessageRedisService messageRedisServ;
 	private final RedisTemplate<String, message> redisTemplate;
 	private final RedisTemplate<String, String> redisTemplate1;
+	private final ChatRoomService chatRoomService;
 
 	@Autowired
-	public MessageService(MessageRepositroy messageRep, MessageRedisService messageRedisServ,
+	public MessageService(MessageRepositroy messageRep, ChatRoomService chatRoomService, MessageRedisService messageRedisServ,
 			RedisTemplate<String, message> redisTemplate, RedisTemplate<String, String> redisTemplate1) {
 		this.messageRep = messageRep;
+		this.chatRoomService = chatRoomService;
 		this.redisTemplate1 = redisTemplate1;
 		this.redisTemplate = redisTemplate;
 		this.messageRedisServ = messageRedisServ;
@@ -69,6 +71,37 @@ public class MessageService {
 
 		redisTemplate.delete("message:" + chatId + ":" + messageId);
 		redisTemplate1.opsForList().remove(chatId, 0, "message:" + chatId + ":" + messageId);
+
+	}
+	
+	// Метод, который устанавливает статус 'Unread' для сообщений и считает их 
+	public void setMessageStatus(ChatRoom chat, String chatId) {
+
+		for (message message : messageRedisServ.getLatestMessages(chatId)) {
+			if (message.getStatus().equals("Unread") && message.getSenderId().equals(chat.getSenderId())) {
+				// Увеличиваем счетчик для unreadRecipientMessages
+				chat.setUnreadRecipientMessages(chat.getUnreadRecipientMessages() + 1);
+				chatRoomService.chatUnreadMessagesUpdate(chat);
+			} else if (message.getStatus().equals("Unread")
+					&& message.getRecipientId().equals(chat.getSenderId())) {
+				// Увеличиваем счетчик для unreadSenderMessages
+				chat.setUnreadSenderMessages(chat.getUnreadSenderMessages() + 1);
+				chatRoomService.chatUnreadMessagesUpdate(chat);
+			}
+		}
+
+		for (message message : findByChatId(chatId)) {
+			if (message.getStatus().equals("Unread") && message.getSenderId().equals(chat.getSenderId())) {
+				// Увеличиваем счетчик для unreadRecipientMessages
+				chat.setUnreadRecipientMessages(chat.getUnreadRecipientMessages() + 1);
+				chatRoomService.chatUnreadMessagesUpdate(chat);
+			} else if (message.getStatus().equals("Unread")
+					&& message.getRecipientId().equals(chat.getSenderId())) {
+				// Увеличиваем счетчик для unreadSenderMessages
+				chat.setUnreadSenderMessages(chat.getUnreadSenderMessages() + 1);
+				chatRoomService.chatUnreadMessagesUpdate(chat);
+			}
+		}
 
 	}
 
@@ -105,16 +138,16 @@ public class MessageService {
 		if (lastMessages.size() != 0) {
 
 			List<Map.Entry<String, message>> list = new ArrayList<>(lastMessages.entrySet());
-			
+
 			Collections.sort(list, Comparator.comparing(entry -> entry.getValue().getSendTime()));
 			Collections.reverse(list);
 
 			Map<String, message> sortedHashMap = new LinkedHashMap<>();
-			
+
 			for (Map.Entry<String, message> entry : list) {
 				sortedHashMap.put(entry.getKey(), entry.getValue());
 			}
-			
+
 			return sortedHashMap;
 		}
 

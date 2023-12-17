@@ -130,7 +130,7 @@
 
 													</br>
 
-													<small th:text="${unreadMessages}">
+													<small th:text="${chatRoom.getUnreadSenderMessages()}">
 
 													</small>
 
@@ -191,13 +191,13 @@
 														th:text="${lastMessages.get(chatRoom.getId()).getSendTime().format(formatter)}">
 														text
 													</small>
-													
-													<br/>
 
-													<small th:text="${unreadMessages}">
+													<br />
+
+													<small th:text="${chatRoom.getUnreadRecipientMessages()}">
 
 													</small>
-													
+
 												</small>
 
 												<br>

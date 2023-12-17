@@ -79,6 +79,7 @@ public class ChatController {
 		return ResponseEntity.ok(new String(chatId));
 	}
 
+	// Не отображается последнее сообщение если они из cassandra!
 	@GetMapping("/chat/{userId}")
 	public String chat(@PathVariable("userId") String userId, Model model) {
 
@@ -86,8 +87,12 @@ public class ChatController {
 		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
 
 		String curentUserId = personDetails.getUser().getId();
-
 		Optional<ChatRoom> chat = chatRoomServ.findById(userId);
+		List<message> list = messageServ.findByChatId(userId);
+
+		chat.get().setUnreadRecipientMessages(0);
+		chat.get().setUnreadSenderMessages(0);
+		chatRoomServ.chatUnreadMessagesUpdate(chat.get());
 
 		if (!chat.isPresent()) {
 			return "redirect:/users";
@@ -99,52 +104,49 @@ public class ChatController {
 
 		}
 
+		// Блок кода, который устанавливает recipientId и senderId для сообщений
 		if (chat.get().getSenderId().equals(curentUserId)) {
 			model.addAttribute("recipientId", chat.get().getRecipientId());
 			model.addAttribute("currentUser", chat.get().getSenderId());
-		} else if (chat.get().getRecipientId().equals(curentUserId)) {			
+		} else if (chat.get().getRecipientId().equals(curentUserId)) {
 			model.addAttribute("currentUser", chat.get().getRecipientId());
 			model.addAttribute("recipientId", chat.get().getSenderId());
 		}
+		// Конец блока кода
+
+		// Блок кода, который делает сообщения прочитанными
+		for (message message : messageRedisService.getLatestMessages(userId)) {
+			if (message.getStatus().equals("Unread") && message.getRecipientId().equals(curentUserId)) {
+				message.setStatus("Read");
+				messageServ.edit(message, message.getId());
+			}
+		}
 		
-		chat.get().setUnreadRecipientMessages(0);
-		chat.get().setUnreadSenderMessages(0);
-		chatRoomServ.chatUnreadMessagesUpdate(chat.get());
+		for (message message : messageServ.findByChatId(userId)) {
+			if (message.getStatus().equals("Unread") && message.getRecipientId().equals(curentUserId)) {
+				message.setStatus("Read");
+				messageServ.edit(message, message.getId());
+			}
+		}
+		// Конец блока кода
 		
-	    for (message message : messageRedisService.getLatestMessages(userId)) {
-	    	if (message.getStatus().equals("Unread") && message.getSenderId().equals(chat.get().getSenderId())) {
-	    		//Увеличиваем счетчик для unreadRecipientMessages
-	    		chat.get().setUnreadRecipientMessages(chat.get().getUnreadRecipientMessages() + 1);
-	    		chatRoomServ.chatUnreadMessagesUpdate(chat.get());
-	    	} else if (message.getStatus().equals("Unread") && message.getRecipientId().equals(chat.get().getSenderId())) {
-	    		//Увеличиваем счетчик для unreadSenderMessages
-	    		chat.get().setUnreadSenderMessages(chat.get().getUnreadSenderMessages() + 1);
-	    		chatRoomServ.chatUnreadMessagesUpdate(chat.get());
-	    	}
-	    }
+		// Метод, который устанавливает статус 'Unread' для сообщений и считает их 
+		messageServ.setMessageStatus(chat.get(), userId);
 
-		model.addAttribute("unreadMessages", countUnreadMessages);
+		
 
-		List<message> list = messageServ.findByChatId(userId);
-
+		model.addAttribute("unreadSenderMessages", chat.get().getUnreadSenderMessages());
+		model.addAttribute("unreadRecipientMessages", chat.get().getUnreadRecipientMessages());
 		model.addAttribute("username", userServ.findById(curentUserId).get().getUsername());
 		model.addAttribute("f", new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd HH:mm:ss").toFormatter());
-
 		model.addAttribute("todayFormat", new DateTimeFormatterBuilder().appendPattern("HH:mm").toFormatter());
 		model.addAttribute("formatter", new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter());
 		model.addAttribute("todayDate",
 				LocalDateTime.now().format(new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter()));
-
 		model.addAttribute("lastMessages", messageServ.getLastMessage(chatRoomServ.findAll(curentUserId)));
-
-		
-
 		model.addAttribute("chatList", chatRoomServ.lastMessageOrder(curentUserId));
-		
-
 		model.addAttribute("cachedMessages", messageServ.getCaсhedMessages(userId));
 		model.addAttribute("cassandraMessages", list);
-
 		model.addAttribute("id", userId);
 
 		return "chat";
@@ -242,10 +244,6 @@ public class ChatController {
 			}
 
 		}
-
-		
-
-		
 
 		model.addAttribute("unreadMessages", countUnreadMessages);
 
