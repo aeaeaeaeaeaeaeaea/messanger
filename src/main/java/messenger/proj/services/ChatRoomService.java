@@ -4,12 +4,14 @@ import java.util.UUID;
 import java.util.stream.Stream;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import messenger.proj.models.ChatRoom;
 import messenger.proj.models.User;
 import messenger.proj.models.message;
 import messenger.proj.repositories.ChatRoomRepository;
+
 
 import org.springframework.data.cassandra.core.CassandraTemplate;
 import org.springframework.data.cassandra.core.query.Criteria;
@@ -18,7 +20,7 @@ import org.springframework.stereotype.Repository;
 
 import com.datastax.oss.driver.api.querybuilder.QueryBuilder;
 
-import jnr.ffi.Struct.int16_t;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,6 +70,8 @@ public class ChatRoomService {
 		}
 
 	}
+
+	
 	
 	public void chatUnreadMessagesUpdate(ChatRoom chatRoom) {
 		chatRoomRep.save(chatRoom);

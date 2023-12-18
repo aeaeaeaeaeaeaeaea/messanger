@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.HttpClientErrorException.Forbidden;
 
-import jnr.ffi.Struct.int16_t;
+
 import messenger.proj.models.ChatRoom;
 import messenger.proj.models.ConnectionInfo;
 import messenger.proj.models.message;
@@ -49,8 +49,7 @@ public class ChatController {
 	private final ConnectionService connectionServ;
 	private final ElasticSearchQuery elasticSearchQuery;
 	private final MessageRedisService messageRedisService;
-	private int countUnreadMessages = 0;
-
+	
 	@Autowired
 	public ChatController(ConnectionService connectionServ, RedisTemplate<String, message> redisTemplate,
 			MessageRedisService messageRedisService, UserService userServ, ChatRoomService chatRoomServ,
@@ -114,26 +113,10 @@ public class ChatController {
 		}
 		// Конец блока кода
 
-		// Блок кода, который делает сообщения прочитанными
-		for (message message : messageRedisService.getLatestMessages(userId)) {
-			if (message.getStatus().equals("Unread") && message.getRecipientId().equals(curentUserId)) {
-				message.setStatus("Read");
-				messageServ.edit(message, message.getId());
-			}
-		}
-		
-		for (message message : messageServ.findByChatId(userId)) {
-			if (message.getStatus().equals("Unread") && message.getRecipientId().equals(curentUserId)) {
-				message.setStatus("Read");
-				messageServ.edit(message, message.getId());
-			}
-		}
-		// Конец блока кода
-		
-		// Метод, который устанавливает статус 'Unread' для сообщений и считает их 
+		// Метод, который делает сообщения прочитанными
+		messageServ.readMessages(userId, curentUserId);
+		// Метод, который устанавливает статус 'Unread' для сообщений и считает их
 		messageServ.setMessageStatus(chat.get(), userId);
-
-		
 
 		model.addAttribute("unreadSenderMessages", chat.get().getUnreadSenderMessages());
 		model.addAttribute("unreadRecipientMessages", chat.get().getUnreadRecipientMessages());
@@ -245,7 +228,7 @@ public class ChatController {
 
 		}
 
-		model.addAttribute("unreadMessages", countUnreadMessages);
+		
 
 		model.addAttribute("todayFormat", new DateTimeFormatterBuilder().appendPattern("HH:mm").toFormatter());
 		model.addAttribute("formatter", new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter());

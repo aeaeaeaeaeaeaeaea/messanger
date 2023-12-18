@@ -18,28 +18,31 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import messenger.proj.models.ChatRoom;
 import messenger.proj.models.message;
+import messenger.proj.repositories.ChatRoomRepository;
 import messenger.proj.repositories.MessageRepositroy;
 
 @Service
 @Transactional(readOnly = true)
+
 public class MessageService {
 
 	private final MessageRepositroy messageRep;
 	private final MessageRedisService messageRedisServ;
 	private final RedisTemplate<String, message> redisTemplate;
 	private final RedisTemplate<String, String> redisTemplate1;
-	private final ChatRoomService chatRoomService;
+	private final ChatRoomRepository chatRoomRepository;
 
 	@Autowired
-	public MessageService(MessageRepositroy messageRep, ChatRoomService chatRoomService, MessageRedisService messageRedisServ,
+	public MessageService(MessageRepositroy messageRep, ChatRoomRepository chatRoomRepository, MessageRedisService messageRedisServ,
 			RedisTemplate<String, message> redisTemplate, RedisTemplate<String, String> redisTemplate1) {
 		this.messageRep = messageRep;
-		this.chatRoomService = chatRoomService;
+		this.chatRoomRepository = chatRoomRepository;
 		this.redisTemplate1 = redisTemplate1;
 		this.redisTemplate = redisTemplate;
 		this.messageRedisServ = messageRedisServ;
@@ -74,6 +77,22 @@ public class MessageService {
 
 	}
 	
+	public void readMessages(String chatId, String curentUserId) {
+		for (message message : messageRedisServ.getLatestMessages(chatId)) {
+			if (message.getStatus().equals("Unread") && message.getRecipientId().equals(curentUserId)) {
+				message.setStatus("Read");
+				edit(message, message.getId());
+			}
+		}
+
+		for (message message : findByChatId(chatId)) {
+			if (message.getStatus().equals("Unread") && message.getRecipientId().equals(curentUserId)) {
+				message.setStatus("Read");
+				edit(message, message.getId());
+			}
+		}
+	}
+	
 	// Метод, который устанавливает статус 'Unread' для сообщений и считает их 
 	public void setMessageStatus(ChatRoom chat, String chatId) {
 
@@ -81,12 +100,12 @@ public class MessageService {
 			if (message.getStatus().equals("Unread") && message.getSenderId().equals(chat.getSenderId())) {
 				// Увеличиваем счетчик для unreadRecipientMessages
 				chat.setUnreadRecipientMessages(chat.getUnreadRecipientMessages() + 1);
-				chatRoomService.chatUnreadMessagesUpdate(chat);
+				chatRoomRepository.save(chat);
 			} else if (message.getStatus().equals("Unread")
 					&& message.getRecipientId().equals(chat.getSenderId())) {
 				// Увеличиваем счетчик для unreadSenderMessages
 				chat.setUnreadSenderMessages(chat.getUnreadSenderMessages() + 1);
-				chatRoomService.chatUnreadMessagesUpdate(chat);
+				chatRoomRepository.save(chat);
 			}
 		}
 
@@ -94,12 +113,12 @@ public class MessageService {
 			if (message.getStatus().equals("Unread") && message.getSenderId().equals(chat.getSenderId())) {
 				// Увеличиваем счетчик для unreadRecipientMessages
 				chat.setUnreadRecipientMessages(chat.getUnreadRecipientMessages() + 1);
-				chatRoomService.chatUnreadMessagesUpdate(chat);
+				chatRoomRepository.save(chat);
 			} else if (message.getStatus().equals("Unread")
 					&& message.getRecipientId().equals(chat.getSenderId())) {
 				// Увеличиваем счетчик для unreadSenderMessages
 				chat.setUnreadSenderMessages(chat.getUnreadSenderMessages() + 1);
-				chatRoomService.chatUnreadMessagesUpdate(chat);
+				chatRoomRepository.save(chat);
 			}
 		}
 
@@ -131,7 +150,7 @@ public class MessageService {
 				List<message> messages = getCaсhedMessages(chatRoom.getId());
 				lastMessages.put(chatRoom.getId(), messages.get(messages.size() - 1));
 			} catch (IndexOutOfBoundsException e) {
-				/* lastMessages.put(chatRoom.getId(), new message()); */
+				System.out.println("REDIS ПУСТ");
 			}
 		}
 
