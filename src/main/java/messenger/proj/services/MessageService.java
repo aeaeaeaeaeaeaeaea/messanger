@@ -39,8 +39,9 @@ public class MessageService {
 	private final ChatRoomRepository chatRoomRepository;
 
 	@Autowired
-	public MessageService(MessageRepositroy messageRep, ChatRoomRepository chatRoomRepository, MessageRedisService messageRedisServ,
-			RedisTemplate<String, message> redisTemplate, RedisTemplate<String, String> redisTemplate1) {
+	public MessageService(MessageRepositroy messageRep, ChatRoomRepository chatRoomRepository,
+			MessageRedisService messageRedisServ, RedisTemplate<String, message> redisTemplate,
+			RedisTemplate<String, String> redisTemplate1) {
 		this.messageRep = messageRep;
 		this.chatRoomRepository = chatRoomRepository;
 		this.redisTemplate1 = redisTemplate1;
@@ -76,7 +77,7 @@ public class MessageService {
 		redisTemplate1.opsForList().remove(chatId, 0, "message:" + chatId + ":" + messageId);
 
 	}
-	
+
 	public void readMessages(String chatId, String curentUserId) {
 		for (message message : messageRedisServ.getLatestMessages(chatId)) {
 			if (message.getStatus().equals("Unread") && message.getRecipientId().equals(curentUserId)) {
@@ -92,8 +93,8 @@ public class MessageService {
 			}
 		}
 	}
-	
-	// Метод, который устанавливает статус 'Unread' для сообщений и считает их 
+
+	// Метод, который устанавливает статус 'Unread' для сообщений и считает их
 	public void setMessageStatus(ChatRoom chat, String chatId) {
 
 		for (message message : messageRedisServ.getLatestMessages(chatId)) {
@@ -101,8 +102,7 @@ public class MessageService {
 				// Увеличиваем счетчик для unreadRecipientMessages
 				chat.setUnreadRecipientMessages(chat.getUnreadRecipientMessages() + 1);
 				chatRoomRepository.save(chat);
-			} else if (message.getStatus().equals("Unread")
-					&& message.getRecipientId().equals(chat.getSenderId())) {
+			} else if (message.getStatus().equals("Unread") && message.getRecipientId().equals(chat.getSenderId())) {
 				// Увеличиваем счетчик для unreadSenderMessages
 				chat.setUnreadSenderMessages(chat.getUnreadSenderMessages() + 1);
 				chatRoomRepository.save(chat);
@@ -114,8 +114,7 @@ public class MessageService {
 				// Увеличиваем счетчик для unreadRecipientMessages
 				chat.setUnreadRecipientMessages(chat.getUnreadRecipientMessages() + 1);
 				chatRoomRepository.save(chat);
-			} else if (message.getStatus().equals("Unread")
-					&& message.getRecipientId().equals(chat.getSenderId())) {
+			} else if (message.getStatus().equals("Unread") && message.getRecipientId().equals(chat.getSenderId())) {
 				// Увеличиваем счетчик для unreadSenderMessages
 				chat.setUnreadSenderMessages(chat.getUnreadSenderMessages() + 1);
 				chatRoomRepository.save(chat);
@@ -138,7 +137,10 @@ public class MessageService {
 
 	public List<message> getCaсhedMessages(String chatId) {
 		return messageRedisServ.getLatestMessages(chatId);
-
+	}
+	
+	public List<message> getCassandraMessages(String chatId) {
+		return messageRep.findByChatId(chatId);
 	}
 
 	public Map<String, message> getLastMessage(List<ChatRoom> chats) {
@@ -147,10 +149,19 @@ public class MessageService {
 
 		for (ChatRoom chatRoom : chats) {
 			try {
+				// Получаю последние кэшированные сообщения
 				List<message> messages = getCaсhedMessages(chatRoom.getId());
-				lastMessages.put(chatRoom.getId(), messages.get(messages.size() - 1));
+				// Если последних кэшированных сообщений нет, то получаем сообщения из cassandra 
+				if (messages.isEmpty()) {
+					List<message> cassandraMessages = getCassandraMessages(chatRoom.getId());
+					lastMessages.put(chatRoom.getId(), cassandraMessages.get(cassandraMessages.size() - 1));
+				//  Кладем сообщения в hashMap для дальнейшего использования из redis'а, если они есть
+				} else {
+					lastMessages.put(chatRoom.getId(), messages.get(messages.size() - 1));
+				}
+
 			} catch (IndexOutOfBoundsException e) {
-				System.out.println("REDIS ПУСТ");
+				
 			}
 		}
 

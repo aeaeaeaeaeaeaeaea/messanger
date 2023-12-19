@@ -130,7 +130,7 @@
 
 													</br>
 
-													<small th:text="${chatRoom.getUnreadSenderMessages()}">
+													<small th:if="${chatRoom.getUnreadSenderMessages() != 0}" th:text="${chatRoom.getUnreadSenderMessages()}">
 
 													</small>
 
@@ -194,7 +194,7 @@
 
 													<br />
 
-													<small th:text="${chatRoom.getUnreadRecipientMessages()}">
+													<small th:if="${chatRoom.getUnreadRecipientMessages() != 0}" th:text="${chatRoom.getUnreadRecipientMessages()}">
 
 													</small>
 

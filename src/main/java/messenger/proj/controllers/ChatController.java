@@ -77,8 +77,8 @@ public class ChatController {
 
 		return ResponseEntity.ok(new String(chatId));
 	}
-
-	// Не отображается последнее сообщение если они из cassandra!
+	
+	// ДЛИНА ПОСЛЕДНЕГО СООБЩЕНИЯ В СПИСКАХ ЧАТОВ (СДЕЛАЮ ПОТОМ)
 	@GetMapping("/chat/{userId}")
 	public String chat(@PathVariable("userId") String userId, Model model) {
 
@@ -147,7 +147,8 @@ public class ChatController {
 	}
 
 	@PostMapping("/editMessage")
-	public String editMessage(@RequestParam("messageId") String messageId, @RequestParam("chatId") String chatId,
+	public String editMessage(@RequestParam("messageId") String messageId, 
+			@RequestParam("chatId") String chatId,
 			@RequestParam("sendTime") String sendTime, @RequestParam("content") String content,
 			@RequestParam("senderName") String senderName) {
 
@@ -173,7 +174,8 @@ public class ChatController {
 		message.setSendTime(ldt);
 		message.setSenderName(senderName);
 		message.setSenderId(personDetails.getUser().getId());
-
+		
+		
 		messageServ.edit(message, messageId);
 
 		return "redirect:/chat/" + chatId;
