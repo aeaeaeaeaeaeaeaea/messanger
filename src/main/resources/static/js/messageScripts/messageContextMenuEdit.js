@@ -29,12 +29,13 @@ $(function() {
 		modal.hide();
 
 		var mess = document.getElementById(messageId);
+		
 		var sendTime = mess.getAttribute("sendtime");
 		var senderName = mess.getAttribute("senderName");
 		var chatId = mess.getAttribute("chatId");
 		var content = mess.getAttribute("content");
+		var status = mess.getAttribute("status");
 		
-		console.log("Content " + content);
 
 		editMessageInput.value = content;
 
@@ -52,7 +53,7 @@ $(function() {
 
 			$.ajax({
 				type: "POST",
-				url: `/editMessage?messageId=${messageId}&chatId=${chatId}&sendTime=${sendTime}&content=${editedMessage}&senderName=${senderName}`,
+				url: `/editMessage?messageId=${messageId}&chatId=${chatId}&sendTime=${sendTime}&content=${editedMessage}&senderName=${senderName}&status=${status}`,
 				success: function() {
 					window.location.href = `/chat/${chatId}`;
 

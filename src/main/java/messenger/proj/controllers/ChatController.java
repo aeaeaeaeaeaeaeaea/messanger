@@ -148,10 +148,13 @@ public class ChatController {
 
 	@PostMapping("/editMessage")
 	public String editMessage(@RequestParam("messageId") String messageId, 
-			@RequestParam("chatId") String chatId,
-			@RequestParam("sendTime") String sendTime, @RequestParam("content") String content,
-			@RequestParam("senderName") String senderName) {
-
+							  @RequestParam("chatId") String chatId,
+							  @RequestParam("sendTime") String sendTime, 
+							  @RequestParam("content") String content,
+							  @RequestParam("senderName") String senderName,
+							  @RequestParam("status") String status) {
+		
+		
 		/*
 		 * System.out.println("CHAT ID " + chatId); System.out.println("MESSAGE ID " +
 		 * messageId); System.out.println("SEND TIME " + sendTime);
@@ -174,7 +177,9 @@ public class ChatController {
 		message.setSendTime(ldt);
 		message.setSenderName(senderName);
 		message.setSenderId(personDetails.getUser().getId());
+		message.setStatus(status);
 		
+		System.out.println("Message status " + message.getStatus());
 		
 		messageServ.edit(message, messageId);
 
