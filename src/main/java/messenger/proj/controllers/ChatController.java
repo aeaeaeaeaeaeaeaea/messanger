@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.HttpClientErrorException.Forbidden;
 
+import com.datastax.oss.driver.internal.core.util.Strings;
 
 import messenger.proj.models.ChatRoom;
 import messenger.proj.models.ConnectionInfo;
@@ -152,13 +153,12 @@ public class ChatController {
 							  @RequestParam("sendTime") String sendTime, 
 							  @RequestParam("content") String content,
 							  @RequestParam("senderName") String senderName,
-							  @RequestParam("status") String status) {
+							  @RequestParam("status") String status,
+							  @RequestParam("senderId") String senderId, 
+							  @RequestParam("recipientId") String recipientId) {
 		
 		
-		/*
-		 * System.out.println("CHAT ID " + chatId); System.out.println("MESSAGE ID " +
-		 * messageId); System.out.println("SEND TIME " + sendTime);
-		 */
+	
 		LocalDateTime ldt = LocalDateTime.parse(sendTime);
 
 		if (content.trim().isEmpty()) {
@@ -176,10 +176,11 @@ public class ChatController {
 		message.setChatId(chatId);
 		message.setSendTime(ldt);
 		message.setSenderName(senderName);
-		message.setSenderId(personDetails.getUser().getId());
+		message.setSenderId(senderId);
+		message.setRecipientId(recipientId);
 		message.setStatus(status);
 		
-		System.out.println("Message status " + message.getStatus());
+	
 		
 		messageServ.edit(message, messageId);
 

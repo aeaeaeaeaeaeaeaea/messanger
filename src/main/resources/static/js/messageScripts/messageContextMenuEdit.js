@@ -34,6 +34,8 @@ $(function() {
 		var senderName = mess.getAttribute("senderName");
 		var chatId = mess.getAttribute("chatId");
 		var content = mess.getAttribute("content");
+		var senderId = mess.getAttribute("senderId");
+		var recipientId = mess.getAttribute("recipientId");
 		var status = mess.getAttribute("status");
 		
 
@@ -53,7 +55,14 @@ $(function() {
 
 			$.ajax({
 				type: "POST",
-				url: `/editMessage?messageId=${messageId}&chatId=${chatId}&sendTime=${sendTime}&content=${editedMessage}&senderName=${senderName}&status=${status}`,
+				url: `/editMessage?messageId=${messageId}&
+								chatId=${chatId}&
+								sendTime=${sendTime}&
+								content=${editedMessage}&
+								senderName=${senderName}&
+								status=${status}&
+								senderId=${senderId}&
+								recipientId=${recipientId}`,
 				success: function() {
 					window.location.href = `/chat/${chatId}`;
 

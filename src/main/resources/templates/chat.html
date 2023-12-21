@@ -237,6 +237,9 @@
 									 th:sendtime="${cassandraMessage.getSendTime()}"
 									 th:chatId="${cassandraMessage.getChatId()}"
 									 
+									 th:recipientId="${cassandraMessage.getRecipientId()}"
+									 th:senderId="${cassandraMessage.getSenderId()}"
+									 
 								>
 
 									<div class="message__wrapper-top d-flex justify-content-between align-items-center">
@@ -278,6 +281,8 @@
 									 th:sendtime="${cachedMessage.getSendTime()}"
 									 th:chatId="${cachedMessage.getChatId()}"
 									 th:status="${cachedMessage.getStatus()}"
+									 th:recipientId="${cachedMessage.getRecipientId()}"
+									 th:senderId="${cachedMessage.getSenderId()}"
 									 
 								>
 
