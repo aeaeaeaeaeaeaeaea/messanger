@@ -29,7 +29,6 @@ import messenger.proj.repositories.MessageRepositroy;
 
 @Service
 @Transactional(readOnly = true)
-
 public class MessageService {
 
 	private final MessageRepositroy messageRep;
