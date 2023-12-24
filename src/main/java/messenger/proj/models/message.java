@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-@Table("messages")
+@Table("message")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class message {
 	
@@ -49,7 +49,6 @@ public class message {
 
 	public message() {	
 	}
-
 
 	public message(String id, LocalDateTime sendTime, String chatId, String senderId, String recipientId, String senderName,
 			String recipientName, String content, String status) {
@@ -152,6 +151,8 @@ public class message {
 	public void setSendTime(LocalDateTime sendTime) {
 		this.sendTime = sendTime;
 	}
+	
+
 
 
 	@Override

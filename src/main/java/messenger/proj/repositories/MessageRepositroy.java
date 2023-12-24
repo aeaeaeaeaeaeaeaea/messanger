@@ -14,7 +14,7 @@ import messenger.proj.models.message;
 @Repository
 public interface MessageRepositroy extends CassandraRepository<message, String> {
 
-	@Query("SELECT * FROM messages WHERE chatId = ?0 ORDER BY sendtime")
+	@Query("SELECT * FROM message WHERE chatId = ?0 ORDER BY sendtime")
 	List<message> findByChatId(String chatId);
 	
 	/*
@@ -23,7 +23,7 @@ public interface MessageRepositroy extends CassandraRepository<message, String> 
 	 * String id);
 	 */
 
-	@Query("DELETE FROM messages WHERE chatId = ?0 AND sendtime = ?1 AND id = ?2")
+	@Query("DELETE FROM message WHERE chatId = ?0 AND sendtime = ?1 AND id = ?2")
 	void deleteByChatId(String chatId, LocalDateTime localDateTime, String id);
 
 }

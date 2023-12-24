@@ -118,10 +118,10 @@
 											th:text="${lastMessages.get(chatRoom.getId()).getSendTime().format(formatter)}">
 											text
 										</small>
-										
+
 										</br>
-										
-									
+
+
 
 									</small>
 
@@ -178,10 +178,10 @@
 											th:text="${lastMessages.get(chatRoom.getId()).getSendTime().format(formatter)}">
 											text
 										</small>
-										
-										<br/>
-										
-										
+
+										<br />
+
+
 
 
 									</small>
@@ -228,19 +228,14 @@
 								style="word-break: break-word;">
 
 								<div class="message-content message__wrapper-box position-relative p-2"
-									 
-									 th:senderName="${cassandraMessage.getSenderName()}"
-									 th:status="${cassandraMessage.getStatus()}"
-									 th:text="${cassandraMessage.getContent()}"
-									 th:content="${cassandraMessage.getContent()}" 
-									 th:id="${cassandraMessage.getId()}"
-									 th:sendtime="${cassandraMessage.getSendTime()}"
-									 th:chatId="${cassandraMessage.getChatId()}"
-									 
-									 th:recipientId="${cassandraMessage.getRecipientId()}"
-									 th:senderId="${cassandraMessage.getSenderId()}"
-									 
-								>
+									th:senderName="${cassandraMessage.getSenderName()}"
+									th:status="${cassandraMessage.getStatus()}"
+									th:text="${cassandraMessage.getContent()}"
+									th:content="${cassandraMessage.getContent()}" th:id="${cassandraMessage.getId()}"
+									th:sendtime="${cassandraMessage.getSendTime()}"
+									th:chatId="${cassandraMessage.getChatId()}"
+									th:recipientId="${cassandraMessage.getRecipientId()}"
+									th:senderId="${cassandraMessage.getSenderId()}">
 
 									<div class="message__wrapper-top d-flex justify-content-between align-items-center">
 										<p class="message__user-name" th:text="${cassandraMessage.getSenderName()}">
@@ -274,17 +269,12 @@
 								style="word-break: break-word;">
 
 								<div class="message-content message__wrapper-box position-relative p-2"
-									
-									 th:senderName="${cachedMessage.getSenderName()}"
-									 th:content="${cachedMessage.getContent()}" 
-									 th:id="${cachedMessage.getId()}"
-									 th:sendtime="${cachedMessage.getSendTime()}"
-									 th:chatId="${cachedMessage.getChatId()}"
-									 th:status="${cachedMessage.getStatus()}"
-									 th:recipientId="${cachedMessage.getRecipientId()}"
-									 th:senderId="${cachedMessage.getSenderId()}"
-									 
-								>
+									th:senderName="${cachedMessage.getSenderName()}"
+									th:content="${cachedMessage.getContent()}" th:id="${cachedMessage.getId()}"
+									th:sendtime="${cachedMessage.getSendTime()}"
+									th:chatId="${cachedMessage.getChatId()}" th:status="${cachedMessage.getStatus()}"
+									th:recipientId="${cachedMessage.getRecipientId()}"
+									th:senderId="${cachedMessage.getSenderId()}">
 
 
 									<div class="message__wrapper-top d-flex justify-content-between align-items-center">
@@ -328,24 +318,48 @@
 					<!-- Конец смайлика -->
 
 					<!-- Скрепка -->
-					<button class="btn mx-1">
-						<i class="zmdi zmdi-attachment-alt text-xlarge rotate-45 text-gray">
-						</i>
-					</button>
+					<label for="fileInput" class="zmdi zmdi-attachment-alt text-xlarge rotate-45 text-gray">
+					</label>
+					<input type="file" name="file" id="fileInput" style="display:none;" />
 					<!-- Конец скрепки -->
+
+					<!-- ФАЙЛЕКИ -->
+					<script>
+						document.getElementById('fileInput').addEventListener('change', handleFileSelect);
+
+						function handleFileSelect(event) {
+							var selectedFile = event.target.files[0];
+							if (selectedFile) {
+								// Создаем объект FormData и добавляем выбранный файл
+								var formData = new FormData();
+								formData.append('file', selectedFile);
+
+								// Отправляем POST-запрос с использованием функции fetch
+								fetch('/upload', {
+									method: 'POST',
+									body: formData
+								})
+									.then(response => response.json())
+									.then(data => {
+										console.log('File uploaded successfully:', data);
+										// Дополнительная логика после успешной загрузки файла
+									})
+									.catch(error => {
+										console.error('Error uploading file:', error);
+										// Дополнительная логика в случае ошибки
+									});
+							}
+						}
+					</script>
+					<!-- КОНЕЦ ФАЙЛЕКОВ -->
 
 					<!-- Форма для отправки сообщений -->
 					<form class="p-1 flex-grow-1 mx-1" id="messageForm" style="width: 100%;">
 
 						<input style="width: 90%;" id="messageInput" type="text"
-							class="d-inline border-0 rounded-pill px-3 py-2" 
-							
-							th:data="${id}"
-							th:dataSenderId="${currentUser}" 
-							th:dataRecipId="${recipientId}"
-							
-							placeholder="Type a message" 
-							name="editedMessage">
+							class="d-inline border-0 rounded-pill px-3 py-2" th:data="${id}"
+							th:dataSenderId="${currentUser}" th:dataRecipId="${recipientId}"
+							placeholder="Type a message" name="editedMessage">
 
 						<button class="btn"><i class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
 					</form>

@@ -50,7 +50,7 @@ public class ChatController {
 	private final ConnectionService connectionServ;
 	private final ElasticSearchQuery elasticSearchQuery;
 	private final MessageRedisService messageRedisService;
-	
+
 	@Autowired
 	public ChatController(ConnectionService connectionServ, RedisTemplate<String, message> redisTemplate,
 			MessageRedisService messageRedisService, UserService userServ, ChatRoomService chatRoomServ,
@@ -78,7 +78,7 @@ public class ChatController {
 
 		return ResponseEntity.ok(new String(chatId));
 	}
-	
+
 	// ДЛИНА ПОСЛЕДНЕГО СООБЩЕНИЯ В СПИСКАХ ЧАТОВ (СДЕЛАЮ ПОТОМ)
 	@GetMapping("/chat/{userId}")
 	public String chat(@PathVariable("userId") String userId, Model model) {
@@ -148,17 +148,11 @@ public class ChatController {
 	}
 
 	@PostMapping("/editMessage")
-	public String editMessage(@RequestParam("messageId") String messageId, 
-							  @RequestParam("chatId") String chatId,
-							  @RequestParam("sendTime") String sendTime, 
-							  @RequestParam("content") String content,
-							  @RequestParam("senderName") String senderName,
-							  @RequestParam("status") String status,
-							  @RequestParam("senderId") String senderId, 
-							  @RequestParam("recipientId") String recipientId) {
-		
-		
-	
+	public String editMessage(@RequestParam("messageId") String messageId, @RequestParam("chatId") String chatId,
+			@RequestParam("sendTime") String sendTime, @RequestParam("content") String content,
+			@RequestParam("senderName") String senderName, @RequestParam("status") String status,
+			@RequestParam("senderId") String senderId, @RequestParam("recipientId") String recipientId) {
+
 		LocalDateTime ldt = LocalDateTime.parse(sendTime);
 
 		if (content.trim().isEmpty()) {
@@ -179,9 +173,7 @@ public class ChatController {
 		message.setSenderId(senderId);
 		message.setRecipientId(recipientId);
 		message.setStatus(status);
-		
-	
-		
+
 		messageServ.edit(message, messageId);
 
 		return "redirect:/chat/" + chatId;
@@ -236,8 +228,6 @@ public class ChatController {
 
 		}
 
-		
-
 		model.addAttribute("todayFormat", new DateTimeFormatterBuilder().appendPattern("HH:mm").toFormatter());
 		model.addAttribute("formatter", new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter());
 		model.addAttribute("todayDate",
@@ -253,5 +243,11 @@ public class ChatController {
 		model.addAttribute("users", userServ.findAll());
 
 		return "message1";
+	}
+
+	@PostMapping("/upload")
+	public String uploadFile() {
+		System.out.println("TEST PASSED");
+		return "redirect:/users";
 	}
 }

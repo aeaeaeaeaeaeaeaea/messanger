@@ -12,10 +12,22 @@ public class FileEntry {
 	
 	@Column("path")
 	private String path;
+	
+	@Column("messageid")
+	private String messageId;
 
-	public FileEntry(String id, String path) {
+	public FileEntry(String id, String messageId, String path) {
 		this.id = id;
+		this.messageId = messageId;
 		this.path = path;
+	}
+	
+	public String getMessageId() {
+		return messageId;
+	}
+
+	public void setMessageId(String messageId) {
+		this.messageId = messageId;
 	}
 
 	public String getId() {
