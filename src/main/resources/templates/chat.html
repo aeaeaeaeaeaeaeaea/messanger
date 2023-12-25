@@ -285,6 +285,12 @@
 
 									<div class="message__wrapper-bottom d-flex align-items-end justify-content-between">
 
+										<!-- Если у сообещния есть файл вывести его тут -->
+
+
+
+										<!-- \x_x/ -->
+
 										<p th:text="${cachedMessage.getContent()}"
 											th:senderName="${cachedMessage.getSenderName()}"
 											class="message__wrapper-text">
@@ -318,36 +324,36 @@
 					<!-- Конец смайлика -->
 
 					<!-- Скрепка -->
-					<label for="fileInput" class="zmdi zmdi-attachment-alt text-xlarge rotate-45 text-gray">
-					</label>
-					<input type="file" name="file" id="fileInput" style="display:none;" />
-					<!-- Конец скрепки -->
+					<form id="fileForm" enctype="multipart/form-data">
+						<input type="file" name="file" id="fileInput"/>
+						<button type="button" onclick="uploadFile()">Upload</button>
+					</form>
 
-					<!-- ФАЙЛЕКИ -->
 					<script>
-						document.getElementById('fileInput').addEventListener('change', handleFileSelect);
+						function uploadFile() {
+							var fileInput = document.getElementById('fileInput');
+							var file = fileInput.files[0];
 
-						function handleFileSelect(event) {
-							var selectedFile = event.target.files[0];
-							if (selectedFile) {
-								// Создаем объект FormData и добавляем выбранный файл
+							if (file) {
 								var formData = new FormData();
-								formData.append('file', selectedFile);
+								formData.append('file', file);
 
-								// Отправляем POST-запрос с использованием функции fetch
 								fetch('/upload', {
 									method: 'POST',
-									body: formData
+									body: formData,
+									headers: {
+										'Content-Type': 'multipart/form-data'
+									}
 								})
 									.then(response => response.json())
 									.then(data => {
 										console.log('File uploaded successfully:', data);
-										// Дополнительная логика после успешной загрузки файла
 									})
 									.catch(error => {
 										console.error('Error uploading file:', error);
-										// Дополнительная логика в случае ошибки
 									});
+							} else {
+								console.error('No file selected');
 							}
 						}
 					</script>

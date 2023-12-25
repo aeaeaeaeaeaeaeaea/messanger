@@ -22,7 +22,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -58,10 +60,13 @@ public class MessageController {
 
 	@MessageMapping("/chat/{chatId}/sendMessage")
 	@SendTo("/topic/{chatId}")
-	public void processChatMessage(@Payload message message, @PathVariable("chatId") String chatId)
-			throws JsonMappingException, JsonProcessingException {
+	public void processChatMessage(@Payload message message, 
+								   @PathVariable("chatId") String chatId,
+								   
+								   ) throws JsonMappingException, JsonProcessingException {
 	
-
+		
+		
 		if (!message.getContent().equals("")) {
 
 			ObjectMapper objectMapper = new ObjectMapper();
