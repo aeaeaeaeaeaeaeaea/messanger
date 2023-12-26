@@ -4,7 +4,10 @@ import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Table("file")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FileEntry {
 
 	@PrimaryKey
@@ -15,6 +18,10 @@ public class FileEntry {
 	
 	@Column("messageid")
 	private String messageId;
+	
+	public FileEntry() {
+		
+	}
 
 	public FileEntry(String id, String messageId, String path) {
 		this.id = id;
@@ -45,5 +52,9 @@ public class FileEntry {
 	public void setPath(String path) {
 		this.path = path;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "FileEntry [id=" + id + ", path=" + path + ", messageId=" + messageId + "]";
+	}
 }

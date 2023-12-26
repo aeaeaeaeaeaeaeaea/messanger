@@ -324,10 +324,10 @@
 					<!-- Конец смайлика -->
 
 					<!-- Скрепка -->
-					<form id="fileForm" enctype="multipart/form-data">
-						<input type="file" name="file" id="fileInput"/>
+					<!--<form id="fileForm" enctype="multipart/form-data">
+						
 						<button type="button" onclick="uploadFile()">Upload</button>
-					</form>
+					</form>-->
 
 					<script>
 						function uploadFile() {
@@ -360,12 +360,20 @@
 					<!-- КОНЕЦ ФАЙЛЕКОВ -->
 
 					<!-- Форма для отправки сообщений -->
-					<form class="p-1 flex-grow-1 mx-1" id="messageForm" style="width: 100%;">
+					<form class="p-1 flex-grow-1 mx-1" id="messageForm" style="width: 100%;" enctype="multipart/form-data">
 
 						<input style="width: 90%;" id="messageInput" type="text"
-							class="d-inline border-0 rounded-pill px-3 py-2" th:data="${id}"
-							th:dataSenderId="${currentUser}" th:dataRecipId="${recipientId}"
-							placeholder="Type a message" name="editedMessage">
+							class="d-inline border-0 rounded-pill px-3 py-2" 
+							
+							th:data="${id}"
+							th:dataSenderId="${currentUser}" 
+							th:dataRecipId="${recipientId}"
+							
+							placeholder="Type a message" name="editedMessage"
+						>
+							
+							<input type="file" name="file" id="fileInput">
+							
 
 						<button class="btn"><i class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
 					</form>
@@ -379,7 +387,8 @@
 
 						<input style="width: 90%;" id="editMessageInput" type="text"
 							class="d-inline border-0 rounded-pill px-3 py-2" placeholder="Type a message"
-							name="editedMessage">
+							name="editedMessage"
+						>
 
 						<button class="btn"><i class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
 

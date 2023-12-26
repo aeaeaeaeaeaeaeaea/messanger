@@ -34,6 +34,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import messenger.proj.models.ChatRoom;
+import messenger.proj.models.FileEntry;
 import messenger.proj.models.User;
 import messenger.proj.models.message;
 import messenger.proj.security.PersonDetails;
@@ -62,10 +63,11 @@ public class MessageController {
 	@SendTo("/topic/{chatId}")
 	public void processChatMessage(@Payload message message, 
 								   @PathVariable("chatId") String chatId,
-								   
+								   @RequestParam(value = "file", required = false) FileEntry file
 								   ) throws JsonMappingException, JsonProcessingException {
 	
-		
+		System.out.println("MESSAGE " + message);
+		System.out.println("FILE " + file);
 		
 		if (!message.getContent().equals("")) {
 
@@ -82,7 +84,6 @@ public class MessageController {
 			message.setRecipientId(recipId);
 			message.setSendTime(LocalDateTime.now());
 			message.setStatus("Unread");
-			
 			message.setSenderName(userServ.findById(senderId).get().getUsername());
 
 			messageServ.save(extractedChatId, message);
@@ -90,6 +91,7 @@ public class MessageController {
 			messagingTemplate.convertAndSend("/topic/" + extractedChatId, message);
 			
 		}
+		
 	}
 
 }
