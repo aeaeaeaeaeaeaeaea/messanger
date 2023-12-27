@@ -1,9 +1,12 @@
 package messenger.proj.controllers;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -61,13 +65,15 @@ public class MessageController {
 
 	@MessageMapping("/chat/{chatId}/sendMessage")
 	@SendTo("/topic/{chatId}")
-	public void processChatMessage(@Payload message message, 
-								   @PathVariable("chatId") String chatId,
-								   @RequestParam(value = "file", required = false) FileEntry file
-								   ) throws JsonMappingException, JsonProcessingException {
-	
-		System.out.println("MESSAGE " + message);
-		System.out.println("FILE " + file);
+	public void processChatMessage(@Payload message message, @PathVariable("chatId") String chatId,
+			HttpServletRequest request) throws JsonMappingException, JsonProcessingException, IOException {
+
+		System.out.println("MESSAGE BEFORE " + message);
+
+		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+		MultipartFile file = multipartRequest.getFile("file");
+
+		System.out.println("FILE " +  (file == null) );
 		
 		if (!message.getContent().equals("")) {
 
@@ -78,7 +84,7 @@ public class MessageController {
 			String extractedChatId = jsonNode.get("chatId").asText();
 			String senderId = jsonNode.get("dataSenderId").asText();
 			String recipId = jsonNode.get("dataRecipId").asText();
-			
+
 			message.setChatId(extractedChatId);
 			message.setSenderId(senderId);
 			message.setRecipientId(recipId);
@@ -86,12 +92,14 @@ public class MessageController {
 			message.setStatus("Unread");
 			message.setSenderName(userServ.findById(senderId).get().getUsername());
 
+			System.out.println("MESSAGE AFTER " + message);
+
 			messageServ.save(extractedChatId, message);
-			
+
 			messagingTemplate.convertAndSend("/topic/" + extractedChatId, message);
-			
+
 		}
-		
+
 	}
 
 }
