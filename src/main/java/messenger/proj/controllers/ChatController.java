@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.HttpClientErrorException.Forbidden;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.datastax.oss.driver.internal.core.util.Strings;
 
@@ -245,9 +246,25 @@ public class ChatController {
 		return "message1";
 	}
 
-	@PostMapping("/upload")
-	public String uploadFile() {
-		System.out.println("TEST PASSED");
-		return "redirect:/users";
+	@PostMapping("/send-message")
+	public String sendMessage(
+							  //@RequestParam("content") String content, 
+							  //@RequestParam("chatId") String chatId,
+							  @RequestParam(value = "file", required = false) MultipartFile file) {
+
+		System.out.println("FILE " + file);
+		// Обработка текстового сообщения (content)
+
+		/*
+		 * if (file != null && !file.isEmpty()) { // Обработка файла String
+		 * originalFilename = file.getOriginalFilename(); String contentType =
+		 * file.getContentType(); byte[] contentBytes = file.getBytes();
+		 * 
+		 * // Ваша логика обработки файла // Например, сохранение файла на сервере }
+		 */
+
+		// Дополнительная логика сохранения сообщения и отправки в WebSocket
+
+		return "";
 	}
 }

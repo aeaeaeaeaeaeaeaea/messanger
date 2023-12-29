@@ -65,15 +65,9 @@ public class MessageController {
 
 	@MessageMapping("/chat/{chatId}/sendMessage")
 	@SendTo("/topic/{chatId}")
-	public void processChatMessage(@Payload message message, @PathVariable("chatId") String chatId,
-			HttpServletRequest request) throws JsonMappingException, JsonProcessingException, IOException {
-
-		System.out.println("MESSAGE BEFORE " + message);
-
-		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-		MultipartFile file = multipartRequest.getFile("file");
-
-		System.out.println("FILE " +  (file == null) );
+	public void processChatMessage(@Payload message message, 
+								   @PathVariable("chatId") String chatId) 
+								   throws JsonMappingException, JsonProcessingException, IOException {
 		
 		if (!message.getContent().equals("")) {
 
@@ -91,8 +85,6 @@ public class MessageController {
 			message.setSendTime(LocalDateTime.now());
 			message.setStatus("Unread");
 			message.setSenderName(userServ.findById(senderId).get().getUsername());
-
-			System.out.println("MESSAGE AFTER " + message);
 
 			messageServ.save(extractedChatId, message);
 
