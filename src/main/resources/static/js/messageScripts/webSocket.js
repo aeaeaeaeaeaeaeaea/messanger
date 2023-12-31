@@ -38,7 +38,7 @@ function sendMessage() {
 
 	if (message.trim() !== '' && !file) {
 		// Отправка сообщения с использованием WebSocket
-		stompClient.send("/app/chat/`{chatId}`/sendMessage", {},
+		stompClient.send(`/app/chat/${chatId}/sendMessage`, {},
 			JSON.stringify({
 				'content': message,
 				'chatId': chatId,
@@ -53,23 +53,19 @@ function sendMessage() {
 	if (file) {
 		$.ajax({
 			type: 'POST',
-			url: '/upload-file', // Путь к вашему контроллеру для загрузки файла
-			headers: { 'chatId': chatId }, // Добавление chatId в заголовки
+			url: `/upload-file/${chatId}`,
+							   
 			data: formData,
 			processData: false,
 			contentType: false,
-			success: function(response) {
-				// Обработка успешной отправки файла
-			},
-			error: function(error) {
-				// Обработка ошибки
-			}
-		});
+			'chatId': chatId,
+			'content': message,
+			'dataSenderId': dataSenderId,
+			'dataRecipId': dataRecipId
+		})
+
 	}
 
-	
-
-	
 
 	// Очистка полей ввода
 	messageInput.val("");

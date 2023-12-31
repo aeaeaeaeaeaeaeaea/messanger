@@ -70,6 +70,8 @@ public class MessageController {
 								   throws JsonMappingException, JsonProcessingException, IOException {
 		
 		if (!message.getContent().equals("")) {
+			
+			System.out.println("MESSAGE CHAT ID  " + chatId);
 
 			ObjectMapper objectMapper = new ObjectMapper();
 			objectMapper.registerModule(new JavaTimeModule());

@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -29,6 +30,11 @@ import org.springframework.web.client.HttpClientErrorException.Forbidden;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.datastax.oss.driver.internal.core.util.Strings;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import messenger.proj.models.ChatRoom;
 import messenger.proj.models.ConnectionInfo;
@@ -246,13 +252,34 @@ public class ChatController {
 		return "message1";
 	}
 
-	@PostMapping("/send-message")
+	@PostMapping("/upload-file/{chatId}")
 	public String sendMessage(
-							  //@RequestParam("content") String content, 
-							  //@RequestParam("chatId") String chatId,
-							  @RequestParam(value = "file", required = false) MultipartFile file) {
+							  @Payload message message,
+							  @PathVariable("chatId") String chatId,
+							  @RequestParam(value = "file", required = false) MultipartFile file) throws JsonMappingException, JsonProcessingException {
 
-		System.out.println("FILE " + file);
+		System.out.println("FILE " + file.getOriginalFilename());
+		System.out.println("CHAT ID  " + chatId);
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.registerModule(new JavaTimeModule());
+		
+		JsonNode jsonNode = objectMapper.readTree(chatId);
+		String extractedChatId = jsonNode.get("chatId").asText();
+		String senderId = jsonNode.get("dataSenderId").asText();
+		String recipId = jsonNode.get("dataRecipId").asText();
+
+		message.setChatId(extractedChatId);
+		message.setSenderId(senderId);
+		message.setRecipientId(recipId);
+		message.setSendTime(LocalDateTime.now());
+		message.setStatus("Unread");
+		message.setSenderName(userServ.findById(senderId).get().getUsername());
+		
+		System.out.println("MESSAGE " + message);
+		
+		
+		
 		// Обработка текстового сообщения (content)
 
 		/*
