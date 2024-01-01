@@ -245,6 +245,12 @@
 
 									<div class="message__wrapper-bottom d-flex align-items-end justify-content-between">
 
+										<!-- ФАЙЛЕКИ ТУТ -->
+										<li th:each="fileName : ${files}">
+											<a th:href="'C:\\messanger-main\\Files\\' + ${fileName}"
+												th:text="${fileName}"></a>
+										</li>
+										<!-- -->
 
 										<p class="message__wrapper-text"
 											th:senderName="${cassandraMessage.getSenderName()}"
@@ -287,7 +293,10 @@
 
 										<!-- Если у сообещния есть файл вывести его тут -->
 
-
+										<li th:each="fileName : ${files}">
+											<a th:href="'C:\\messanger-main\\Files\\' + ${fileName}"
+												th:text="${fileName}"></a>
+										</li>
 
 										<!-- \x_x/ -->
 
@@ -360,20 +369,16 @@
 					<!-- КОНЕЦ ФАЙЛЕКОВ -->
 
 					<!-- Форма для отправки сообщений -->
-					<form class="p-1 flex-grow-1 mx-1" id="messageForm" style="width: 100%;" enctype="multipart/form-data">
+					<form class="p-1 flex-grow-1 mx-1" id="messageForm" style="width: 100%;"
+						enctype="multipart/form-data">
 
 						<input style="width: 90%;" id="messageInput" type="text"
-							class="d-inline border-0 rounded-pill px-3 py-2" 
-							
-							th:data="${id}"
-							th:dataSenderId="${currentUser}" 
-							th:dataRecipId="${recipientId}"
-							
-							placeholder="Type a message" name="editedMessage"
-						>
-							
-							<input type="file" name="file" id="fileInput">
-							
+							class="d-inline border-0 rounded-pill px-3 py-2" th:data="${id}"
+							th:dataSenderId="${currentUser}" th:dataRecipId="${recipientId}"
+							placeholder="Type a message" name="editedMessage">
+
+						<input type="file" name="file" id="fileInput">
+
 
 						<button class="btn"><i class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
 					</form>
@@ -387,8 +392,7 @@
 
 						<input style="width: 90%;" id="editMessageInput" type="text"
 							class="d-inline border-0 rounded-pill px-3 py-2" placeholder="Type a message"
-							name="editedMessage"
-						>
+							name="editedMessage">
 
 						<button class="btn"><i class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
 

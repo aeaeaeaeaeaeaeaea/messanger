@@ -50,21 +50,28 @@ function sendMessage() {
 	}
 
 	// Отправка файла с использованием AJAX
+	// Отправка файла с использованием AJAX
 	if (file) {
+		// Создаем объект FormData и добавляем параметры
+		var formData = new FormData();
+		formData.append('file', file);
+		formData.append('chatId', chatId);
+		formData.append('content', message);
+		formData.append('dataSenderId', dataSenderId);
+		formData.append('dataRecipId', dataRecipId);
+
 		$.ajax({
 			type: 'POST',
 			url: `/upload-file/${chatId}`,
-							   
 			data: formData,
 			processData: false,
 			contentType: false,
-			'chatId': chatId,
-			'content': message,
-			'dataSenderId': dataSenderId,
-			'dataRecipId': dataRecipId
-		})
-
+			success: function(response) {
+				// Обработка успешной отправки файла
+			}
+		});
 	}
+
 
 
 	// Очистка полей ввода

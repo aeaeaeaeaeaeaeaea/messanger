@@ -1,5 +1,7 @@
 package messenger.proj.controllers;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -10,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -38,11 +41,13 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import messenger.proj.models.ChatRoom;
 import messenger.proj.models.ConnectionInfo;
+import messenger.proj.models.FileEntry;
 import messenger.proj.models.message;
 import messenger.proj.repositories.ElasticSearchQuery;
 import messenger.proj.security.PersonDetails;
 import messenger.proj.services.ChatRoomService;
 import messenger.proj.services.ConnectionService;
+import messenger.proj.services.FileService;
 import messenger.proj.services.MessageRedisService;
 import messenger.proj.services.MessageService;
 import messenger.proj.services.UserService;
@@ -57,13 +62,16 @@ public class ChatController {
 	private final ConnectionService connectionServ;
 	private final ElasticSearchQuery elasticSearchQuery;
 	private final MessageRedisService messageRedisService;
+	private final FileService fileService;
+	private final String FILE_SAVE_PATH = "C:\\messanger-main\\Files\\";
 
 	@Autowired
 	public ChatController(ConnectionService connectionServ, RedisTemplate<String, message> redisTemplate,
 			MessageRedisService messageRedisService, UserService userServ, ChatRoomService chatRoomServ,
-			MessageService messageServ, ElasticSearchQuery elasticSearchQuery) {
+			MessageService messageServ, ElasticSearchQuery elasticSearchQuery, FileService fileService) {
 
 		this.elasticSearchQuery = elasticSearchQuery;
+		this.fileService = fileService;
 		this.messageRedisService = messageRedisService;
 		this.connectionServ = connectionServ;
 		this.redisTemplate = redisTemplate;
@@ -139,6 +147,10 @@ public class ChatController {
 		model.addAttribute("cachedMessages", messageServ.getCaсhedMessages(userId));
 		model.addAttribute("cassandraMessages", list);
 		model.addAttribute("id", userId);
+		
+		File uploadDir = new File(FILE_SAVE_PATH);
+        String[] files = uploadDir.list();
+        model.addAttribute("files", files);
 
 		return "chat";
 	}
@@ -254,41 +266,38 @@ public class ChatController {
 
 	@PostMapping("/upload-file/{chatId}")
 	public String sendMessage(
-							  @Payload message message,
+							  @Payload message message, 
 							  @PathVariable("chatId") String chatId,
-							  @RequestParam(value = "file", required = false) MultipartFile file) throws JsonMappingException, JsonProcessingException {
+							  @RequestParam("file") MultipartFile file, 
+							  @RequestParam("content") String content,
+							  @RequestParam("dataSenderId") String dataSenderId, 
+							  @RequestParam("dataRecipId") String dataRecipId)
+							  throws JsonMappingException, JsonProcessingException {
 
-		System.out.println("FILE " + file.getOriginalFilename());
-		System.out.println("CHAT ID  " + chatId);
-		
-		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.registerModule(new JavaTimeModule());
-		
-		JsonNode jsonNode = objectMapper.readTree(chatId);
-		String extractedChatId = jsonNode.get("chatId").asText();
-		String senderId = jsonNode.get("dataSenderId").asText();
-		String recipId = jsonNode.get("dataRecipId").asText();
-
-		message.setChatId(extractedChatId);
-		message.setSenderId(senderId);
-		message.setRecipientId(recipId);
+		message.setChatId(chatId);
+		message.setSenderId(dataSenderId);
+		message.setRecipientId(dataRecipId);
 		message.setSendTime(LocalDateTime.now());
 		message.setStatus("Unread");
-		message.setSenderName(userServ.findById(senderId).get().getUsername());
-		
-		System.out.println("MESSAGE " + message);
-		
-		
-		
-		// Обработка текстового сообщения (content)
+		message.setSenderName(userServ.findById(dataSenderId).get().getUsername());
 
-		/*
-		 * if (file != null && !file.isEmpty()) { // Обработка файла String
-		 * originalFilename = file.getOriginalFilename(); String contentType =
-		 * file.getContentType(); byte[] contentBytes = file.getBytes();
-		 * 
-		 * // Ваша логика обработки файла // Например, сохранение файла на сервере }
-		 */
+		messageServ.save(chatId, message);
+
+		if (file != null && !file.isEmpty()) {
+			FileEntry fileEntry = new FileEntry();
+			fileEntry.setId(UUID.randomUUID().toString());
+			fileEntry.setMessageId(message.getId());
+			fileEntry.setPath(FILE_SAVE_PATH + file.getOriginalFilename());
+			 
+			fileService.save(fileEntry);
+			
+			try {
+				fileService.saveFileToServer(file, FILE_SAVE_PATH);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		}
 
 		// Дополнительная логика сохранения сообщения и отправки в WebSocket
 
