@@ -63,7 +63,7 @@ public class ChatController {
 	private final ElasticSearchQuery elasticSearchQuery;
 	private final MessageRedisService messageRedisService;
 	private final FileService fileService;
-	private final String FILE_SAVE_PATH = "C:\\messanger-main\\Files\\";
+	private final String FILE_SAVE_PATH = "C:\\messanger-main\\messanger-main\\src\\main\\resources\\static\\Files\\";
 
 	@Autowired
 	public ChatController(ConnectionService connectionServ, RedisTemplate<String, message> redisTemplate,
@@ -147,10 +147,7 @@ public class ChatController {
 		model.addAttribute("cachedMessages", messageServ.getCaсhedMessages(userId));
 		model.addAttribute("cassandraMessages", list);
 		model.addAttribute("id", userId);
-		
-		File uploadDir = new File(FILE_SAVE_PATH);
-        String[] files = uploadDir.list();
-        model.addAttribute("files", files);
+        model.addAttribute("files", fileService.getFiles());
 
 		return "chat";
 	}
@@ -288,7 +285,8 @@ public class ChatController {
 			fileEntry.setId(UUID.randomUUID().toString());
 			fileEntry.setMessageId(message.getId());
 			fileEntry.setPath(FILE_SAVE_PATH + file.getOriginalFilename());
-			 
+			fileEntry.setFileName(file.getOriginalFilename());
+			
 			fileService.save(fileEntry);
 			
 			try {
@@ -301,6 +299,6 @@ public class ChatController {
 
 		// Дополнительная логика сохранения сообщения и отправки в WebSocket
 
-		return "";
+		return "redirect:/chat/" + chatId;
 	}
 }

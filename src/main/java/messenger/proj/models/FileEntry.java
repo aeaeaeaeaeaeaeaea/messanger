@@ -16,6 +16,9 @@ public class FileEntry {
 	@Column("path")
 	private String path;
 	
+	@Column("filename")
+	private String fileName;
+	
 	@Column("messageid")
 	private String messageId;
 	
@@ -23,8 +26,9 @@ public class FileEntry {
 		
 	}
 
-	public FileEntry(String id, String messageId, String path) {
+	public FileEntry(String id, String fileName, String messageId, String path) {
 		this.id = id;
+		this.fileName = fileName;
 		this.messageId = messageId;
 		this.path = path;
 	}
@@ -53,8 +57,19 @@ public class FileEntry {
 		this.path = path;
 	}
 
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
 	@Override
 	public String toString() {
-		return "FileEntry [id=" + id + ", path=" + path + ", messageId=" + messageId + "]";
+		return "FileEntry [id=" + id + ", path=" + path + ", fileName=" + fileName + ", messageId=" + messageId + "]";
 	}
+	
+
+	
 }

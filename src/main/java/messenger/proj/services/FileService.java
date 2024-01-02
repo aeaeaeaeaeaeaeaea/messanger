@@ -16,6 +16,9 @@ import messenger.proj.repositories.FileRepository;
 
 import java.io.File;
 import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional(readOnly = true)
@@ -31,6 +34,16 @@ public class FileService {
 	public void save(FileEntry file) {
 		fileRepository.save(file);
 	}
+	
+	public Map<String, FileEntry> getFiles() {
+		
+		Map<String, FileEntry> filesMap = new HashMap<>();
+		for (FileEntry file : fileRepository.findAll()) {
+			filesMap.put(file.getMessageId(), file);
+		}
+		
+		return filesMap;
+ 	}
 
 	public void saveFileToServer(MultipartFile file, String uploadDir) throws IOException {
 		
