@@ -244,9 +244,95 @@
 									</div>
 
 									<!-- ФАЙЛЕКИ ТУТ -->
-									<div th:if="${files.get(cassandraMessage.getId())} != null">
-										<img th:src="'/Files/' + ${files.get(cassandraMessage.getId()).getFileName()}"
-											width="400" height="400" />
+									<div th:if="${files.get(cassandraMessage.getId()) != null}"
+										th:text="${files.get(cassandraMessage.getId()) != null}">
+
+											fasfaf
+
+										<!-- Проверка расширения файла для изображений -->
+										<div
+											th:if="${#strings.toLowerCase(files.get(cassandraMessage.getId()).getFileName().split('\.')[1]).equals('jpg')}">
+
+											<img th:src="'/Files/' + ${files.get(cassandraMessage.getId()).getFileName()}"
+												width="400" height="400" />
+
+										</div>
+
+										<div
+											th:if="${#strings.toLowerCase(files.get(cassandraMessage.getId()).getFileName().split('\.')[1]).equals('jpeg')}">
+											>
+
+											<img th:src="'/Files/' + ${files.get(cassandraMessage.getId()).getFileName()}"
+												width="400" height="400" />
+
+
+										</div>
+
+										<div
+											th:if="${#strings.toLowerCase(files.get(cassandraMessage.getId()).getFileName().split('\.')[1]).equals('png')}">
+
+											<img th:src="'/Files/' + ${files.get(cassandraMessage.getId()).getFileName()}"
+												width="400" height="400" />
+
+
+										</div>
+
+										<div
+											th:if="${#strings.toLowerCase(files.get(cassandraMessage.getId()).getFileName().split('\.')[1]).equals('gif')}">
+
+											<img th:src="'/Files/' + ${files.get(cassandraMessage.getId()).getFileName()}"
+												width="400" height="400" />
+
+
+										</div>
+
+										<!-- Проверка расширения файла для видео -->
+										<div
+											th:if="${#strings.toLowerCase(files.get(cassandraMessage.getId()).getFileName().split('\.')[1]).equals('mp4')}">
+
+											<video width="400" height="400" controls>
+												<source
+													th:src="'/Files/' + ${files.get(cassandraMessage.getId()).getFileName()}"
+													type="video/mp4" />
+											</video>
+
+
+										</div>
+
+										<div
+											th:if="${#strings.toLowerCase(files.get(cassandraMessage.getId()).getFileName().split('\.')[1]).equals('avi')}">
+
+											<video width="400" height="400" controls>
+												<source
+													th:src="'/Files/' + ${files.get(cassandraMessage.getId()).getFileName()}"
+													type="video/x-msvideo" />
+											</video>
+
+
+										</div>
+
+										<div
+											th:if="${#strings.toLowerCase(files.get(cassandraMessage.getId()).getFileName().split('\.')[1]).equals('mkv')}">
+
+											<video width="400" height="400" controls>
+												<source
+													th:src="'/Files/' + ${files.get(cassandraMessage.getId()).getFileName()}"
+													type="video/x-matroska" />
+											</video>
+
+
+										</div>
+
+										<!-- 
+											
+										<th:default th:if="${!otherFound}" th:remove="tag">
+											<p>Неподдерживаемый тип файла</p>
+											<th:block th:remove="tag" th:with="otherFound=true"></th:block>
+										</th:default>
+										</th:block>
+										
+										-->
+
 									</div>
 									<!-- -->
 
@@ -271,6 +357,7 @@
 							</div>
 
 						</div>
+						
 						<div th:each="cachedMessage : ${cachedMessages}">
 
 							<div class="message__wrapper d-flex align-items-end mb-2 mt-2"
@@ -296,56 +383,90 @@
 									<div th:if="${files.get(cachedMessage.getId()) != null}">
 
 
+
 										<!-- Проверка расширения файла для изображений -->
-										<th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName())}.equals('jpg')"
-											th:remove="tag">
+										<div
+											th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('jpg')}">
+
 											<img th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
 												width="400" height="400" />
-											</th:if>
-											<th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName())}.equals('jpeg')"
-												th:remove="tag">
-												<img th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
-													width="400" height="400" />
-												</th:if>
-												<th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName())}.equals('png')"
-													th:remove="tag">
-													<img th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
-														width="400" height="400" />
-													</th:if>
 
-													<th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName())}.equals('gif')"
-														th:remove="tag">
-														<img th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
-															width="400" height="400" />
-														</th:if>
+										</div>
 
-														<!-- Проверка расширения файла для видео -->
-														<th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName())}.equals('mp4')"
-															th:remove="tag">
-															<video width="400" height="400" controls>
-																<source
-																	th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
-																	type="video/mp4" />
-															</video>
-															</th:if>
-															<th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName())}.equals('avi')"
-																th:remove="tag">
-																<video width="400" height="400" controls>
-																	<source
-																		th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
-																		type="video/x-msvideo" />
-																</video>
-																</th:if>
-																<th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName())}.equals('mkv')"
-																	th:remove="tag">
-																	<video width="400" height="400" controls>
-																		<source
-																			th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
-																			type="video/x-matroska" />
-																	</video>
-																	</th:if>
+										<div
+											th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('jpeg')}">
+											>
+
+											<img th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
+												width="400" height="400" />
 
 
+										</div>
+
+										<div
+											th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('png')}">
+
+											<img th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
+												width="400" height="400" />
+
+
+										</div>
+
+										<div
+											th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('gif')}">
+
+											<img th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
+												width="400" height="400" />
+
+
+										</div>
+
+										<!-- Проверка расширения файла для видео -->
+										<div
+											th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('mp4')}">
+
+											<video width="400" height="400" controls>
+												<source
+													th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
+													type="video/mp4" />
+											</video>
+
+
+										</div>
+
+										<div
+											th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('avi')}">
+
+											<video width="400" height="400" controls>
+												<source
+													th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
+													type="video/x-msvideo" />
+											</video>
+
+
+										</div>
+
+										<div
+											th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('mkv')}">
+
+											<video width="400" height="400" controls>
+												<source
+													th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
+													type="video/x-matroska" />
+											</video>
+
+
+										</div>
+
+										<!-- 
+											
+										<th:default th:if="${!otherFound}" th:remove="tag">
+											<p>Неподдерживаемый тип файла</p>
+											<th:block th:remove="tag" th:with="otherFound=true"></th:block>
+										</th:default>
+										</th:block>
+										
+										-->
 
 									</div>
 
