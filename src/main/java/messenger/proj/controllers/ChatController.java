@@ -104,6 +104,11 @@ public class ChatController {
 		String curentUserId = personDetails.getUser().getId();
 		Optional<ChatRoom> chat = chatRoomServ.findById(userId);
 		List<message> list = messageServ.findByChatId(userId);
+		
+		System.out.println("CASSANDRA MESSAGES " + list);
+		for (message lMessage : list) {
+			System.out.println("CHECK " + (fileService.getFiles().get(lMessage.getId())) );
+		}
 
 		chat.get().setUnreadRecipientMessages(0);
 		chat.get().setUnreadSenderMessages(0);
@@ -148,6 +153,8 @@ public class ChatController {
 		model.addAttribute("cassandraMessages", list);
 		model.addAttribute("id", userId);
         model.addAttribute("files", fileService.getFiles());
+        
+        System.out.println("FILES MAP " + fileService.getFiles());
 
 		return "chat";
 	}
