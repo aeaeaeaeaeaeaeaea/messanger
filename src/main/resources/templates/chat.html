@@ -91,12 +91,94 @@
 
 
 									<br />
-									<small class="text-gray text-right">
+									<small class="text-gray text-right"
+										style="display: flex; flex-wrap: nowrap; align-items: center;">
 
-										<i class="zmdi zmdi-check-all" style="font-size:16px!important"
-											th:if="${lastMessages.get(chatRoom.getId()) != null}"
+										<i class="zmdi zmdi-check-all" style="font-size:16px!important">
+										</i>
+
+										<div th:if="${files.get(lastMessages.get(chatRoom.getId()).getId())} != null">
+
+
+											<div
+												th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('jpg')}">
+
+												<img th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
+													width="25" height="25" />
+
+											</div>
+
+											<div
+												th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('jpeg')}">
+												>
+
+												<img th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
+													width="25" height="25" />
+
+
+											</div>
+
+											<div
+												th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('png')}">
+
+												<img th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
+													width="25" height="25" />
+
+
+											</div>
+
+											<div
+												th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('gif')}">
+
+												<img th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
+													width="25" height="25" />
+
+
+											</div>
+
+
+											<div
+												th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('mp4')}">
+
+												<video width="25" height="25" controls>
+													<source
+														th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
+														type="video/mp4" />
+												</video>
+
+
+											</div>
+
+											<div
+												th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('avi')}">
+
+												<video width="25" height="25" controls>
+													<source
+														th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
+														type="video/x-msvideo" />
+												</video>
+
+
+											</div>
+
+											<div
+												th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('mkv')}">
+
+												<video width="25" height="25" controls>
+													<source
+														th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
+														type="video/x-matroska" />
+												</video>
+
+
+											</div>
+										</div>
+
+										<i th:if="${lastMessages.get(chatRoom.getId()) != null}"
 											th:text="${lastMessages.get(chatRoom.getId()).getContent()}">
 										</i>
+
+
 
 									</small>
 								</div>
@@ -150,13 +232,97 @@
 
 									<br />
 
-									<small class="text-gray text-right">
+									<small class="text-gray text-right"
+										style="display: flex; flex-wrap: nowrap; align-items: center;">
 
-										<i class="zmdi zmdi-check-all" style="font-size:16px!important"
-											th:if="${lastMessages.get(chatRoom.getId()) != null}"
-											th:text="${lastMessages.get(chatRoom.getId()).getContent()}">
-
+										<i class="zmdi zmdi-check-all" style="font-size:16px!important">
 										</i>
+
+										<div th:if="${files.get(lastMessages.get(chatRoom.getId()).getId())} != null">
+
+
+											<div
+												th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('jpg')}">
+
+												<img th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
+													width="25" height="25" />
+
+											</div>
+
+											<div
+												th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('jpeg')}">
+												>
+
+												<img th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
+													width="25" height="25" />
+
+
+											</div>
+
+											<div
+												th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('png')}">
+
+												<img th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
+													width="25" height="25" />
+
+
+											</div>
+
+											<div
+												th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('gif')}">
+
+												<img th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
+													width="25" height="25" />
+
+
+											</div>
+
+
+											<div
+												th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('mp4')}">
+
+												<video width="25" height="25" controls>
+													<source
+														th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
+														type="video/mp4" />
+												</video>
+
+
+											</div>
+
+											<div
+												th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('avi')}">
+
+												<video width="25" height="25" controls>
+													<source
+														th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
+														type="video/x-msvideo" />
+												</video>
+
+
+											</div>
+
+											<div
+												th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('mkv')}">
+
+												<video width="25" height="25" controls>
+													<source
+														th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
+														type="video/x-matroska" />
+												</video>
+
+
+											</div>
+
+
+
+											
+										</div>
+
+										<i th:if="${lastMessages.get(chatRoom.getId()) != null}"
+											th:text="${lastMessages.get(chatRoom.getId()).getContent()}">
+										</i>
+
 
 									</small>
 								</div>
@@ -227,14 +393,10 @@
 							<div class="message__wrapper d-flex align-items-end mb-2 mt-2"
 								style="word-break: break-word;">
 
-								<div 
-								    
-								    class="message-content message__wrapper-box position-relative p-2"
+								<div class="message-content message__wrapper-box position-relative p-2"
 									th:senderName="${cassandraMessage.getSenderName()}"
 									th:status="${cassandraMessage.getStatus()}"
-									
-									th:content="${cassandraMessage.getContent()}" 
-									th:id="${cassandraMessage.getId()}"
+									th:content="${cassandraMessage.getContent()}" th:id="${cassandraMessage.getId()}"
 									th:sendtime="${cassandraMessage.getSendTime()}"
 									th:chatId="${cassandraMessage.getChatId()}"
 									th:recipientId="${cassandraMessage.getRecipientId()}"
@@ -246,14 +408,14 @@
 										<span class="message__reply"></span>
 									</div>
 
-									
+
 
 
 									<!-- ФАЙЛЕКИ ТУТ -->
 									<div th:if="${files.get(cassandraMessage.getId())} != null">
 
-										
-										
+
+
 										<div
 											th:if="${#strings.toLowerCase(files.get(cassandraMessage.getId()).getFileName().split('\.')[1]).equals('jpg')}">
 
@@ -290,7 +452,7 @@
 
 										</div>
 
-										
+
 										<div
 											th:if="${#strings.toLowerCase(files.get(cassandraMessage.getId()).getFileName().split('\.')[1]).equals('mp4')}">
 
@@ -327,15 +489,15 @@
 
 										</div>
 
-										
-											
+
+
 										<!--<th:default th:if="${!otherFound}" th:remove="tag">
 											<p>Неподдерживаемый тип файла</p>
 											<th:block th:remove="tag" th:with="otherFound=true"></th:block>
 										</th:default>
 										</th:block>-->
-										
-										
+
+
 
 									</div>
 
@@ -367,14 +529,11 @@
 							<div class="message__wrapper d-flex align-items-end mb-2 mt-2"
 								style="word-break: break-word;">
 
-								<div 
-								    class="message-content message__wrapper-box position-relative p-2"
+								<div class="message-content message__wrapper-box position-relative p-2"
 									th:senderName="${cachedMessage.getSenderName()}"
-									th:content="${cachedMessage.getContent()}" 
-									th:id="${cachedMessage.getId()}"
+									th:content="${cachedMessage.getContent()}" th:id="${cachedMessage.getId()}"
 									th:sendtime="${cachedMessage.getSendTime()}"
-									th:chatId="${cachedMessage.getChatId()}" 
-									th:status="${cachedMessage.getStatus()}"
+									th:chatId="${cachedMessage.getChatId()}" th:status="${cachedMessage.getStatus()}"
 									th:recipientId="${cachedMessage.getRecipientId()}"
 									th:senderId="${cachedMessage.getSenderId()}">
 

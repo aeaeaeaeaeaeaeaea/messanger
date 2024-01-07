@@ -104,11 +104,6 @@ public class ChatController {
 		String curentUserId = personDetails.getUser().getId();
 		Optional<ChatRoom> chat = chatRoomServ.findById(userId);
 		List<message> list = messageServ.findByChatId(userId);
-		
-		System.out.println("CASSANDRA MESSAGES " + list);
-		for (message lMessage : list) {
-			System.out.println("CHECK " + (fileService.getFiles().get(lMessage.getId())) );
-		}
 
 		chat.get().setUnreadRecipientMessages(0);
 		chat.get().setUnreadSenderMessages(0);
@@ -152,9 +147,7 @@ public class ChatController {
 		model.addAttribute("cachedMessages", messageServ.getCaсhedMessages(userId));
 		model.addAttribute("cassandraMessages", list);
 		model.addAttribute("id", userId);
-        model.addAttribute("files", fileService.getFiles());
-        
-        System.out.println("FILES MAP " + fileService.getFiles());
+		model.addAttribute("files", fileService.getFiles());
 
 		return "chat";
 	}
@@ -255,28 +248,21 @@ public class ChatController {
 		model.addAttribute("formatter", new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter());
 		model.addAttribute("todayDate",
 				LocalDateTime.now().format(new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter()));
-
 		model.addAttribute("lastMessages", messageServ.getLastMessage(chatRoomServ.findAll(curentUserId)));
-
 		model.addAttribute("username", userServ.findById(curentUserId).get().getUsername());
 		model.addAttribute("currentUser", curentUserId);
-
 		model.addAttribute("chatList", chatRoomServ.lastMessageOrder(curentUserId));
-
+		model.addAttribute("files", fileService.getFiles());
 		model.addAttribute("users", userServ.findAll());
 
 		return "message1";
 	}
 
 	@PostMapping("/upload-file/{chatId}")
-	public String sendMessage(
-							  @Payload message message, 
-							  @PathVariable("chatId") String chatId,
-							  @RequestParam("file") MultipartFile file, 
-							  @RequestParam("content") String content,
-							  @RequestParam("dataSenderId") String dataSenderId, 
-							  @RequestParam("dataRecipId") String dataRecipId)
-							  throws JsonMappingException, JsonProcessingException {
+	public String sendMessage(@Payload message message, @PathVariable("chatId") String chatId,
+			@RequestParam("file") MultipartFile file, @RequestParam("content") String content,
+			@RequestParam("dataSenderId") String dataSenderId, @RequestParam("dataRecipId") String dataRecipId)
+			throws JsonMappingException, JsonProcessingException {
 
 		message.setChatId(chatId);
 		message.setSenderId(dataSenderId);
@@ -293,9 +279,9 @@ public class ChatController {
 			fileEntry.setMessageId(message.getId());
 			fileEntry.setPath(FILE_SAVE_PATH + file.getOriginalFilename());
 			fileEntry.setFileName(file.getOriginalFilename());
-			
+
 			fileService.save(fileEntry);
-			
+
 			try {
 				fileService.saveFileToServer(file, FILE_SAVE_PATH);
 			} catch (IOException e) {
