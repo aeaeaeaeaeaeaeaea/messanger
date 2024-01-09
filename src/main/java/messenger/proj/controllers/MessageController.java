@@ -69,6 +69,8 @@ public class MessageController {
 								   @PathVariable("chatId") String chatId) 
 								   throws JsonMappingException, JsonProcessingException, IOException {
 		
+		System.out.println("WEBSOCKET TEST");
+		
 		if (!message.getContent().equals("")) {
 			
 			System.out.println("MESSAGE CHAT ID  " + chatId);

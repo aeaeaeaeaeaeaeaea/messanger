@@ -96,7 +96,7 @@
 
 										<i class="zmdi zmdi-check-all" style="font-size:16px!important">
 										</i>
-
+										<!-- 		
 										<div th:if="${files.get(lastMessages.get(chatRoom.getId()).getId())} != null">
 
 
@@ -177,7 +177,7 @@
 										<i th:if="${lastMessages.get(chatRoom.getId()) != null}"
 											th:text="${lastMessages.get(chatRoom.getId()).getContent()}">
 										</i>
-
+										-->
 
 
 									</small>
@@ -237,7 +237,7 @@
 
 										<i class="zmdi zmdi-check-all" style="font-size:16px!important">
 										</i>
-
+										<!-- 
 										<div th:if="${files.get(lastMessages.get(chatRoom.getId()).getId())} != null">
 
 
@@ -322,7 +322,7 @@
 										<i th:if="${lastMessages.get(chatRoom.getId()) != null}"
 											th:text="${lastMessages.get(chatRoom.getId()).getContent()}">
 										</i>
-
+										-->
 
 									</small>
 								</div>
@@ -666,99 +666,59 @@
 
 
 				<!-- Нижняя панель -->
-				<div class="d-flex mt-auto align-items-center bg-gray px-2 py-1 border-bottom">
+				<div class="d-flex align-items-center bg-gray px-2 py-1 border-bottom">
 
 					<!-- Смайлик -->
 					<button class="btn mx-1">
-						<i class="zmdi zmdi-mood text-xlarge text-gray">
-						</i>
+						<i class="zmdi zmdi-mood text-xlarge text-gray"></i>
 					</button>
-					<!-- Конец смайлика -->
 
-					<!-- Скрепка -->
-					<!--<form id="fileForm" enctype="multipart/form-data">
-						
-						<button type="button" onclick="uploadFile()">Upload</button>
-					</form>-->
+					<!-- Форма -->
+					<form class="d-flex align-items-center" id="messageForm" style="width: 100%;" enctype="multipart/form-data">
+							
+						<!-- Скрепочка -->
+						<label for="fileInput" class="btn mx-1">
+							<i class="zmdi zmdi-attachment-alt text-xlarge rotate-45 text-gray"></i>
+						</label>
+						<input type="file" id="fileInput" style="display: none;"/>
 
-					<script>
-						function uploadFile() {
-							var fileInput = document.getElementById('fileInput');
-							var file = fileInput.files[0];
-
-							if (file) {
-								var formData = new FormData();
-								formData.append('file', file);
-
-								fetch('/upload', {
-									method: 'POST',
-									body: formData,
-									headers: {
-										'Content-Type': 'multipart/form-data'
-									}
-								})
-									.then(response => response.json())
-									.then(data => {
-										console.log('File uploaded successfully:', data);
-									})
-									.catch(error => {
-										console.error('Error uploading file:', error);
-									});
-							} else {
-								console.error('No file selected');
-							}
-						}
-					</script>
-					<!-- КОНЕЦ ФАЙЛЕКОВ -->
+						<div class="p-1 flex-grow-1 mx-1">
+							<input 
+									style="width: 100%;" 
+									id="messageInput" 
+									type="text"
+									class="d-inline border-0 rounded-pill px-3 py-2" 
+									th:data="${id}"
+									th:dataSenderId="${currentUser}" 
+									th:dataRecipId="${recipientId}"
+									placeholder="Type a message" 
+									name="editedMessage"
+							>
+						</div>
 
 
+						<!-- Кнопка отправки -->
+						<div class="text-right mx-1">
+							<div class="d-inline-block" style="width:auto">
+								<button class="btn"><i class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
+							</div>
+						</div>
 
 
-
-					<!-- Форма для отправки сообщений -->
-					<form class="p-1 flex-grow-1 mx-1" id="messageForm" style="width: 80%;"
-						enctype="multipart/form-data">
-
-						<input style="width: 90%;" id="messageInput" type="text"
-							class="d-inline border-0 rounded-pill px-3 py-2" th:data="${id}"
-							th:dataSenderId="${currentUser}" th:dataRecipId="${recipientId}"
-							placeholder="Type a message" name="editedMessage">
-
-						<button class="btn mx-1">
-							<i class="zmdi zmdi-attachment-alt text-xlarge rotate-45 text-gray">
-								<!-- label с иконкой, выглядящей как скрепка -->
-								<input type="file">
-							</i>
-						</button>
-
-
-
-
-						<button class="btn"><i class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
 					</form>
-
-
-					<!-- Конец -->
-
-
 
 					<!-- Форма для редактирования сообщения -->
-
 					<form class="p-1 flex-grow-1 mx-1" style="display: none; width: 100%;" id="editForm">
-
 						<input style="width: 90%;" id="editMessageInput" type="text"
-							class="d-inline border-0 rounded-pill px-3 py-2" placeholder="Type a message"
+							class="d-inline border-0 rounded-pill px-3 py-2" placeholder="Edit"
 							name="editedMessage">
-
 						<button class="btn"><i class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
-
 					</form>
-
-
-
 					<!-- Конец формы редактирований сообщений -->
 
+
 				</div>
+
 				<!-- Конец нижней панели -->
 
 
@@ -931,8 +891,7 @@
 	<!-- Скрипт для создания чатов -->
 	<script src="/js/chatScripts/ChatCreate.js"></script>
 
-	<script src="/js/scripts/bootstrap.bundle.min.js"></script>
-	<script src="/js/scripts/sidebarScript.js"></script>
+
 
 
 </body>
