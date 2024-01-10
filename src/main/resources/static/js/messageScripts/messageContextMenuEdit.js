@@ -22,10 +22,8 @@ $(function() {
 	});
 
 	editButton.on("click", function() {
-		console.log($("#messageForm"));
 		$("#messageForm").hide();
 		$("#editForm").show();
-		console.log($("#messageForm"));
 		modal.hide();
 
 		var mess = document.getElementById(messageId);

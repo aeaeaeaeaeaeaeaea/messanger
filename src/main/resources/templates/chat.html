@@ -674,7 +674,7 @@
 					</button>
 
 					<!-- Форма -->
-					<form class="d-flex align-items-center" id="messageForm" style="width: 100%;" enctype="multipart/form-data">
+					<form class="d-flex align-items-center" id="messageForm" style="display: none; width: 100%;" enctype="multipart/form-data">
 							
 						<!-- Скрепочка -->
 						<label for="fileInput" class="btn mx-1">
@@ -703,16 +703,23 @@
 								<button class="btn"><i class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
 							</div>
 						</div>
-
-
 					</form>
 
 					<!-- Форма для редактирования сообщения -->
 					<form class="p-1 flex-grow-1 mx-1" style="display: none; width: 100%;" id="editForm">
-						<input style="width: 90%;" id="editMessageInput" type="text"
-							class="d-inline border-0 rounded-pill px-3 py-2" placeholder="Edit"
-							name="editedMessage">
-						<button class="btn"><i class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
+						
+						<input 
+							style="width: 90%;" 
+							id="editMessageInput" 
+							type="text"
+							class="d-inline border-0 rounded-pill px-3 py-2" 
+							placeholder="Edit"
+							name="editedMessage"
+						>
+						
+						<button class="btn">
+							<i class="zmdi zmdi-mail-send text-xlarge text-gray"></i>
+						</button>
 					</form>
 					<!-- Конец формы редактирований сообщений -->
 
