@@ -22,12 +22,14 @@ $(function() {
 	});
 
 	editButton.on("click", function() {
-		$("#messageForm").hide();
-		$("#editForm").show();
+
+		document.getElementById('b').style.display = 'flex';
+		// Отображение элемента a
+		document.getElementById('a').style.display = 'none';
 		modal.hide();
 
 		var mess = document.getElementById(messageId);
-		
+
 		var sendTime = mess.getAttribute("sendtime");
 		var senderName = mess.getAttribute("senderName");
 		var chatId = mess.getAttribute("chatId");
@@ -35,14 +37,11 @@ $(function() {
 		var senderId = mess.getAttribute("senderId");
 		var recipientId = mess.getAttribute("recipientId");
 		var status = mess.getAttribute("status");
-		
 
 		editMessageInput.value = content;
 
 		$("#editForm").on("submit", function(event) {
 			event.preventDefault(); // Предотвратить стандартное поведение отправки формы
-
-
 
 			var editedMessage = $("#editMessageInput").val(); // Получить данные из формы
 			var dataToSend = {
@@ -67,9 +66,9 @@ $(function() {
 				}
 			});
 
-		/*	$("#editForm").hide();
-			$("#messageForm").show();
-			modal.hide();*/
+			/*	$("#editForm").hide();
+				$("#messageForm").show();
+				modal.hide();*/
 		});
 
 
