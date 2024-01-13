@@ -7,9 +7,7 @@ $(document).ready(function() {
 		e.preventDefault();
 		
 		var mess = $(this);
-
 		var chatId = mess.attr('data');
-
 		console.log("Chat id " + chatId);
 
 		deleteButton.data("chatId", chatId); // Сохраняем chatId в data атрибуте deleteButton

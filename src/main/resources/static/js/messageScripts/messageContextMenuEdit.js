@@ -23,9 +23,8 @@ $(function() {
 
 	editButton.on("click", function() {
 
-		document.getElementById('b').style.display = 'flex';
-		// Отображение элемента a
-		document.getElementById('a').style.display = 'none';
+		$("#messageForm").hide();
+		$("#editForm").show();
 		modal.hide();
 
 		var mess = document.getElementById(messageId);

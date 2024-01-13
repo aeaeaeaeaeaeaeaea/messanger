@@ -7,7 +7,7 @@
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
 		integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-	
+
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
@@ -94,88 +94,91 @@
 
 										<i class="zmdi zmdi-check-all" style="font-size:16px!important">
 										</i>
-										<!-- 		
-										<div th:if="${files.get(lastMessages.get(chatRoom.getId()).getId())} != null">
-
-
+										
+										<div th:if="${lastMessages.get(chatRoom.getId())} != null">
 											<div
-												th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('jpg')}">
-
-												<img th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
-													width="25" height="25" />
-
-											</div>
-
-											<div
-												th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('jpeg')}">
-												>
-
-												<img th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
-													width="25" height="25" />
+												th:if="${files.get(lastMessages.get(chatRoom.getId()).getId())} != null">
 
 
-											</div>
+												<div
+													th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('jpg')}">
 
-											<div
-												th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('png')}">
+													<img th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
+														width="25" height="25" />
 
-												<img th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
-													width="25" height="25" />
+												</div>
 
+												<div
+													th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('jpeg')}">
+													>
 
-											</div>
-
-											<div
-												th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('gif')}">
-
-												<img th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
-													width="25" height="25" />
+													<img th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
+														width="25" height="25" />
 
 
-											</div>
+												</div>
+
+												<div
+													th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('png')}">
+
+													<img th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
+														width="25" height="25" />
 
 
-											<div
-												th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('mp4')}">
+												</div>
 
-												<video width="25" height="25" controls>
-													<source
-														th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
-														type="video/mp4" />
-												</video>
+												<div
+													th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('gif')}">
 
-
-											</div>
-
-											<div
-												th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('avi')}">
-
-												<video width="25" height="25" controls>
-													<source
-														th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
-														type="video/x-msvideo" />
-												</video>
+													<img th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
+														width="25" height="25" />
 
 
-											</div>
-
-											<div
-												th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('mkv')}">
-
-												<video width="25" height="25" controls>
-													<source
-														th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
-														type="video/x-matroska" />
-												</video>
+												</div>
 
 
+												<div
+													th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('mp4')}">
+
+													<video width="25" height="25" controls>
+														<source
+															th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
+															type="video/mp4" />
+													</video>
+
+
+												</div>
+
+												<div
+													th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('avi')}">
+
+													<video width="25" height="25" controls>
+														<source
+															th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
+															type="video/x-msvideo" />
+													</video>
+
+
+												</div>
+
+												<div
+													th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('mkv')}">
+
+													<video width="25" height="25" controls>
+														<source
+															th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
+															type="video/x-matroska" />
+													</video>
+
+
+												</div>
 											</div>
 										</div>
-
+										
 										<i th:if="${lastMessages.get(chatRoom.getId()) != null}"
 											th:text="${lastMessages.get(chatRoom.getId()).getContent()}">
 										</i>
-										-->
+
 
 
 									</small>
@@ -235,86 +238,87 @@
 
 										<i class="zmdi zmdi-check-all" style="font-size:16px!important">
 										</i>
-										<!-- 
-										<div th:if="${files.get(lastMessages.get(chatRoom.getId()).getId())} != null">
+
+										<div th:if="${lastMessages.get(chatRoom.getId())} != null">
 
 
 											<div
-												th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('jpg')}">
+												th:if="${files.get(lastMessages.get(chatRoom.getId()).getId())} != null">
 
-												<img th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
-													width="25" height="25" />
 
+												<div
+													th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('jpg')}">
+
+													<img th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
+														width="25" height="25" />
+
+												</div>
+
+												<div
+													th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('jpeg')}">
+													>
+
+													<img th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
+														width="25" height="25" />
+
+
+												</div>
+
+												<div
+													th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('png')}">
+
+													<img th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
+														width="25" height="25" />
+
+
+												</div>
+
+												<div
+													th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('gif')}">
+
+													<img th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
+														width="25" height="25" />
+
+
+												</div>
+
+
+												<div
+													th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('mp4')}">
+
+													<video width="25" height="25" controls>
+														<source
+															th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
+															type="video/mp4" />
+													</video>
+
+
+												</div>
+
+												<div
+													th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('avi')}">
+
+													<video width="25" height="25" controls>
+														<source
+															th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
+															type="video/x-msvideo" />
+													</video>
+
+
+												</div>
+
+												<div
+													th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('mkv')}">
+
+													<video width="25" height="25" controls>
+														<source
+															th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
+															type="video/x-matroska" />
+													</video>
+
+
+												</div>
 											</div>
-
-											<div
-												th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('jpeg')}">
-												>
-
-												<img th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
-													width="25" height="25" />
-
-
-											</div>
-
-											<div
-												th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('png')}">
-
-												<img th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
-													width="25" height="25" />
-
-
-											</div>
-
-											<div
-												th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('gif')}">
-
-												<img th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
-													width="25" height="25" />
-
-
-											</div>
-
-
-											<div
-												th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('mp4')}">
-
-												<video width="25" height="25" controls>
-													<source
-														th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
-														type="video/mp4" />
-												</video>
-
-
-											</div>
-
-											<div
-												th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('avi')}">
-
-												<video width="25" height="25" controls>
-													<source
-														th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
-														type="video/x-msvideo" />
-												</video>
-
-
-											</div>
-
-											<div
-												th:if="${#strings.toLowerCase(files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName().split('\.')[1]).equals('mkv')}">
-
-												<video width="25" height="25" controls>
-													<source
-														th:src="'/Files/' + ${files.get(lastMessages.get(chatRoom.getId()).getId()).getFileName()}"
-														type="video/x-matroska" />
-												</video>
-
-
-											</div>
-
-
-
-
 										</div>
 
 										<i th:if="${lastMessages.get(chatRoom.getId()) != null}"
@@ -662,65 +666,69 @@
 				</div>
 				<!-- Конец сообщений -->
 
-				
-				
-				<div id="b" style="display: none;" class="d-flex align-items-center bg-gray px-2 py-1 border-bottom">
-					<!-- Смайлик -->
-					<button class="btn mx-1">
-						<i class="zmdi zmdi-mood text-xlarge text-gray"></i>
-					</button>
-
-					<!-- Форма для редактирования сообщения -->
-					<form class="d-flex align-items-center" style="width: 100%;" id="editForm"
-						enctype="multipart/form-data">
-						<!-- Скрепочка -->
-						<label for="fileInput" class="btn mx-1">
-							<i class="zmdi zmdi-attachment-alt text-xlarge rotate-45 text-gray"></i>
-						</label>
-
-						<input style="width: 90%;" id="editMessageInput" type="text"
-							class="d-inline border-0 rounded-pill px-3 py-2" placeholder="Edit" name="editedMessage">
-
-						<!-- Кнопка отправки -->
-						<div class="text-right mx-1">
-							<div class="d-inline-block" style="width:auto">
-								<button class="btn"><i class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
-							</div>
-						</div>
-					</form>
-					<!-- Конец формы редактирований сообщений -->
-				</div>
-
 				<!-- Нижняя панель -->
-				<div id="a" class="d-flex align-items-center bg-gray px-2 py-1 border-bottom">
+				<div class="d-flex align-items-center bg-gray px-2 py-1 border-bottom">
+
 					<!-- Смайлик -->
 					<button class="btn mx-1">
 						<i class="zmdi zmdi-mood text-xlarge text-gray"></i>
 					</button>
 
-					<!-- Форма -->
-					<form class="d-flex align-items-center" id="messageForm" style="width: 100%;"
-						enctype="multipart/form-data">
-						<!-- Скрепочка -->
-						<label for="fileInput" class="btn mx-1">
-							<i class="zmdi zmdi-attachment-alt text-xlarge rotate-45 text-gray"></i>
-						</label>
-						<input type="file" id="fileInput" style="display: none;" />
+					<div id="messageForm" style="width: 100%;">
+						<!-- Форма -->
+						<form style="display: none; width: 100%;" id="messageForm" class="d-flex align-items-center"
+							enctype="multipart/form-data">
 
-						<div class="p-1 flex-grow-1 mx-1">
-							<input style="width: 100%;" id="messageInput" type="text"
-								class="d-inline border-0 rounded-pill px-3 py-2" th:data="${id}"
-								th:dataSenderId="${currentUser}" th:dataRecipId="${recipientId}"
-								placeholder="Type a message" name="editedMessage">
-						</div>
+							<!-- Скрепочка -->
+							<label for="fileInput" class="btn mx-1">
+								<i class="zmdi zmdi-attachment-alt text-xlarge rotate-45 text-gray"></i>
+							</label>
+							<input type="file" id="fileInput" style="display: none;" />
 
-						<!-- Кнопка отправки -->
-						<div class="text-right mx-1">
-							<div class="d-inline-block" style="width:auto">
-								<button class="btn"><i class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
+							<div class="p-1 flex-grow-1 mx-1">
+								<input style="width: 100%;" id="messageInput" type="text"
+									class="d-inline border-0 rounded-pill px-3 py-2" th:data="${id}"
+									th:dataSenderId="${currentUser}" th:dataRecipId="${recipientId}"
+									placeholder="Type a message" name="editedMessage">
 							</div>
-						</div>
-					</form>
+
+							<!-- Кнопка отправки -->
+							<div class="text-right mx-1">
+								<div class="d-inline-block" style="width:auto">
+									<button class="btn"><i
+											class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
+								</div>
+							</div>
+
+						</form>
+					</div>
+
+					<div style="display: none; width: 100%" id="editForm">
+
+						<form style="display: none; width: 100%;" id="editForm" class="d-flex align-items-center"
+							enctype="multipart/form-data">
+
+							<!-- Скрепочка -->
+							<label for="fileInput" class="btn mx-1">
+								<i class="zmdi zmdi-attachment-alt text-xlarge rotate-45 text-gray"></i>
+							</label>
+
+							<input style="width: 90%;" id="editMessageInput" type="text"
+								class="d-inline border-0 rounded-pill px-3 py-2" placeholder="Edit"
+								name="editedMessage">
+
+							<!-- Кнопка отправки -->
+							<div class="text-right mx-1">
+								<div class="d-inline-block" style="width:auto">
+									<button class="btn"><i
+											class="zmdi zmdi-mail-send text-xlarge text-gray"></i></button>
+								</div>
+							</div>
+
+						</form>
+
+					</div>
+
 				</div>
 
 

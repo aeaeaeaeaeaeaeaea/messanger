@@ -290,7 +290,7 @@ public class ChatController {
 
 		}
 
-		// Дополнительная логика сохранения сообщения и отправки в WebSocket
+		
 
 		return "redirect:/chat/" + chatId;
 	}
