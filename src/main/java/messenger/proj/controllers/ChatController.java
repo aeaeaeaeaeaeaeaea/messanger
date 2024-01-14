@@ -100,50 +100,37 @@ public class ChatController {
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
-
-		String curentUserId = personDetails.getUser().getId();
+		String currentUserId = personDetails.getUser().getId();
 		Optional<ChatRoom> chat = chatRoomServ.findById(userId);
 		List<message> list = messageServ.findByChatId(userId);
 
-		chat.get().setUnreadRecipientMessages(0);
-		chat.get().setUnreadSenderMessages(0);
-		chatRoomServ.chatUnreadMessagesUpdate(chat.get());
-
-		if (!chat.isPresent()) {
-			return "redirect:/users";
-		}
-
-		if (chat.isPresent() && (!chat.get().getSenderId().equals(curentUserId)
-				&& !chat.get().getRecipientId().equals(curentUserId))) {
-			return "redirect:/users";
-
-		}
+		chatRoomServ.reidrectIfChatRoomDontExist(chat, currentUserId);
+		
+		// Метод, который устанавливает статус 'Unread' для сообщений и считает их
+		messageServ.setMessageStatus(chat.get(), userId);
+		// Метод, который делает сообщения прочитанными
+		messageServ.readMessages(userId, currentUserId, chat.get());
 
 		// Блок кода, который устанавливает recipientId и senderId для сообщений
-		if (chat.get().getSenderId().equals(curentUserId)) {
+		if (chat.get().getSenderId().equals(currentUserId)) {
 			model.addAttribute("recipientId", chat.get().getRecipientId());
 			model.addAttribute("currentUser", chat.get().getSenderId());
-		} else if (chat.get().getRecipientId().equals(curentUserId)) {
+		} else if (chat.get().getRecipientId().equals(currentUserId)) {
 			model.addAttribute("currentUser", chat.get().getRecipientId());
 			model.addAttribute("recipientId", chat.get().getSenderId());
 		}
 		// Конец блока кода
 
-		// Метод, который делает сообщения прочитанными
-		messageServ.readMessages(userId, curentUserId);
-		// Метод, который устанавливает статус 'Unread' для сообщений и считает их
-		messageServ.setMessageStatus(chat.get(), userId);
-
 		model.addAttribute("unreadSenderMessages", chat.get().getUnreadSenderMessages());
 		model.addAttribute("unreadRecipientMessages", chat.get().getUnreadRecipientMessages());
-		model.addAttribute("username", userServ.findById(curentUserId).get().getUsername());
+		model.addAttribute("username", userServ.findById(currentUserId).get().getUsername());
 		model.addAttribute("f", new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd HH:mm:ss").toFormatter());
 		model.addAttribute("todayFormat", new DateTimeFormatterBuilder().appendPattern("HH:mm").toFormatter());
 		model.addAttribute("formatter", new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter());
 		model.addAttribute("todayDate",
 				LocalDateTime.now().format(new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter()));
-		model.addAttribute("lastMessages", messageServ.getLastMessage(chatRoomServ.findAll(curentUserId)));
-		model.addAttribute("chatList", chatRoomServ.lastMessageOrder(curentUserId));
+		model.addAttribute("lastMessages", messageServ.getLastMessage(chatRoomServ.findAll(currentUserId)));
+		model.addAttribute("chatList", chatRoomServ.lastMessageOrder(currentUserId));
 		model.addAttribute("cachedMessages", messageServ.getCaсhedMessages(userId));
 		model.addAttribute("cassandraMessages", list);
 		model.addAttribute("id", userId);
@@ -171,7 +158,7 @@ public class ChatController {
 
 		LocalDateTime ldt = LocalDateTime.parse(sendTime);
 
-		if (content.trim().isEmpty()) {
+		if (content.trim().isEmpty() && !fileService.getFiles().containsKey(messageId)) {
 			messageServ.deleteById(messageId, ldt, chatId);
 			return "redirect:/chat/" + chatId;
 		}
@@ -289,8 +276,6 @@ public class ChatController {
 			}
 
 		}
-
-		
 
 		return "redirect:/chat/" + chatId;
 	}

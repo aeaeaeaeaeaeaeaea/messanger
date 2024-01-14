@@ -71,17 +71,28 @@ public class ChatRoomService {
 
 	}
 
-	
-	
-	public void chatUnreadMessagesUpdate(ChatRoom chatRoom) {
-		chatRoomRep.save(chatRoom);
-	}
-
 	public Optional<ChatRoom> findBySenderIdAndRecipientId(String senderId, String recipientId) {
-
 		Optional<ChatRoom> chatRoom = chatRoomRep.findBySenderIdAndRecipientId(senderId, recipientId);
-
 		return chatRoom;
+	}
+	
+	public String reidrectIfChatRoomDontExist(Optional<ChatRoom> chat, String currentUserId) {
+		if (!chat.isPresent()) {
+			return "redirect:/users";
+		}
+
+		if (chat.isPresent() && (!chat.get().getSenderId().equals(currentUserId)
+				&& !chat.get().getRecipientId().equals(currentUserId))) {
+			return "redirect:/users";
+		}
+		
+		return "";
+	}
+	
+	public void readUnreadMessages(ChatRoom chat) {
+		chat.setUnreadRecipientMessages(0);
+		chat.setUnreadSenderMessages(0);
+		chatRoomRep.save(chat);
 	}
 
 	public List<ChatRoom> lastMessageOrder(String curentUserId) {

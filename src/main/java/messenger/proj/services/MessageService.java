@@ -77,10 +77,13 @@ public class MessageService {
 
 	}
 
-	public void readMessages(String chatId, String curentUserId) {
-		for (message message : messageRedisServ.getLatestMessages(chatId)) {
+	public void readMessages(String chatId, String curentUserId, ChatRoom chat) {
+		boolean flag = false;
+
+		for (message message : getCaсhedMessages(chatId)) {
 			if (message.getStatus().equals("Unread") && message.getRecipientId().equals(curentUserId)) {
 				message.setStatus("Read");
+				flag = true;
 				edit(message, message.getId());
 			}
 		}
@@ -88,12 +91,18 @@ public class MessageService {
 		for (message message : findByChatId(chatId)) {
 			if (message.getStatus().equals("Unread") && message.getRecipientId().equals(curentUserId)) {
 				message.setStatus("Read");
+				flag = true;
 				edit(message, message.getId());
 			}
 		}
+
+		chat.setUnreadRecipientMessages(0);
+		chat.setUnreadSenderMessages(0);
+		chatRoomRepository.save(chat);
+
 	}
 
-	// Метод, который устанавливает статус 'Unread' для сообщений и считает их
+	// Метод, который считает сообщения со статусом 'Unread'
 	public void setMessageStatus(ChatRoom chat, String chatId) {
 
 		for (message message : messageRedisServ.getLatestMessages(chatId)) {
@@ -137,7 +146,7 @@ public class MessageService {
 	public List<message> getCaсhedMessages(String chatId) {
 		return messageRedisServ.getLatestMessages(chatId);
 	}
-	
+
 	public List<message> getCassandraMessages(String chatId) {
 		return messageRep.findByChatId(chatId);
 	}
@@ -150,17 +159,18 @@ public class MessageService {
 			try {
 				// Получаю последние кэшированные сообщения
 				List<message> messages = getCaсhedMessages(chatRoom.getId());
-				// Если последних кэшированных сообщений нет, то получаем сообщения из cassandra 
+				// Если последних кэшированных сообщений нет, то получаем сообщения из cassandra
 				if (messages.isEmpty()) {
 					List<message> cassandraMessages = getCassandraMessages(chatRoom.getId());
 					lastMessages.put(chatRoom.getId(), cassandraMessages.get(cassandraMessages.size() - 1));
-				//  Кладем сообщения в hashMap для дальнейшего использования из redis'а, если они есть
+					// Кладем сообщения в hashMap для дальнейшего использования из redis'а, если они
+					// есть
 				} else {
 					lastMessages.put(chatRoom.getId(), messages.get(messages.size() - 1));
 				}
 
 			} catch (IndexOutOfBoundsException e) {
-				
+
 			}
 		}
 
