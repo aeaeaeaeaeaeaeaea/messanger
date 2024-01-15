@@ -16,7 +16,7 @@ import java.util.UUID;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
-
+import org.elasticsearch.cluster.coordination.Publication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -76,15 +76,27 @@ public class MessageService {
 		redisTemplate1.opsForList().remove(chatId, 0, "message:" + chatId + ":" + messageId);
 
 	}
+	
+	public void deleteAllMessagesFromChat(String chatId) {
+		for (message m : getCaсhedMessages(chatId)) {
+			deleteById(m.getId(), m.getSendTime(), chatId);
+		}
+
+		for (message m : findByChatId(chatId)) {
+			deleteById(m.getId(), m.getSendTime(), chatId);
+		}
+	}
 
 	public void readMessages(String chatId, String curentUserId, ChatRoom chat) {
+		
 		boolean flag = false;
 
 		for (message message : getCaсhedMessages(chatId)) {
 			if (message.getStatus().equals("Unread") && message.getRecipientId().equals(curentUserId)) {
 				message.setStatus("Read");
 				flag = true;
-				edit(message, message.getId());
+				edit(message.getId(), message.getContent(), message.getChatId(), message.getSendTime(), 
+					message.getSenderName(), message.getSenderId(), message.getRecipientId(), message.getStatus());
 			}
 		}
 
@@ -92,14 +104,15 @@ public class MessageService {
 			if (message.getStatus().equals("Unread") && message.getRecipientId().equals(curentUserId)) {
 				message.setStatus("Read");
 				flag = true;
-				edit(message, message.getId());
+				edit(message.getId(), message.getContent(), message.getChatId(), message.getSendTime(), 
+					 message.getSenderName(), message.getSenderId(), message.getRecipientId(), message.getStatus());
 			}
 		}
 
 		chat.setUnreadRecipientMessages(0);
 		chat.setUnreadSenderMessages(0);
 		chatRoomRepository.save(chat);
-
+		
 	}
 
 	// Метод, который считает сообщения со статусом 'Unread'
@@ -132,7 +145,24 @@ public class MessageService {
 	}
 
 	@Transactional
-	public void edit(message message, String messageId) {
+	public void edit(String messageId, String content, 
+					 String chatId, LocalDateTime ldt, 
+					 String senderName, String senderId,
+					 String recipientId, String status
+					 ) {
+		
+		message message = new message();
+
+		message.setId(messageId);
+		message.setContent(content);
+		message.setChatId(chatId);
+		message.setSendTime(ldt);
+		message.setSenderName(senderName);
+		message.setSenderId(senderId);
+		message.setRecipientId(recipientId);
+		message.setStatus(status);
+		
+		
 		List<message> messages = getCaсhedMessages(message.getChatId());
 
 		if (messages.contains(message)) {
