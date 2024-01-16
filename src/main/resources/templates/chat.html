@@ -27,6 +27,7 @@
 <body class="body d-flex flex-column h-100" style="overflow: hidden;">
 
 	<div class="d-flex flex-column bg-light" style="height:100%">
+		
 		<div class="row g-0" style="height:100%">
 
 			<!-- SIDEBAR -->
@@ -372,10 +373,16 @@
 
 			<div class="col-7 col-md-8 flex-column" style="height:100%;">
 
-				<div class="d-flex bg-gray px-3 py-2 border-bottom">
+				<div class="d-flex bg-gray px-3 py-2 border-bottom" style="height: 5% ;max-height: 5%;">
 
 					<div class="px-3 py-2 text-large flex-grow-1">
-
+						
+						<div th:text="${recipientUserName}">
+							username	
+						</div>
+						
+						<small>  last seen recently </small>
+						
 					</div>
 
 				</div>
@@ -728,6 +735,7 @@
 
 
 			</div>
+		
 		</div>
 
 	</div>

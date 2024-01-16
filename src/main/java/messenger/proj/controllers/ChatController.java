@@ -118,14 +118,17 @@ public class ChatController {
 		if (chat.get().getSenderId().equals(currentUserId)) {
 			model.addAttribute("recipientId", chat.get().getRecipientId());
 			model.addAttribute("currentUser", chat.get().getSenderId());
+			model.addAttribute("recipientUserName", userServ.findById(chat.get().getRecipientId()).get().getUsername());
 		} else if (chat.get().getRecipientId().equals(currentUserId)) {
 			model.addAttribute("currentUser", chat.get().getRecipientId());
 			model.addAttribute("recipientId", chat.get().getSenderId());
+			model.addAttribute("recipientUserName", userServ.findById(chat.get().getSenderId()).get().getUsername());
 		}
 		
 		model.addAttribute("unreadSenderMessages", chat.get().getUnreadSenderMessages());
 		model.addAttribute("unreadRecipientMessages", chat.get().getUnreadRecipientMessages());
 		model.addAttribute("username", userServ.findById(currentUserId).get().getUsername());
+		
 		
 		model.addAttribute("f", new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd HH:mm:ss").toFormatter());
 		model.addAttribute("todayFormat", new DateTimeFormatterBuilder().appendPattern("HH:mm").toFormatter());
@@ -241,7 +244,6 @@ public class ChatController {
 		}
 
 		model.addAttribute("todayFormat", new DateTimeFormatterBuilder().appendPattern("HH:mm").toFormatter());
-		
 		model.addAttribute("formatter", new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter());
 		model.addAttribute("todayDate", LocalDateTime.now().format(new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter()));
 		
@@ -254,7 +256,8 @@ public class ChatController {
 
 		return "message1";
 	}
-
+	
+	// Загружаем файл
 	@PostMapping("/upload-file/{chatId}")
 	public String sendMessage(@Payload message message, @PathVariable("chatId") String chatId,
 			@RequestParam("file") MultipartFile file, @RequestParam("content") String content,
