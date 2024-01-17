@@ -27,7 +27,7 @@
 <body class="body d-flex flex-column h-100" style="overflow: hidden;">
 
 	<div class="d-flex flex-column bg-light" style="height:100%">
-		
+
 		<div class="row g-0" style="height:100%">
 
 			<!-- SIDEBAR -->
@@ -95,7 +95,7 @@
 
 										<i class="zmdi zmdi-check-all" style="font-size:16px!important">
 										</i>
-										
+
 										<div th:if="${lastMessages.get(chatRoom.getId())} != null">
 											<div
 												th:if="${files.get(lastMessages.get(chatRoom.getId()).getId())} != null">
@@ -175,7 +175,7 @@
 												</div>
 											</div>
 										</div>
-										
+
 										<i th:if="${lastMessages.get(chatRoom.getId()) != null}"
 											th:text="${lastMessages.get(chatRoom.getId()).getContent()}">
 										</i>
@@ -373,16 +373,17 @@
 
 			<div class="col-7 col-md-8 flex-column" style="height:100%;">
 
-				<div class="d-flex bg-gray px-3 py-2 border-bottom" style="height: 5% ;max-height: 5%;">
+				<div class="d-flex bg-gray px-3 py-2 border-bottom" style="height: 7% ;max-height: 7%;">
 
-					<div class="px-3 py-2 text-large flex-grow-1">
+					<div class="chat__header-title position-relative flex-grow-1">
 						
-						<div th:text="${recipientUserName}">
-							username	
-						</div>
+						<h1 class="h6 font-weight-bold chat__header-user-name" th:text="${recipientUserName}">username</h1>
 						
-						<small>  last seen recently </small>
+						<p class="chat__header-info chat__header-info--online h6 mb-0">last seen recently </p>
 						
+						<button type="button" class="chat-info-btn border-0 p-0 bg-transparent position-absolute"
+							data-toggle="modal" data-target="#chat-info-modal-saved-messages"></button>
+							
 					</div>
 
 				</div>
@@ -390,7 +391,7 @@
 
 
 				<div id="message-container" class="flex-grow-1 vh-100 overflow-auto"
-					style="height: 90vh; max-height: 90vh;">
+					style="height: 85%; max-height: 85%;">
 					<br>
 
 					<!-- Сообщения -->
@@ -673,7 +674,8 @@
 				<!-- Конец сообщений -->
 
 				<!-- Нижняя панель -->
-				<div class="d-flex align-items-center bg-gray px-2 py-1 border-bottom">
+				<div class="d-flex align-items-center bg-gray px-2 py-1 border-bottom"
+					style="height: 10%; max-height: 10%;">
 
 					<!-- Смайлик -->
 					<button class="btn mx-1">
@@ -735,7 +737,7 @@
 
 
 			</div>
-		
+
 		</div>
 
 	</div>
