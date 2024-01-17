@@ -8,17 +8,27 @@ public class ConnectionInfo {
 	private String userId;
 	private String ipAddress;
 	private String logInTime;
+	private String onlineStatus;
 	
 	public ConnectionInfo() {
 		
 	}
 	
-	public ConnectionInfo(String userName, String userId, String ipAddress, String logInTime) {
+	public ConnectionInfo(String userName, String onlineStatus, String userId, String ipAddress, String logInTime) {
 		super();
+		this.onlineStatus = onlineStatus;
 		this.userName = userName;
 		this.userId = userId;
 		this.ipAddress = ipAddress;
 		this.logInTime = logInTime;
+	}
+
+	public String getOnlineStatus() {
+		return onlineStatus;
+	}
+
+	public void setOnlineStatus(String onlineStatus) {
+		this.onlineStatus = onlineStatus;
 	}
 
 	public String getUserName() {

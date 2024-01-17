@@ -97,7 +97,10 @@ public class ChatController {
 	//Страница с чатом между 2-мя пользователями
 	// ДЛИНА ПОСЛЕДНЕГО СООБЩЕНИЯ В СПИСКАХ ЧАТОВ (СДЕЛАЮ ПОТОМ)
 	@GetMapping("/chat/{userId}")
-	public String chat(@PathVariable("userId") String userId, Model model) {
+	public String chat(
+					   @PathVariable("userId") String userId, 
+					   Model model, 
+					   HttpServletRequest request) {
 		
 		// Получаем данные о текущем пользователе
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -106,6 +109,8 @@ public class ChatController {
 		
 		// Получаем чат по его Id
 		Optional<ChatRoom> chat = chatRoomServ.findById(userId);
+		
+		connectionServ.userConnection(currentUserId, new ConnectionInfo(), request);
 			
 		//Редирект на главную страницу, если чат не существует
 		chatRoomServ.reidrectIfChatRoomDontExist(chat, currentUserId);
@@ -124,10 +129,11 @@ public class ChatController {
 			model.addAttribute("recipientId", chat.get().getSenderId());
 			model.addAttribute("recipientUserName", userServ.findById(chat.get().getSenderId()).get().getUsername());
 		}
-		
+		System.out.println("Connection " + connectionServ.getUserConnection(currentUserId).getOnlineStatus());
 		model.addAttribute("unreadSenderMessages", chat.get().getUnreadSenderMessages());
 		model.addAttribute("unreadRecipientMessages", chat.get().getUnreadRecipientMessages());
 		model.addAttribute("username", userServ.findById(currentUserId).get().getUsername());
+		model.addAttribute("connectionInfo", connectionServ.getUserConnection(currentUserId).getOnlineStatus());
 		
 		
 		model.addAttribute("f", new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd HH:mm:ss").toFormatter());
@@ -223,7 +229,6 @@ public class ChatController {
 	@GetMapping("/users")
 	public String users(
 						Model model, 
-						HttpServletRequest request,
 						@RequestParam(value = "userName", required = false) String userName
 						) {
 		
@@ -232,7 +237,7 @@ public class ChatController {
 		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
 		String curentUserId = personDetails.getUser().getId();
 
-		connectionServ.userConnection(curentUserId, new ConnectionInfo(), request);
+		
 
 		if (userName != null) {
 			try {

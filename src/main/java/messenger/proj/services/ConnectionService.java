@@ -3,8 +3,10 @@ package messenger.proj.services;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+
 
 import org.hibernate.validator.internal.util.privilegedactions.NewInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,11 +38,21 @@ public class ConnectionService {
 		connectionInfo.setUserId(userId);
 		connectionInfo.setIpAddress(request.getRemoteAddr().toString());
 		connectionInfo.setLogInTime(LocalDateTime.now().format(formatter).toString());
+		connectionInfo.setOnlineStatus("Online");
 		
 		
 		redisTemplate.opsForValue().set("user:" + userId, connectionInfo);
 	}
 	
+	public ConnectionInfo getUserConnection(String userId) {
+		Set<String> keySet = redisTemplate.keys("user:" + userId);
+		ConnectionInfo connectionInfo = null;
+		for (String key : keySet) {
+			connectionInfo = redisTemplate.opsForValue().get(key);
+		}
+		return connectionInfo;
+	}
+	 
 
 
 }

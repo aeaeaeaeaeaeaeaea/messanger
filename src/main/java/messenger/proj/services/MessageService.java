@@ -119,7 +119,7 @@ public class MessageService {
 	public void setMessageStatus(ChatRoom chat, String chatId) {
 
 		for (message message : messageRedisServ.getLatestMessages(chatId)) {
-			if (message.getStatus().equals("Unread") && message.getSenderId().equals(chat.getSenderId())) {
+			if (message != null && message.getStatus().equals("Unread") && message.getSenderId().equals(chat.getSenderId())) {
 				// Увеличиваем счетчик для unreadRecipientMessages
 				chat.setUnreadRecipientMessages(chat.getUnreadRecipientMessages() + 1);
 				chatRoomRepository.save(chat);
@@ -131,7 +131,7 @@ public class MessageService {
 		}
 
 		for (message message : findByChatId(chatId)) {
-			if (message.getStatus().equals("Unread") && message.getSenderId().equals(chat.getSenderId())) {
+			if (message != null && message.getStatus().equals("Unread") && message.getSenderId().equals(chat.getSenderId())) {
 				// Увеличиваем счетчик для unreadRecipientMessages
 				chat.setUnreadRecipientMessages(chat.getUnreadRecipientMessages() + 1);
 				chatRoomRepository.save(chat);

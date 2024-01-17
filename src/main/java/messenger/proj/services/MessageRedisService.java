@@ -33,7 +33,7 @@ public class MessageRedisService {
 
 	public void cacheMessage(String messageId, String chatId, message message) {
 		
-		Set<String> keySet = redisTemplate.keys("message:" + chatId+":*");
+		//Set<String> keySet = redisTemplate.keys("message:" + chatId+":*");
 		List<String> list = redisTemplate1.opsForList().range(chatId, 0, -1);
 		
 		
@@ -55,7 +55,7 @@ public class MessageRedisService {
 
     public List<message> getLatestMessages(String chatId) {
     	
-    	Set<String> keySet = redisTemplate.keys("message:" + chatId + ":*");
+    	
     	List<String> list = redisTemplate1.opsForList().range(chatId, 0, -1);
     	
     	List<message> messages = new ArrayList<message>();
