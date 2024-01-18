@@ -124,16 +124,26 @@ public class ChatController {
 			model.addAttribute("recipientId", chat.get().getRecipientId());
 			model.addAttribute("currentUser", chat.get().getSenderId());
 			model.addAttribute("recipientUserName", userServ.findById(chat.get().getRecipientId()).get().getUsername());
+			
+			if (connectionServ.getUserConnection(chat.get().getRecipientId()) != null) {
+				model.addAttribute("connectionInfo", connectionServ.getUserConnection(chat.get().getRecipientId()).getOnlineStatus());
+			}
 		} else if (chat.get().getRecipientId().equals(currentUserId)) {
 			model.addAttribute("currentUser", chat.get().getRecipientId());
 			model.addAttribute("recipientId", chat.get().getSenderId());
 			model.addAttribute("recipientUserName", userServ.findById(chat.get().getSenderId()).get().getUsername());
+			
+			if (connectionServ.getUserConnection(chat.get().getSenderId()) != null) {
+				model.addAttribute("connectionInfo", connectionServ.getUserConnection(chat.get().getSenderId()).getOnlineStatus());
+			}
+			
 		}
-		System.out.println("Connection " + connectionServ.getUserConnection(currentUserId).getOnlineStatus());
+		
+		
+		
 		model.addAttribute("unreadSenderMessages", chat.get().getUnreadSenderMessages());
 		model.addAttribute("unreadRecipientMessages", chat.get().getUnreadRecipientMessages());
 		model.addAttribute("username", userServ.findById(currentUserId).get().getUsername());
-		model.addAttribute("connectionInfo", connectionServ.getUserConnection(currentUserId).getOnlineStatus());
 		
 		
 		model.addAttribute("f", new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd HH:mm:ss").toFormatter());

@@ -376,16 +376,22 @@
 				<div class="d-flex bg-gray px-3 py-2 border-bottom" style="height: 7% ;max-height: 7%;">
 
 					<div class="chat__header-title position-relative flex-grow-1">
+
+						<h1 class="h6 font-weight-bold chat__header-user-name" th:text="${recipientUserName}">username
+						</h1>
+
+						<div th:if="${connectionInfo != null}">
+							<p class="chat__header-info chat__header-info--online h6 mb-0"
+								th:if="${connectionInfo.equals('Online')}"> Online </p>
+						</div>
 						
-						<h1 class="h6 font-weight-bold chat__header-user-name" th:text="${recipientUserName}">username</h1>
-						
-						<p  class="chat__header-info chat__header-info--online h6 mb-0" 
-							th:if="${connectionInfo}.equals('Online')"
-							> last seen recently </p>
-						
+						<div th:if="${connectionInfo == null}">
+							<p class="chat__header-info chat__header-info--online h6 mb-0"> last seen recently </p>
+						</div>
+
 						<button type="button" class="chat-info-btn border-0 p-0 bg-transparent position-absolute"
 							data-toggle="modal" data-target="#chat-info-modal-saved-messages"></button>
-							
+
 					</div>
 
 				</div>
