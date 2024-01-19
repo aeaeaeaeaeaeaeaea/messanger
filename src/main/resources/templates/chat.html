@@ -375,7 +375,7 @@
 
 				<div class="d-flex bg-gray px-3 py-2 border-bottom" style="height: 7% ;max-height: 7%;">
 
-					<div class="chat__header-title position-relative flex-grow-1">
+					<div class="chat__header-title position-relative flex-grow-1" style="cursor: pointer;" onclick="showModal1()">
 
 						<h1 class="h6 font-weight-bold chat__header-user-name" th:text="${recipientUserName}">username
 						</h1>
@@ -384,13 +384,14 @@
 							<p class="chat__header-info chat__header-info--online h6 mb-0"
 								th:if="${connectionInfo.equals('Online')}"> Online </p>
 						</div>
-						
+
 						<div th:if="${connectionInfo == null}">
 							<p class="chat__header-info chat__header-info--online h6 mb-0"> last seen recently </p>
 						</div>
 
-						<button type="button" class="chat-info-btn border-0 p-0 bg-transparent position-absolute"
-							data-toggle="modal" data-target="#chat-info-modal-saved-messages"></button>
+
+
+
 
 					</div>
 
@@ -750,6 +751,115 @@
 
 	</div>
 
+	<div class="modal fade p-0 show" id="main-modal1" tabindex="-1" aria-labelledby="exampleModalLabel"
+		style="display: none;" aria-modal="true" role="dialog">
+		<div class="modal-dialog m-0 rounded-0">
+			<div class="modal-content vh-100 rounded-0">
+				<div class="modal-body p-0 vh-100 overflow-hidden">
+
+					<div class="p-4 fff">
+
+
+						<div class="d-flex align-items-center justify-content-between w-100 mb-4">
+							<img class="rounded-pill" src="img/my-picture.jpg" alt="user" width="50" height="50">
+
+						</div>
+
+						<div class="">
+
+							<a class="btn d-flex align-items-center justify-content-between text-dark p-0"
+								data-toggle="collapse" href="#new-account" role="button" aria-expanded="false"
+								aria-controls="collapseExample">
+
+								<div class="d-flex flex-column align-items-start">
+									<p class="mb-0 font-weight-bold" th:text="${username}">Rashidov Abdulloh</p>
+									<span class="modal-phone__number"></span>
+								</div>
+
+								<img src="/img/arrow.svg" alt="arrow" width="20" height="20">
+
+							</a>
+
+						</div>
+
+					</div>
+
+					<div class="modal-scroll vh-100 d-flex flex-column flex-grow-1">
+
+						<div class="collapse" id="new-account">
+							<div class="card card-body border-0 p-4">
+								<a class="nav-xxl nav-link active rounded-0 w-100 p-0 mb-3" data-toggle="pill"
+									href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">
+									<div class="media align-items-center">
+
+										<!--<div class="position-relative">
+											<img src="/img/Abdulloh-aka.jpg" class="rounded-pill mr-3" alt="mayoq hub"
+												width="30" height="30">
+											<span class="p-2 rounded-pill bg-info position-absolute"
+												style="bottom: 0; right: 14px;"></span>
+										</div>-->
+
+										<div class="media-body d-flex align-items-center justify-content-between">
+											<h5 class="text-secondary mb-0 add-account-item">Abdulloh</h5>
+											<span
+												class="number-message rounded-pill p-1 small bg-info text-white font-weight-bold mb-0"
+												style="font-size: 10px;">+23</span>
+										</div>
+									</div>
+								</a>
+								<a class="nav-xxl nav-link active rounded-0 w-100 p-0" data-toggle="pill"
+									href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">
+									<div class="media align-items-center">
+
+										<div class="">
+											<img src="/img/account.svg" class="rounded-pill mr-3" alt="account"
+												width="20" height="20">
+										</div>
+
+										<div class="media-body d-flex align-items-center justify-content-between">
+											<h5 class="text-dark mb-0 add-account-item">Add Account</h5>
+										</div>
+									</div>
+								</a>
+							</div>
+						</div>
+
+						<div class="p-4 ">
+							<a class="d-flex align-items-center text-decoration-none mb-3" href="#">
+								<img class="mr-3" src="/img/group-icon.svg" alt="new group" width="20" height="20">
+								<h5 class="modal-text__item mb-0">New Group</h5>
+							</a>
+							<a class="d-flex align-items-center text-decoration-none mb-3" href="#">
+								<img class="mr-3" src="/img/cahnel-icon.svg" alt="new group" width="20" height="20">
+								<h5 class="modal-text__item mb-0">New Channel</h5>
+							</a>
+
+							<a class="d-flex align-items-center text-decoration-none mb-3" href="#">
+								<img class="mr-3" src="/img/settings-icon.svg" alt="new group" width="20" height="20">
+								<h5 class="modal-text__item mb-0">Settings</h5>
+							</a>
+							<a class="d-flex align-items-center text-decoration-none justify-content-between">
+								<div class="d-flex align-items-center">
+									<img class="mr-3" src="/img/moon-icon.svg" alt="new group" width="20" height="20">
+									<h5 class="modal-text__item mb-0">Night Mode</h5>
+								</div>
+								<div class="custom-control custom-switch">
+									<input type="checkbox" class="form-check-input" role="switch" id="customSwitch1">
+									<label class="custom-control-label" for="customSwitch1"></label>
+								</div>
+							</a>
+
+
+
+						</div>
+
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- Боковая панель (открывается при нажатии на кнопку) -->
 	<div class="modal fade p-0 show" id="main-modal" tabindex="-1" aria-labelledby="exampleModalLabel"
 		style="display: none;" aria-modal="true" role="dialog">
@@ -902,10 +1012,13 @@
 	<script src="/js/messageScripts/webSocket.js"></script>
 	<script src="/js/messageScripts/messageColor.js"></script>
 
+	<script src="/js/messageScripts/SideBarModalWindow.js"></script>
 	<!-- Скрипт для удаления чатов и очистки сообщений в них -->
 	<script src="/js/chatScripts/ChatDelete.js"></script>
 
+	<!-- 
 	<script src="/js/scripts/bootstrap.bundle.min.js"></script>
+	-->
 	<script src="/js/scripts/sidebarScript.js"></script>
 
 

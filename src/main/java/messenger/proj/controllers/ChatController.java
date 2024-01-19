@@ -257,6 +257,8 @@ public class ChatController {
 			}
 
 		}
+		
+		connectionServ.setUserOfline(curentUserId);
 
 		model.addAttribute("todayFormat", new DateTimeFormatterBuilder().appendPattern("HH:mm").toFormatter());
 		model.addAttribute("formatter", new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter());
