@@ -1,4 +1,5 @@
 function showModal1() {
+	console.log("123")
 	var modal = document.getElementById("main-modal1");
 	modal.style.display = "block";
 	// Добавляем обработчик событий для клика по документу
@@ -10,7 +11,7 @@ function hideModal1() {
 	var modal = document.getElementById("main-modal1");
 	modal.style.display = "none";
 	// Удаляем обработчик событий после закрытия модального окна
-	document.removeEventListener('click', closeIfOutsideModal);
+	document.removeEventListener('click', closeIfOutsideModal1);
 }
 
 // Функция для закрытия модального окна при клике вне его

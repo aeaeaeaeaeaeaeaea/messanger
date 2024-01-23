@@ -753,47 +753,63 @@
 	</div>
 
 
-	<div class="modal" id="main-modal1" style="margin-left: 15%; max-width: 85%; width: 85%;">
+	<div class="modal" id="main-modal1" style="margin-left: 30%; max-width: 70%; width: 70%;">
 		<div class="modal-dialog m-0 rounded-0"
 			style="display: block; max-width: 30%; width: 30%; position: absolute; right: 0 !important; transform: translateX(0%);">
 			<div class="modal-content vh-100 rounded-0">
 				<div class="modal-body p-0 vh-100 overflow-hidden">
-					
-					<div class="p-1 fff">
-						<img class="d-flex align-items-center justify-content-between w-100 mb-4"
-							 src="/Files/ava.png" 
-							 alt="user" >
+
+					<div style="height: 4%;">
+						<button type="button" class="btn btn-danger" >
+							<span>&times;</span>
+						</button>
+						Profile 
+					</div>
+
+					<div>
+						<img class="d-flex align-items-center justify-content-between w-100 mb-4" src="/Files/ava.png"
+							alt="user">
 
 						</img>
 					</div>
 
 					<div class="modal-scroll vh-100 d-flex flex-column flex-grow-1">
-						
-						<div class="p-4 ">
-							
-							<a class="d-flex align-items-center text-decoration-none ml-2 mb-3" href="#">
-								<img class="mr-3" src="/img/group-icon.svg" alt="new group" width="40" height="40">
-								<h5 class="modal-text__item mb-0 fs-1">Phone</h5>
-							</a>
-							<a class="d-flex align-items-center text-decoration-none ml-2 mb-3" href="#">
-								<img class="mr-3" src="/img/cahnel-icon.svg" alt="new group" width="40" height="40">
-								<h5 class="modal-text__item fs-1 mb-0">Username</h5>
-							</a>
-							
+
+						<div class="p-4">
+
+							<div class="d-flex align-items-center text-decoration-none ml-2 mb-3">
+								<img class="mr-3" src="/img/phone.svg" alt="new group" width="30" height="30">
+
+								<div>
+									<h5 class="modal-text__item text-dark mb-0 fs-6">Phone</h5>
+									<small class="text-gray text-right"
+										style="display: flex; flex-wrap: nowrap; align-items: center;"> Phone
+									</small>
+								</div>
+							</div>
+
+							<div class="d-flex align-items-center text-decoration-none ml-2 mb-3 flex-nowrap">
+
+								<img class="mr-3" src="/img/at.svg" alt="new group" width="30" height="30">
+
+								<div>
+									<h5 class="modal-text__item text-dark fs-6 mb-0" th:text="${username}"></h5>
+									<small class="text-gray text-right"
+										style="display: flex; flex-wrap: nowrap; align-items: center;"> Username
+									</small>
+								</div>
+
+							</div>
+
+
 						</div>
-						
+
 					</div>
-					
+
 				</div>
 			</div>
 		</div>
 	</div>
-
-
-
-
-
-
 
 	<!-- Боковая панель (открывается при нажатии на кнопку) -->
 	<div class="modal fade p-0 show" id="main-modal" tabindex="-1" aria-labelledby="exampleModalLabel"
