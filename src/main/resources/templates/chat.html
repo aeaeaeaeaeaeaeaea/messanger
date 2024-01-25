@@ -93,8 +93,16 @@
 									<small class="text-gray text-right"
 										style="display: flex; flex-wrap: nowrap; align-items: center;">
 
-										<i class="zmdi zmdi-check-all" style="font-size:16px!important">
-										</i>
+										<div th:if="${lastMessages.get(chatRoom.getId())} != null">
+											<i th:if="${lastMessages.get(chatRoom.getId()).getStatus().equals('Read')}"
+												style="font-size:16px!important">
+												<img src="/img/check2-all.svg"></img>
+											</i>
+											<i th:if="${lastMessages.get(chatRoom.getId()).getStatus().equals('Unread')}"
+												style="font-size:16px!important">
+												<img src="/img/check2.svg"></img>
+											</i>
+										</div>
 
 										<div th:if="${lastMessages.get(chatRoom.getId())} != null">
 											<div
@@ -237,11 +245,18 @@
 									<small class="text-gray text-right"
 										style="display: flex; flex-wrap: nowrap; align-items: center;">
 
-										<i class="zmdi zmdi-check-all" style="font-size:16px!important">
-										</i>
+										<div th:if="${lastMessages.get(chatRoom.getId())} != null">
+											<i th:if="${lastMessages.get(chatRoom.getId()).getStatus().equals('Read')}"
+												style="font-size:16px!important">
+												<img src="/img/check2-all.svg"></img>
+											</i>
+											<i th:if="${lastMessages.get(chatRoom.getId()).getStatus().equals('Unread')}"
+												style="font-size:16px!important">
+												<img src="/img/check2.svg"></img>
+											</i>
+										</div>
 
 										<div th:if="${lastMessages.get(chatRoom.getId())} != null">
-
 
 											<div
 												th:if="${files.get(lastMessages.get(chatRoom.getId()).getId())} != null">
@@ -320,6 +335,7 @@
 
 												</div>
 											</div>
+
 										</div>
 
 										<i th:if="${lastMessages.get(chatRoom.getId()) != null}"
@@ -373,28 +389,30 @@
 
 			<div class="col-7 col-md-8 flex-column" style="height:100%;">
 
-				<div class="d-flex bg-gray px-3 py-2 border-bottom" style="height: 7% ;max-height: 7%;">
+				<div class="d-flex bg-gray px-3 py-2 border-bottom" style="height: 7% ;max-height: 7%; cursor: pointer;"
+					onclick="showModal1()">
 
-					<div class="chat__header-title position-relative flex-grow-1" style="cursor: pointer;"
-						onclick="showModal1()">
 
-						<h1 class="h6 font-weight-bold chat__header-user-name" th:text="${recipientUserName}">username
-						</h1>
+
+					<div class="d-flex align-items-center justify-content-between p-2">
+						<img class="rounded-pill" src="/Files/ava.png" alt="user" width="50" height="50">
+					</div>
+
+					<div class="h6 font-weight-bold chat__header-user-name">
+						<div th:text="${recipientUserName}">username</div>
 
 						<div th:if="${connectionInfo != null}">
-							<p class="chat__header-info chat__header-info--online h6 mb-0"
-								th:if="${connectionInfo.equals('Online')}"> Online </p>
+							<small class="chat__header-info chat__header-info--online h6 "
+								th:if="${connectionInfo.equals('Online')}"> Online </small>
 						</div>
 
 						<div th:if="${connectionInfo == null}">
-							<p class="chat__header-info chat__header-info--online h6 mb-0"> last seen recently </p>
+							<small class="chat__header-info chat__header-info--online h6 "> last seen recently
+							</small>
 						</div>
 
-
-
-
-
 					</div>
+
 
 				</div>
 
@@ -679,6 +697,7 @@
 							</div>
 
 						</div>
+
 					</div>
 				</div>
 				<!-- Конец сообщений -->
@@ -752,19 +771,32 @@
 
 	</div>
 
-
-	<div class="modal" id="main-modal1" style="margin-left: 30%; max-width: 70%; width: 70%;">
+	<!-- Модальное окно в чате с информацией о собеседнике -->
+	<div class="modal" id="profile_modal" style="margin-left: 30%; max-width: 70%; width: 70%;">
 		<div class="modal-dialog m-0 rounded-0"
 			style="display: block; max-width: 30%; width: 30%; position: absolute; right: 0 !important; transform: translateX(0%);">
 			<div class="modal-content vh-100 rounded-0">
 				<div class="modal-body p-0 vh-100 overflow-hidden">
 
 					<div style="height: 4%;">
-						<button type="button" class="btn btn-danger" >
-							<span>&times;</span>
+						<button onclick="closeModal()" type="button"
+							class="btn main-left__header-menu border-0 bg-transparent mt-1 ml-2 p-0">
+							<img src="/img/x-lg.svg" width="20" height="20"></img>
 						</button>
-						Profile 
 					</div>
+
+					<script>
+						function closeModal() {
+
+							var modal = document.getElementById('profile_modal');
+
+
+							if (modal) {
+								modal.style.display = 'none';
+							}
+						}
+					</script>
+
 
 					<div>
 						<img class="d-flex align-items-center justify-content-between w-100 mb-4" src="/Files/ava.png"
@@ -793,7 +825,8 @@
 								<img class="mr-3" src="/img/at.svg" alt="new group" width="30" height="30">
 
 								<div>
-									<h5 class="modal-text__item text-dark fs-6 mb-0" th:text="${username}"></h5>
+									<h5 class="modal-text__item text-dark fs-6 mb-0" th:text="${recipientUserName}">
+									</h5>
 									<small class="text-gray text-right"
 										style="display: flex; flex-wrap: nowrap; align-items: center;"> Username
 									</small>
@@ -812,7 +845,7 @@
 	</div>
 
 	<!-- Боковая панель (открывается при нажатии на кнопку) -->
-	<div class="modal fade p-0 show" id="main-modal" tabindex="-1" aria-labelledby="exampleModalLabel"
+	<div class="modal fade p-0 show" id="side_modal" tabindex="-1" aria-labelledby="exampleModalLabel"
 		style="display: none;" aria-modal="true" role="dialog">
 		<div class="modal-dialog m-0 rounded-0">
 			<div class="modal-content vh-100 rounded-0">
@@ -822,93 +855,44 @@
 
 
 						<div class="d-flex align-items-center justify-content-between w-100 mb-4">
-							<img class="rounded-pill" src="img/my-picture.jpg" alt="user" width="50" height="50">
-
+							<img class="rounded-pill" src="/Files/ava.png" alt="user" width="50" height="50">
 						</div>
 
-						<div class="">
-
-							<a class="btn d-flex align-items-center justify-content-between text-dark p-0"
-								data-toggle="collapse" href="#new-account" role="button" aria-expanded="false"
-								aria-controls="collapseExample">
-
-								<div class="d-flex flex-column align-items-start">
-									<p class="mb-0 font-weight-bold" th:text="${username}">Rashidov Abdulloh</p>
-									<span class="modal-phone__number"></span>
-								</div>
-
-								<img src="/img/arrow.svg" alt="arrow" width="20" height="20">
-
-							</a>
-
-						</div>
+						<div class="btn d-flex align-items-center justify-content-between text-dark p-0"
+							th:text="${username}">username</div>
 
 					</div>
 
 					<div class="modal-scroll vh-100 d-flex flex-column flex-grow-1">
 
-						<div class="collapse" id="new-account">
-							<div class="card card-body border-0 p-4">
-								<a class="nav-xxl nav-link active rounded-0 w-100 p-0 mb-3" data-toggle="pill"
-									href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">
-									<div class="media align-items-center">
 
-										<!--<div class="position-relative">
-											<img src="/img/Abdulloh-aka.jpg" class="rounded-pill mr-3" alt="mayoq hub"
-												width="30" height="30">
-											<span class="p-2 rounded-pill bg-info position-absolute"
-												style="bottom: 0; right: 14px;"></span>
-										</div>-->
-
-										<div class="media-body d-flex align-items-center justify-content-between">
-											<h5 class="text-secondary mb-0 add-account-item">Abdulloh</h5>
-											<span
-												class="number-message rounded-pill p-1 small bg-info text-white font-weight-bold mb-0"
-												style="font-size: 10px;">+23</span>
-										</div>
-									</div>
-								</a>
-								<a class="nav-xxl nav-link active rounded-0 w-100 p-0" data-toggle="pill"
-									href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">
-									<div class="media align-items-center">
-
-										<div class="">
-											<img src="/img/account.svg" class="rounded-pill mr-3" alt="account"
-												width="20" height="20">
-										</div>
-
-										<div class="media-body d-flex align-items-center justify-content-between">
-											<h5 class="text-dark mb-0 add-account-item">Add Account</h5>
-										</div>
-									</div>
-								</a>
-							</div>
-						</div>
 
 						<div class="p-4 ">
-							<a class="d-flex align-items-center text-decoration-none mb-3" href="#">
+							<div class="d-flex align-items-center text-decoration-none mb-3" style="cursor: pointer;">
 								<img class="mr-3" src="/img/group-icon.svg" alt="new group" width="20" height="20">
 								<h5 class="modal-text__item mb-0">New Group</h5>
-							</a>
-							<a class="d-flex align-items-center text-decoration-none mb-3" href="#">
+							</div>
+							<div class="d-flex align-items-center text-decoration-none mb-3" style="cursor: pointer;">
 								<img class="mr-3" src="/img/cahnel-icon.svg" alt="new group" width="20" height="20">
 								<h5 class="modal-text__item mb-0">New Channel</h5>
-							</a>
+							</div>
 
-							<a class="d-flex align-items-center text-decoration-none mb-3" href="#">
+							<div class="d-flex align-items-center text-decoration-none mb-3" style="cursor: pointer;">
 								<img class="mr-3" src="/img/settings-icon.svg" alt="new group" width="20" height="20">
 								<h5 class="modal-text__item mb-0">Settings</h5>
-							</a>
-							<a class="d-flex align-items-center text-decoration-none justify-content-between">
+							</div>
+
+							<div class="d-flex align-items-center text-decoration-none justify-content-between"
+								style="cursor: pointer;">
 								<div class="d-flex align-items-center">
 									<img class="mr-3" src="/img/moon-icon.svg" alt="new group" width="20" height="20">
 									<h5 class="modal-text__item mb-0">Night Mode</h5>
 								</div>
-								<div class="custom-control custom-switch">
+								<div class="custom-control custom-switch" style="cursor: pointer;">
 									<input type="checkbox" class="form-check-input" role="switch" id="customSwitch1">
 									<label class="custom-control-label" for="customSwitch1"></label>
 								</div>
-							</a>
+							</div>
 
 
 
