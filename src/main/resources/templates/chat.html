@@ -18,6 +18,8 @@
 	<link rel="stylesheet" href="/css/styles.css">
 
 
+
+
 </head>
 
 
@@ -966,112 +968,72 @@
 		</div>
 	</div>
 
-	<a href="#signupModal" data-toggle="modal"> 
-      Sign-Up 
-    </a> 
-  
-    <div class="modal" id="signupModal"
-         role="dialog" aria-labelledby="myModalLabel"
-         aria-hidden="true"> 
-  
-        <div class="modal-dialog"> 
-            <div class="modal-content"> 
-  
-                <!-- Modal root -->
-                <div class="m-header"> 
-                    <button class="close" data-dismiss="modal"> 
-                        × 
-                    </button> 
-                    <h2 class="myModalLabel">Sign Up</h2> 
-                </div> 
-  
-                <!-- Modal body -->
-                <div class="inputs"> 
-  
-                    <!-- username input -->
-                    <div class="form-group input-group"> 
-                        <label for="username" class="sr-only"> 
-                          Username 
-                        </label> 
-                        <span class="input-group-addon"> 
-                          <i class="fa fa-user"></i> 
-                        </span> 
-                        <input type="text" class="form-control" 
-                               id="username" placeholder="Username"> 
-                    </div> 
-  
-                    <!-- Email input -->
-                    <div class="form-group input-group"> 
-                        <span class="input-group-addon"> 
-                          <i class="fa fa-envelope"></i> 
-                        </span> 
-                        <label for="email" class="sr-only"> 
-                          Email 
-                        </label> 
-                        <input type="email" class="form-control" 
-                               id="email" placeholder="Email Address"> 
-                    </div> 
-  
-                    <!-- Password -->
-                    <div class="form-group input-group"> 
-                        <span class="input-group-addon"> 
-                          <i class="fa fa-lock"></i> 
-                        </span> 
-                        <label for="password" class="sr-only"> 
-                          Password 
-                        </label> 
-                        <input type="password" class="form-control"
-                               id="password" placeholder="Choose a password"> 
-                    </div> 
-  
-                    <!-- Confirm Password -->
-                    <div class="form-group input-group"> 
-                        <span class="input-group-addon"> 
-                          <i class="fa fa-lock"></i> 
-                        </span> 
-                        <label for="password2" class="sr-only"> 
-                          Confirm Password 
-                        </label> 
-                        <input type="password" class="form-control" 
-                               id="password2" placeholder="Confirm password"> 
-                    </div> 
-                </div> 
-  
-                <!-- MOdal footer -->
-                <div class="footer"> 
-                    <button type="submit">Sign Up</button> 
-                    <p> 
-                        Already have an account?! 
-                        <a href="#loginModal" data-toggle="modal"
-                           data-dismiss="modal"> 
-                           Login! 
-                        </a> 
-                    </p> 
-                </div> 
-  
-            </div> 
-        </div> 
-    </div> 
-    
-    
-  
-    <script> 
-        $(document).ready(function() { 
-              
-            /* Centering the modal vertically */ 
-            function alignModal() { 
-                var modalDialog = $(this).find(".modal-dialog"); 
-                modalDialog.css("margin-top", Math.max(0,  
-                ($(window).height() - modalDialog.height()) / 2)); 
-            } 
-            $(".modal").on("shown.bs.modal", alignModal); 
-  
-            /* Resizing the modal according the screen size */ 
-            $(window).on("resize", function() { 
-                $(".modal:visible").each(alignModal); 
-            }); 
-        }); 
-    </script> 
+
+
+	<style>
+		#signupModal1 {
+			display: none;
+			position: fixed;
+			top: 50%;
+			left: 50%;
+
+
+		}
+
+		.modal-dialog1 {
+			max-width: 600px;
+			width: 500px;
+			height: 900px;
+			position: fixed;
+			top: 3%;
+			left: 35%;
+			z-index: 1;
+			/* Максимальная ширина модального окна */
+			margin: auto;
+			background-color: #fff;
+			padding: 20px;
+			/* Добавьте необходимый внутренний отступ по вашему выбору */
+			border-radius: 30px;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+			background-color: #fff;
+		}
+	</style>
+
+	<div class="modal" id="signupModal1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+		<div class="modal-dialog1">
+			<div class="modal-content1">
+				
+				
+
+				<div class="d-flex  px-3 py-2" style="height: 7% ;max-height: 7%; ">
+
+					<!-- Автарка пользователя -->
+					<div class="d-flex align-items-center justify-content-between p-2">
+						<img class="rounded-pill" src="/Files/ava.png" alt="user" width="100" height="100">
+					</div>
+
+					<!-- Username пользователя -->
+					<div class="h6 fs-4  chat__header-user-name">
+						<div th:text="${recipientUserName}">username</div>
+						
+						<small>+1 123 131 93 39</small>
+						
+
+						
+
+					</div>
+				</div>
+				
+				
+
+			</div>
+		</div>
+	</div>
+
+
+
+
 
 
 
