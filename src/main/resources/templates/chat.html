@@ -944,40 +944,16 @@
 	</div>
 
 
-	<!-- Боковая панель (открывается при нажатии на кнопку) -->
-	<div class="modal fade" id="settings_modal" tabindex="-1" style="display: none;">
-		<div class="modal-dialog modal-dialog-centered" role="document">
-			<div class="modal-content">
 
-
-				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">...</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">
-						Close
-					</button>
-				</div>
-
-
-			</div>
-		</div>
-	</div>
 
 
 
 	<style>
-		#signupModal1 {
+		#settings_modal {
 			display: none;
 			position: fixed;
 			top: 50%;
 			left: 50%;
-
-
 		}
 
 		.modal-dialog1 {
@@ -993,20 +969,43 @@
 			background-color: #fff;
 			padding: 20px;
 			/* Добавьте необходимый внутренний отступ по вашему выбору */
-			border-radius: 30px;
+			border-radius: 15px;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+			background-color: #fff;
+		}
+
+		#my_account_modal {
+			display: none;
+			position: fixed;
+			top: 50%;
+			left: 50%;
+		}
+
+		.my_account_modal-dialog {
+			max-width: 600px;
+			width: 500px;
+			height: 600px;
+			position: fixed;
+			top: 15%;
+			left: 35%;
+			z-index: 1;
+			/* Максимальная ширина модального окна */
+			margin: auto;
+			background-color: #fff;
+			padding: 20px;
+			/* Добавьте необходимый внутренний отступ по вашему выбору */
+			border-radius: 15px;
 			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 			background-color: #fff;
 		}
 	</style>
 
-	<div class="modal" id="signupModal1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal" id="settings_modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 
 		<div class="modal-dialog1">
 			<div class="modal-content1">
-				
-				
 
-				<div class="d-flex  px-3 py-2" style="height: 7% ;max-height: 7%; ">
+				<div class="d-flex border-bottom border-5 px-3 py-2" style="height: 7% ;max-height: 7%; ">
 
 					<!-- Автарка пользователя -->
 					<div class="d-flex align-items-center justify-content-between p-2">
@@ -1015,29 +1014,61 @@
 
 					<!-- Username пользователя -->
 					<div class="h6 fs-4  chat__header-user-name">
-						<div th:text="${recipientUserName}">username</div>
-						
-						<small>+1 123 131 93 39</small>
-						
 
-						
+						<div th:text="${recipientUserName}">username</div>
+						<small>+1 123 131 93 39</small>
 
 					</div>
+
 				</div>
-				
-				
+
+				<div onclick="showMyAccountModal()"
+					class="d-flex align-items-center ml-3 mt-3 text-decoration-none mb-3" style="cursor: pointer;">
+					<img class="mr-3" src="/img/person-circle.svg" alt="new group" width="30" height="30">
+					<h5 class="modal-text__item mb-0 fs-5">My account</h5>
+				</div>
+
+
 
 			</div>
 		</div>
+
 	</div>
 
+	<div class="modal" id="my_account_modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+		<div class="my_account_modal-dialog">
+			<div class="my_account_modal-content">
 
 
+				<!-- Аватар пользователя с возможностью выбора файла -->
+				<div class="d-flex align-items-center justify-content-between p-2" style="margin-left: 25%;">
+					<!-- Скрытый input для выбора файла -->
+					<input type="file" id="fileInput" style="display: none;" />
+
+					<!-- Изображение, которое служит кнопкой для выбора файла -->
+					<label for="fileInput">
+						<img class="rounded-pill" src="/Files/ava.png" alt="user" width="200" height="200">
+					</label>
+				</div>
+
+				<script>
+					// JavaScript для обработки клика на изображении и вызова input[type="file"]
+					const fileInput = document.getElementById('fileInput');
+					const imageLabel = document.querySelector('label[for="fileInput"]');
+
+					imageLabel.addEventListener('click', () => {
+						fileInput.click();
+					});
+				</script>
 
 
+			</div>
+		</div>
 
+	</div>
 
-
+	<script src="/js/messageScripts/MyAccountModal.js"></script>
 	<script src="/js/messageScripts/SettingsModalWindow.js"></script>
 	<script src="/js/messageScripts/messageScroll.js"></script>
 	<script src="/js/messageScripts/messageContextMenuEdit.js"></script>

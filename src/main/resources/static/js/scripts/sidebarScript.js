@@ -3,7 +3,6 @@
  */
 // Функция для отображения модального окна
 function showModal() {
-	console.log("123")
 	var modal = document.getElementById("side_modal");
 	modal.style.display = "block";
 	// Добавляем обработчик событий для клика по документу
