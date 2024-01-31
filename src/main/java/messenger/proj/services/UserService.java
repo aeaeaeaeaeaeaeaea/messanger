@@ -32,7 +32,7 @@ public class UserService {
 	@Transactional
 	public void save(User user) {
 		String id = UUID.randomUUID().toString();
-		user.setId(id);	
+		user.setId(id);
 		user.setRole("ROLE_USER");
 		userRep.save(user);
 		

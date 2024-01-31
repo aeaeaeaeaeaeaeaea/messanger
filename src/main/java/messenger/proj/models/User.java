@@ -22,13 +22,16 @@ public class User {
 	@Column("role")
 	private String role;
 	
+	@Column("phonenumber")
+	private String phoneNumber;
+	
 	public User() {
-		
 	}
 	
-	public User(String role, String password, String id, String username) {
+	public User(String role, String phoneNumber, String password, String id, String username) {
 		this.id = id;
 		this.role = role;
+		this.phoneNumber = phoneNumber;
 		this.password = password;
 		this.username = username;
 	}
@@ -63,6 +66,14 @@ public class User {
 	
 	public String getRole() {
 		return this.role;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 	
 	

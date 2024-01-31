@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import jnr.ffi.Struct.int16_t;
 import messenger.proj.models.User;
 import messenger.proj.services.UserService;
 
