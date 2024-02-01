@@ -2,6 +2,7 @@ package messenger.proj.controllers;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -17,7 +18,9 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.security.core.Authentication;
@@ -29,6 +32,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.client.HttpClientErrorException.Forbidden;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,6 +46,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import messenger.proj.models.ChatRoom;
 import messenger.proj.models.ConnectionInfo;
 import messenger.proj.models.FileEntry;
+import messenger.proj.models.User;
 import messenger.proj.models.message;
 import messenger.proj.repositories.ElasticSearchQuery;
 import messenger.proj.security.PersonDetails;
@@ -93,26 +98,23 @@ public class ChatController {
 
 		return ResponseEntity.ok(new String(chatId));
 	}
-	
-	//Страница с чатом между 2-мя пользователями
+
+	// Страница с чатом между 2-мя пользователями
 	// ДЛИНА ПОСЛЕДНЕГО СООБЩЕНИЯ В СПИСКАХ ЧАТОВ (СДЕЛАЮ ПОТОМ)
 	@GetMapping("/chat/{userId}")
-	public String chat(
-					   @PathVariable("userId") String userId, 
-					   Model model, 
-					   HttpServletRequest request) {
-		
+	public String chat(@PathVariable("userId") String userId, Model model, HttpServletRequest request) {
+
 		// Получаем данные о текущем пользователе
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
 		String currentUserId = personDetails.getUser().getId();
-		
+
 		// Получаем чат по его Id
 		Optional<ChatRoom> chat = chatRoomServ.findById(userId);
-		
+
 		connectionServ.userConnection(currentUserId, new ConnectionInfo(), request);
-			
-		//Редирект на главную страницу, если чат не существует
+
+		// Редирект на главную страницу, если чат не существует
 		chatRoomServ.reidrectIfChatRoomDontExist(chat, currentUserId);
 		// Читаем сообщения со статусом Unread и устанавливаем для них статус Read
 		messageServ.readMessages(userId, currentUserId, chat.get());
@@ -124,34 +126,34 @@ public class ChatController {
 			model.addAttribute("recipientId", chat.get().getRecipientId());
 			model.addAttribute("currentUser", chat.get().getSenderId());
 			model.addAttribute("recipientUserName", userServ.findById(chat.get().getRecipientId()).get().getUsername());
-			
+
 			if (connectionServ.getUserConnection(chat.get().getRecipientId()) != null) {
-				model.addAttribute("connectionInfo", connectionServ.getUserConnection(chat.get().getRecipientId()).getOnlineStatus());
+				model.addAttribute("connectionInfo",
+						connectionServ.getUserConnection(chat.get().getRecipientId()).getOnlineStatus());
 			}
 		} else if (chat.get().getRecipientId().equals(currentUserId)) {
 			model.addAttribute("currentUser", chat.get().getRecipientId());
 			model.addAttribute("recipientId", chat.get().getSenderId());
 			model.addAttribute("recipientUserName", userServ.findById(chat.get().getSenderId()).get().getUsername());
-			
+
 			if (connectionServ.getUserConnection(chat.get().getSenderId()) != null) {
-				model.addAttribute("connectionInfo", connectionServ.getUserConnection(chat.get().getSenderId()).getOnlineStatus());
+				model.addAttribute("connectionInfo",
+						connectionServ.getUserConnection(chat.get().getSenderId()).getOnlineStatus());
 			}
-			
+
 		}
-		
-		
-		
+
 		model.addAttribute("unreadSenderMessages", chat.get().getUnreadSenderMessages());
 		model.addAttribute("unreadRecipientMessages", chat.get().getUnreadRecipientMessages());
 		model.addAttribute("username", userServ.findById(currentUserId).get().getUsername());
 		model.addAttribute("phoneNumber", userServ.findById(currentUserId).get().getPhoneNumber());
-		
-		
+
 		model.addAttribute("f", new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd HH:mm:ss").toFormatter());
 		model.addAttribute("todayFormat", new DateTimeFormatterBuilder().appendPattern("HH:mm").toFormatter());
 		model.addAttribute("formatter", new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter());
-		model.addAttribute("todayDate", LocalDateTime.now().format(new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter()));
-		
+		model.addAttribute("todayDate",
+				LocalDateTime.now().format(new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter()));
+
 		model.addAttribute("lastMessages", messageServ.getLastMessage(chatRoomServ.findAll(currentUserId)));
 		model.addAttribute("chatList", chatRoomServ.lastMessageOrder(currentUserId));
 		model.addAttribute("cachedMessages", messageServ.getCaсhedMessages(userId));
@@ -161,71 +163,65 @@ public class ChatController {
 
 		return "chat";
 	}
-	
-	//Удаления сообщений
+
+	// Удаления сообщений
 	@PostMapping("/deleteMessage")
-	public String deleteMessage(
-								@RequestParam("messageId") String messageId, 
-								@RequestParam("chatId") String chatId,
-								@RequestParam("sendTime") String sendTime
-								) {
-		// LocalDateTime нужен потому что, время сообщения входят в составной primary key (без этого сообщения не сортируются) и без него мы не
-		// сможем удалить сообщение  
+	public String deleteMessage(@RequestParam("messageId") String messageId, @RequestParam("chatId") String chatId,
+			@RequestParam("sendTime") String sendTime) {
+		// LocalDateTime нужен потому что, время сообщения входят в составной primary
+		// key (без этого сообщения не сортируются) и без него мы не
+		// сможем удалить сообщение
 		LocalDateTime ldt = LocalDateTime.parse(sendTime);
-		
+
 		// Удаляем сообщения по ID
 		messageServ.deleteById(messageId, ldt, chatId);
-		
+
 		return "redirect:/chat/" + chatId;
 	}
-	
+
 	// Редактируем сообещения
 	@PostMapping("/editMessage")
-	public String editMessage(
-							  @RequestParam("messageId") String messageId, 
-							  @RequestParam("chatId") String chatId,
-							  @RequestParam("sendTime") String sendTime, 
-							  @RequestParam("content") String content,
-							  @RequestParam("senderName") String senderName, 
-							  @RequestParam("status") String status,
-							  @RequestParam("senderId") String senderId, 
-							  @RequestParam("recipientId") String recipientId
-							  ) {
-		
+	public String editMessage(@RequestParam("messageId") String messageId, @RequestParam("chatId") String chatId,
+			@RequestParam("sendTime") String sendTime, @RequestParam("content") String content,
+			@RequestParam("senderName") String senderName, @RequestParam("status") String status,
+			@RequestParam("senderId") String senderId, @RequestParam("recipientId") String recipientId) {
+
 		// Получаем данные о текущем пользователе
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
-		
-		// LocalDateTime нужен потому что, время сообщения входят в составной primary key (без этого сообщения не сортируются) и без него мы не
+
+		// LocalDateTime нужен потому что, время сообщения входят в составной primary
+		// key (без этого сообщения не сортируются) и без него мы не
 		// сможем удалить сообщение
 		LocalDateTime ldt = LocalDateTime.parse(sendTime);
-		
-		// Если сообщения состоит только из пробелов и у него нет файла, то оно удаляется при редактировании
+
+		// Если сообщения состоит только из пробелов и у него нет файла, то оно
+		// удаляется при редактировании
 		if (content.trim().isEmpty() && !fileService.getFiles().containsKey(messageId)) {
 			// Удаляем сообщение по ID
 			messageServ.deleteById(messageId, ldt, chatId);
 			return "redirect:/chat/" + chatId;
 		}
-		
+
 		// Редактируем сообщение
 		messageServ.edit(messageId, content, chatId, ldt, senderName, senderId, recipientId, status);
 
 		return "redirect:/chat/" + chatId;
 	}
-	
+
 	// Удаляем чат
 	@PostMapping("/deleteChat")
 	public String deleteChat(@RequestParam(value = "chatId", required = false) String chatId) {
 
 		// Удаляем все сообщения из чата
 		messageServ.deleteAllMessagesFromChat(chatId);
-		
+
 		// Удаляем чат
 		chatRoomServ.deleteById(chatId);
 
 		return "redirect:/users";
 	}
-	
+
 	// Очищаем все сообщения из чата
 	@PostMapping("/deleteChatMessage")
 	public String deleteChatMessages(@RequestParam(value = "chatId", required = false) String chatId) {
@@ -235,20 +231,15 @@ public class ChatController {
 
 		return "redirect:/users";
 	}
-	
-	//Страница со всеми чатами
+
+	// Страница со всеми чатами
 	@GetMapping("/users")
-	public String users(
-						Model model, 
-						@RequestParam(value = "userName", required = false) String userName
-						) {
-		
+	public String users(Model model, @RequestParam(value = "userName", required = false) String userName) {
+
 		// Получаем данные о текущем пользователе
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
 		String curentUserId = personDetails.getUser().getId();
-
-		
 
 		if (userName != null) {
 			try {
@@ -258,13 +249,14 @@ public class ChatController {
 			}
 
 		}
-		
+
 		connectionServ.setUserOfline(curentUserId);
 
 		model.addAttribute("todayFormat", new DateTimeFormatterBuilder().appendPattern("HH:mm").toFormatter());
 		model.addAttribute("formatter", new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter());
-		model.addAttribute("todayDate", LocalDateTime.now().format(new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter()));
-		
+		model.addAttribute("todayDate",
+				LocalDateTime.now().format(new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter()));
+
 		model.addAttribute("lastMessages", messageServ.getLastMessage(chatRoomServ.findAll(curentUserId)));
 		model.addAttribute("username", userServ.findById(curentUserId).get().getUsername());
 		model.addAttribute("currentUser", curentUserId);
@@ -274,7 +266,7 @@ public class ChatController {
 
 		return "message1";
 	}
-	
+
 	// Загружаем файл
 	@PostMapping("/upload-file/{chatId}")
 	public String sendMessage(@Payload message message, @PathVariable("chatId") String chatId,
@@ -309,5 +301,47 @@ public class ChatController {
 		}
 
 		return "redirect:/chat/" + chatId;
+	}
+
+	@PostMapping("/avatar")
+	public String avatar(@RequestPart("file") MultipartFile file) {
+
+		// Получаем данные о текущем пользователе
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
+		String curentUserId = personDetails.getUser().getId();
+		User user = userServ.findById(curentUserId).get();
+
+		try {
+			user.setAvatar(ByteBuffer.wrap(file.getBytes()));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		userServ.save(user);
+
+		System.out.println("AVATAR TEST " + file.getOriginalFilename());
+		return "";
+	}
+
+	@GetMapping("/avatar/{username}")
+	public ResponseEntity<ByteArrayResource> getAvatar(@PathVariable String username) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
+		String curentUserId = personDetails.getUser().getId();
+		User user = userServ.findById(curentUserId).get();
+		user.getAvatar();
+		
+		byte[] byteArray = new byte[user.getAvatar().remaining()];
+
+		if (user.getAvatar() != null && byteArray.length > 0) {
+			ByteArrayResource resource = new ByteArrayResource(byteArray);
+
+			return ResponseEntity.ok().contentLength(byteArray.length).contentType(MediaType.IMAGE_JPEG).body(resource);
+		} else {
+			
+			return ResponseEntity.notFound().build();
+		}
 	}
 }

@@ -1034,13 +1034,44 @@
 
 				<!-- Аватар пользователя с возможностью выбора файла -->
 				<div class="d-flex align-items-center justify-content-between p-2" style="margin-left: 25%;">
-					<!-- Скрытый input для выбора файла -->
+					
+					<!-- Скрытый input для выбора файла -->					
 					<input type="file" id="fileInput" style="display: none;" />
+
+					<script>
+						// Обработка события изменения значения input
+						$('#fileInput').change(function () {
+							// Проверка, что файл выбран
+							if (this.files.length > 0) {
+								// Создание объекта FormData для отправки файла
+								var formData = new FormData();
+								formData.append('file', this.files[0]);
+
+								// Отправка файла по указанному адресу (в данном случае, '/avatar')
+								$.ajax({
+									url: '/avatar',
+									type: 'POST',
+									data: formData,
+									processData: false,  // Не обрабатывать данные
+									contentType: false,  // Не устанавливать тип контента
+									success: function (response) {
+										console.log('Файл успешно отправлен');
+										// Добавьте здесь код для обработки успешной отправки файла
+									},
+									error: function (error) {
+										console.error('Ошибка при отправке файла', error);
+										// Добавьте здесь код для обработки ошибки при отправке файла
+									}
+								});
+							}
+						});
+					</script>
 
 					<!-- Изображение, которое служит кнопкой для выбора файла -->
 					<label for="fileInput">
-						<img class="rounded-pill" src="/Files/ava.png" alt="user" width="200" height="200">
+						<img class="rounded-pill" th:src="${/avatar/{username}(is) }" alt="user" width="200" height="200">
 					</label>
+					
 				</div>
 
 				<div class="d-flex align-items-center ml-3 mt-3 text-decoration-none mb-3">

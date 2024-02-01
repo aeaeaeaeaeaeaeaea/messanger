@@ -1,5 +1,6 @@
 package messenger.proj.models;
 
+import java.nio.ByteBuffer;
 import java.util.UUID;
 
 import org.springframework.data.cassandra.core.mapping.Column;
@@ -25,17 +26,29 @@ public class User {
 	@Column("phonenumber")
 	private String phoneNumber;
 	
+	@Column("avatar")
+	private ByteBuffer avatar;
+	
 	public User() {
 	}
 	
-	public User(String role, String phoneNumber, String password, String id, String username) {
+	public User(String role, ByteBuffer avatar, String phoneNumber, String password, String id, String username) {
 		this.id = id;
+		this.avatar = avatar;
 		this.role = role;
 		this.phoneNumber = phoneNumber;
 		this.password = password;
 		this.username = username;
 	}
 	
+	public ByteBuffer getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(ByteBuffer avatar) {
+		this.avatar = avatar;
+	}
+
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -75,6 +88,8 @@ public class User {
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
+
+	
 	
 	
  
