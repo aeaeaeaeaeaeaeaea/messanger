@@ -28,6 +28,10 @@ public class UserService {
 		this.userRep = userRep;
 		this.elasticSearchQuery = elasticSearchQuery;
 	}
+	
+	public void editUser(User user) {
+		userRep.save(user);
+	}
 
 	@Transactional
 	public void save(User user) {

@@ -9,6 +9,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -108,6 +109,26 @@ public class ChatController {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
 		String currentUserId = personDetails.getUser().getId();
+
+		// ================================================================================================================================================
+
+		// Получаем изображение в виде ByteBuffer (замените на реальные данные из вашей
+		// базы)
+		ByteBuffer imageByteBuffer = personDetails.getUser().getAvatar();
+		
+		if (imageByteBuffer != null) {
+			
+			// Преобразуем ByteBuffer в массив байт
+			byte[] imageBytes = new byte[imageByteBuffer.remaining()];
+			imageByteBuffer.get(imageBytes);
+
+			// Кодируем массив байт в строку Base64
+			String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+			System.out.println("BASE 64 " + base64Image);
+			// Передаем строку Base64 в представление через modal.addAttribute
+			model.addAttribute("base64Image", base64Image);
+		}
+		// ================================================================================================================================================
 
 		// Получаем чат по его Id
 		Optional<ChatRoom> chat = chatRoomServ.findById(userId);
@@ -315,33 +336,14 @@ public class ChatController {
 		try {
 			user.setAvatar(ByteBuffer.wrap(file.getBytes()));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		userServ.save(user);
-
-		System.out.println("AVATAR TEST " + file.getOriginalFilename());
-		return "";
-	}
-
-	@GetMapping("/avatar/{username}")
-	public ResponseEntity<ByteArrayResource> getAvatar(@PathVariable String username) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
-		String curentUserId = personDetails.getUser().getId();
-		User user = userServ.findById(curentUserId).get();
-		user.getAvatar();
 		
-		byte[] byteArray = new byte[user.getAvatar().remaining()];
+		userServ.editUser(user);
 
-		if (user.getAvatar() != null && byteArray.length > 0) {
-			ByteArrayResource resource = new ByteArrayResource(byteArray);
-
-			return ResponseEntity.ok().contentLength(byteArray.length).contentType(MediaType.IMAGE_JPEG).body(resource);
-		} else {
-			
-			return ResponseEntity.notFound().build();
-		}
+		
+		return "redirect:/users";
 	}
+
+	
 }
