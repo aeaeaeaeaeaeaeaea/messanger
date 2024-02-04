@@ -391,7 +391,7 @@
 
 					<!-- Автарка пользователя -->
 					<div class="d-flex align-items-center justify-content-between p-2">
-						<img class="rounded-pill" src="/Files/ava.png" alt="user" width="50" height="50">
+						<img class="rounded-pill" th:src="'data:image/png;base64,' + ${recipientUserAvatar}" alt="user" width="50" height="50">
 					</div>
 
 					<!-- Username пользователя -->
@@ -800,7 +800,7 @@
 
 
 					<div>
-						<img class="d-flex align-items-center justify-content-between w-100 mb-4" src="/Files/ava.png"
+						<img class="d-flex align-items-center justify-content-between w-100 mb-4" th:src="'data:image/png;base64,' + ${recipientUserAvatar}"
 							alt="user">
 
 						</img>
@@ -856,7 +856,7 @@
 					<div class="p-4 fff">
 
 						<div class="d-flex align-items-center justify-content-between w-100 mb-4">
-							<img class="rounded-pill" src="/Files/ava.png" alt="user" width="50" height="50">
+							<img class="rounded-pill" th:src="'data:image/png;base64,' + ${currentUserAvatar}" alt="user" width="50" height="50">
 						</div>
 
 						<div class="btn d-flex align-items-center justify-content-between text-dark p-0"
@@ -999,7 +999,7 @@
 
 					<!-- Автарка пользователя -->
 					<div class="d-flex align-items-center justify-content-between p-2">
-						<img class="rounded-pill" src="/Files/ava.png" alt="user" width="100" height="100">
+						<img class="rounded-pill" th:src="'data:image/png;base64,' + ${currentUserAvatar}" alt="user" width="100" height="100">
 					</div>
 
 					<!-- Username пользователя -->
@@ -1063,13 +1063,13 @@
 					</script>
 
 					<!-- Изображение, которое служит кнопкой для выбора файла -->
-					<label th:if="${base64Image} != null" for="fileInput">
+					<label th:if="${currentUserAvatar} != null" for="fileInput">
 						<img id="setAvatar" class="rounded-pill" 
-						th:src="'data:image/png;base64,' + ${base64Image}"
+						th:src="'data:image/png;base64,' + ${currentUserAvatar}"
 							alt="Image" width="200" height="200">
 					</label>
 					
-					<label th:if="${base64Image} == null" for="fileInput">
+					<label th:if="${currentUserAvatar} == null" for="fileInput">
 						<img id="setAvatar" alt="Avatar">
 						
 						<script>

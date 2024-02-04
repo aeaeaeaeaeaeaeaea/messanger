@@ -110,26 +110,6 @@ public class ChatController {
 		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
 		String currentUserId = personDetails.getUser().getId();
 
-		// ================================================================================================================================================
-
-		// Получаем изображение в виде ByteBuffer (замените на реальные данные из вашей
-		// базы)
-		ByteBuffer imageByteBuffer = personDetails.getUser().getAvatar();
-		
-		if (imageByteBuffer != null) {
-			
-			// Преобразуем ByteBuffer в массив байт
-			byte[] imageBytes = new byte[imageByteBuffer.remaining()];
-			imageByteBuffer.get(imageBytes);
-
-			// Кодируем массив байт в строку Base64
-			String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-			System.out.println("BASE 64 " + base64Image);
-			// Передаем строку Base64 в представление через modal.addAttribute
-			model.addAttribute("base64Image", base64Image);
-		}
-		// ================================================================================================================================================
-
 		// Получаем чат по его Id
 		Optional<ChatRoom> chat = chatRoomServ.findById(userId);
 
@@ -152,6 +132,41 @@ public class ChatController {
 				model.addAttribute("connectionInfo",
 						connectionServ.getUserConnection(chat.get().getRecipientId()).getOnlineStatus());
 			}
+
+			User currentUser = userServ.findById(chat.get().getSenderId()).get();
+			User recipientUser = userServ.findById(chat.get().getRecipientId()).get();
+
+			ByteBuffer currentUserimageByteBuffer = currentUser.getAvatar();
+			ByteBuffer currentUserduplicateBuffer = currentUserimageByteBuffer.duplicate();
+
+			if (currentUserimageByteBuffer != null) {
+
+				// Преобразуем ByteBuffer в массив байт
+				byte[] imageBytes = new byte[currentUserduplicateBuffer.remaining()];
+				currentUserduplicateBuffer.get(imageBytes);
+
+				// Кодируем массив байт в строку Base64
+				String currentUserAvatar = Base64.getEncoder().encodeToString(imageBytes);
+
+				// Передаем строку Base64 в представление через modal.addAttribute
+				model.addAttribute("currentUserAvatar", currentUserAvatar);
+			}
+
+			ByteBuffer recipientUserimageByteBuffer = recipientUser.getAvatar();
+			ByteBuffer recipientUserduplicateBuffer = recipientUserimageByteBuffer.duplicate();
+
+			if (recipientUserimageByteBuffer != null) {
+
+				// Преобразуем ByteBuffer в массив байт
+				byte[] imageBytes = new byte[recipientUserduplicateBuffer.remaining()];
+				recipientUserduplicateBuffer.get(imageBytes);
+
+				// Кодируем массив байт в строку Base64
+				String recipientUserAvatar = Base64.getEncoder().encodeToString(imageBytes);
+
+				// Передаем строку Base64 в представление через modal.addAttribute
+				model.addAttribute("recipientUserAvatar", recipientUserAvatar);
+			}
 		} else if (chat.get().getRecipientId().equals(currentUserId)) {
 			model.addAttribute("currentUser", chat.get().getRecipientId());
 			model.addAttribute("recipientId", chat.get().getSenderId());
@@ -160,6 +175,41 @@ public class ChatController {
 			if (connectionServ.getUserConnection(chat.get().getSenderId()) != null) {
 				model.addAttribute("connectionInfo",
 						connectionServ.getUserConnection(chat.get().getSenderId()).getOnlineStatus());
+			}
+			
+			User currentUser = userServ.findById(chat.get().getRecipientId()).get();
+			User recipientUser = userServ.findById(chat.get().getSenderId()).get();
+
+			ByteBuffer currentUserimageByteBuffer = currentUser.getAvatar();
+			ByteBuffer currentUserduplicateBuffer = currentUserimageByteBuffer.duplicate();
+
+			if (currentUserimageByteBuffer != null) {
+
+				// Преобразуем ByteBuffer в массив байт
+				byte[] imageBytes = new byte[currentUserduplicateBuffer.remaining()];
+				currentUserduplicateBuffer.get(imageBytes);
+
+				// Кодируем массив байт в строку Base64
+				String currentUserAvatar = Base64.getEncoder().encodeToString(imageBytes);
+
+				// Передаем строку Base64 в представление через modal.addAttribute
+				model.addAttribute("currentUserAvatar", currentUserAvatar);
+			}
+
+			ByteBuffer recipientUserimageByteBuffer = recipientUser.getAvatar();
+			ByteBuffer recipientUserduplicateBuffer = recipientUserimageByteBuffer.duplicate();
+
+			if (recipientUserimageByteBuffer != null) {
+
+				// Преобразуем ByteBuffer в массив байт
+				byte[] imageBytes = new byte[recipientUserduplicateBuffer.remaining()];
+				recipientUserduplicateBuffer.get(imageBytes);
+
+				// Кодируем массив байт в строку Base64
+				String recipientUserAvatar = Base64.getEncoder().encodeToString(imageBytes);
+
+				// Передаем строку Base64 в представление через modal.addAttribute
+				model.addAttribute("recipientUserAvatar", recipientUserAvatar);
 			}
 
 		}
@@ -338,12 +388,10 @@ public class ChatController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		userServ.editUser(user);
 
-		
 		return "redirect:/users";
 	}
 
-	
 }
