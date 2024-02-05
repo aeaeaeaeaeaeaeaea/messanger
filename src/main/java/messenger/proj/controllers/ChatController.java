@@ -135,12 +135,16 @@ public class ChatController {
 
 			User currentUser = userServ.findById(chat.get().getSenderId()).get();
 			User recipientUser = userServ.findById(chat.get().getRecipientId()).get();
-
+			
+			model.addAttribute("recipientUserPhoneNumber", recipientUser.getPhoneNumber());
+			model.addAttribute("currentUserPhoneNumber", currentUser.getPhoneNumber());
+			
 			ByteBuffer currentUserimageByteBuffer = currentUser.getAvatar();
-			ByteBuffer currentUserduplicateBuffer = currentUserimageByteBuffer.duplicate();
+			
 
 			if (currentUserimageByteBuffer != null) {
-
+				
+				ByteBuffer currentUserduplicateBuffer = currentUserimageByteBuffer.duplicate();
 				// Преобразуем ByteBuffer в массив байт
 				byte[] imageBytes = new byte[currentUserduplicateBuffer.remaining()];
 				currentUserduplicateBuffer.get(imageBytes);
@@ -153,10 +157,11 @@ public class ChatController {
 			}
 
 			ByteBuffer recipientUserimageByteBuffer = recipientUser.getAvatar();
-			ByteBuffer recipientUserduplicateBuffer = recipientUserimageByteBuffer.duplicate();
+			
 
 			if (recipientUserimageByteBuffer != null) {
-
+				
+				ByteBuffer recipientUserduplicateBuffer = recipientUserimageByteBuffer.duplicate();
 				// Преобразуем ByteBuffer в массив байт
 				byte[] imageBytes = new byte[recipientUserduplicateBuffer.remaining()];
 				recipientUserduplicateBuffer.get(imageBytes);
@@ -179,12 +184,16 @@ public class ChatController {
 			
 			User currentUser = userServ.findById(chat.get().getRecipientId()).get();
 			User recipientUser = userServ.findById(chat.get().getSenderId()).get();
+			
+			model.addAttribute("recipientUserPhoneNumber", recipientUser.getPhoneNumber());
+			model.addAttribute("currentUserPhoneNumber", currentUser.getPhoneNumber());
 
 			ByteBuffer currentUserimageByteBuffer = currentUser.getAvatar();
-			ByteBuffer currentUserduplicateBuffer = currentUserimageByteBuffer.duplicate();
+			
 
 			if (currentUserimageByteBuffer != null) {
-
+				
+				ByteBuffer currentUserduplicateBuffer = currentUserimageByteBuffer.duplicate();
 				// Преобразуем ByteBuffer в массив байт
 				byte[] imageBytes = new byte[currentUserduplicateBuffer.remaining()];
 				currentUserduplicateBuffer.get(imageBytes);
@@ -197,10 +206,11 @@ public class ChatController {
 			}
 
 			ByteBuffer recipientUserimageByteBuffer = recipientUser.getAvatar();
-			ByteBuffer recipientUserduplicateBuffer = recipientUserimageByteBuffer.duplicate();
+			
 
 			if (recipientUserimageByteBuffer != null) {
-
+				
+				ByteBuffer recipientUserduplicateBuffer = recipientUserimageByteBuffer.duplicate();
 				// Преобразуем ByteBuffer в массив байт
 				byte[] imageBytes = new byte[recipientUserduplicateBuffer.remaining()];
 				recipientUserduplicateBuffer.get(imageBytes);
@@ -217,7 +227,8 @@ public class ChatController {
 		model.addAttribute("unreadSenderMessages", chat.get().getUnreadSenderMessages());
 		model.addAttribute("unreadRecipientMessages", chat.get().getUnreadRecipientMessages());
 		model.addAttribute("username", userServ.findById(currentUserId).get().getUsername());
-		model.addAttribute("phoneNumber", userServ.findById(currentUserId).get().getPhoneNumber());
+		
+		
 
 		model.addAttribute("f", new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd HH:mm:ss").toFormatter());
 		model.addAttribute("todayFormat", new DateTimeFormatterBuilder().appendPattern("HH:mm").toFormatter());
@@ -376,7 +387,7 @@ public class ChatController {
 
 	@PostMapping("/avatar")
 	public String avatar(@RequestPart("file") MultipartFile file) {
-
+		
 		// Получаем данные о текущем пользователе
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
@@ -384,12 +395,22 @@ public class ChatController {
 		User user = userServ.findById(curentUserId).get();
 
 		try {
-			user.setAvatar(ByteBuffer.wrap(file.getBytes()));
+			if (
+				!file.getOriginalFilename().split("\\.")[1].toLowerCase().equals("mp4") && 
+				!file.getOriginalFilename().split("\\.")[1].toLowerCase().equals("mov") &&
+				!file.getOriginalFilename().split("\\.")[1].toLowerCase().equals("mob") &&
+				!file.getOriginalFilename().split("\\.")[1].toLowerCase().equals("mkv") && 
+				!file.getOriginalFilename().split("\\.")[1].toLowerCase().equals("m4b") && 
+				!file.getOriginalFilename().split("\\.")[1].toLowerCase().equals("avi") ) {
+				user.setAvatar(ByteBuffer.wrap(file.getBytes()));
+				userServ.editUser(user);
+			}
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		userServ.editUser(user);
+		
 
 		return "redirect:/users";
 	}
