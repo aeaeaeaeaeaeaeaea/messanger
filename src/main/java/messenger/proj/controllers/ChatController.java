@@ -59,6 +59,7 @@ import messenger.proj.services.MessageService;
 import messenger.proj.services.UserService;
 
 @Controller
+
 public class ChatController {
 
 	private final MessageService messageServ;
@@ -105,10 +106,7 @@ public class ChatController {
 	@GetMapping("/chat/{userId}")
 	public String chat(@PathVariable("userId") String userId, Model model, HttpServletRequest request) {
 
-		// Получаем данные о текущем пользователе
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
-		String currentUserId = personDetails.getUser().getId();
+		String currentUserId = connectionServ.getCurrentUserId();
 
 		// Получаем чат по его Id
 		Optional<ChatRoom> chat = chatRoomServ.findById(userId);
@@ -124,59 +122,25 @@ public class ChatController {
 
 		// Устанавливаем recipientId и senderId для сообщений
 		if (chat.get().getSenderId().equals(currentUserId)) {
-			model.addAttribute("recipientId", chat.get().getRecipientId());
-			model.addAttribute("currentUser", chat.get().getSenderId());
-			model.addAttribute("recipientUserName", userServ.findById(chat.get().getRecipientId()).get().getUsername());
-
+			
 			if (connectionServ.getUserConnection(chat.get().getRecipientId()) != null) {
 				model.addAttribute("connectionInfo",
 						connectionServ.getUserConnection(chat.get().getRecipientId()).getOnlineStatus());
 			}
-
+			
 			User currentUser = userServ.findById(chat.get().getSenderId()).get();
 			User recipientUser = userServ.findById(chat.get().getRecipientId()).get();
 			
+			model.addAttribute("recipientId", chat.get().getRecipientId());
+			model.addAttribute("currentUser", chat.get().getSenderId());
+			model.addAttribute("recipientUserName", userServ.findById(chat.get().getRecipientId()).get().getUsername());
 			model.addAttribute("recipientUserPhoneNumber", recipientUser.getPhoneNumber());
 			model.addAttribute("currentUserPhoneNumber", currentUser.getPhoneNumber());
+			model.addAttribute("currentUserAvatar", userServ.getCurrentUserAvatar(currentUser));
+			model.addAttribute("recipientUserAvatar", userServ.getRecipientUserAvatar(recipientUser));
 			
-			ByteBuffer currentUserimageByteBuffer = currentUser.getAvatar();
-			
-
-			if (currentUserimageByteBuffer != null) {
-				
-				ByteBuffer currentUserduplicateBuffer = currentUserimageByteBuffer.duplicate();
-				// Преобразуем ByteBuffer в массив байт
-				byte[] imageBytes = new byte[currentUserduplicateBuffer.remaining()];
-				currentUserduplicateBuffer.get(imageBytes);
-
-				// Кодируем массив байт в строку Base64
-				String currentUserAvatar = Base64.getEncoder().encodeToString(imageBytes);
-
-				// Передаем строку Base64 в представление через modal.addAttribute
-				model.addAttribute("currentUserAvatar", currentUserAvatar);
-			}
-
-			ByteBuffer recipientUserimageByteBuffer = recipientUser.getAvatar();
-			
-
-			if (recipientUserimageByteBuffer != null) {
-				
-				ByteBuffer recipientUserduplicateBuffer = recipientUserimageByteBuffer.duplicate();
-				// Преобразуем ByteBuffer в массив байт
-				byte[] imageBytes = new byte[recipientUserduplicateBuffer.remaining()];
-				recipientUserduplicateBuffer.get(imageBytes);
-
-				// Кодируем массив байт в строку Base64
-				String recipientUserAvatar = Base64.getEncoder().encodeToString(imageBytes);
-
-				// Передаем строку Base64 в представление через modal.addAttribute
-				model.addAttribute("recipientUserAvatar", recipientUserAvatar);
-			}
 		} else if (chat.get().getRecipientId().equals(currentUserId)) {
-			model.addAttribute("currentUser", chat.get().getRecipientId());
-			model.addAttribute("recipientId", chat.get().getSenderId());
-			model.addAttribute("recipientUserName", userServ.findById(chat.get().getSenderId()).get().getUsername());
-
+			
 			if (connectionServ.getUserConnection(chat.get().getSenderId()) != null) {
 				model.addAttribute("connectionInfo",
 						connectionServ.getUserConnection(chat.get().getSenderId()).getOnlineStatus());
@@ -187,48 +151,17 @@ public class ChatController {
 			
 			model.addAttribute("recipientUserPhoneNumber", recipientUser.getPhoneNumber());
 			model.addAttribute("currentUserPhoneNumber", currentUser.getPhoneNumber());
-
-			ByteBuffer currentUserimageByteBuffer = currentUser.getAvatar();
+			model.addAttribute("currentUserAvatar", userServ.getCurrentUserAvatar(currentUser));
+			model.addAttribute("recipientUserAvatar", userServ.getRecipientUserAvatar(recipientUser));
+			model.addAttribute("currentUser", chat.get().getRecipientId());
+			model.addAttribute("recipientId", chat.get().getSenderId());
+			model.addAttribute("recipientUserName", userServ.findById(chat.get().getSenderId()).get().getUsername());
 			
-
-			if (currentUserimageByteBuffer != null) {
-				
-				ByteBuffer currentUserduplicateBuffer = currentUserimageByteBuffer.duplicate();
-				// Преобразуем ByteBuffer в массив байт
-				byte[] imageBytes = new byte[currentUserduplicateBuffer.remaining()];
-				currentUserduplicateBuffer.get(imageBytes);
-
-				// Кодируем массив байт в строку Base64
-				String currentUserAvatar = Base64.getEncoder().encodeToString(imageBytes);
-
-				// Передаем строку Base64 в представление через modal.addAttribute
-				model.addAttribute("currentUserAvatar", currentUserAvatar);
-			}
-
-			ByteBuffer recipientUserimageByteBuffer = recipientUser.getAvatar();
-			
-
-			if (recipientUserimageByteBuffer != null) {
-				
-				ByteBuffer recipientUserduplicateBuffer = recipientUserimageByteBuffer.duplicate();
-				// Преобразуем ByteBuffer в массив байт
-				byte[] imageBytes = new byte[recipientUserduplicateBuffer.remaining()];
-				recipientUserduplicateBuffer.get(imageBytes);
-
-				// Кодируем массив байт в строку Base64
-				String recipientUserAvatar = Base64.getEncoder().encodeToString(imageBytes);
-
-				// Передаем строку Base64 в представление через modal.addAttribute
-				model.addAttribute("recipientUserAvatar", recipientUserAvatar);
-			}
-
 		}
 
 		model.addAttribute("unreadSenderMessages", chat.get().getUnreadSenderMessages());
 		model.addAttribute("unreadRecipientMessages", chat.get().getUnreadRecipientMessages());
 		model.addAttribute("username", userServ.findById(currentUserId).get().getUsername());
-		
-		
 
 		model.addAttribute("f", new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd HH:mm:ss").toFormatter());
 		model.addAttribute("todayFormat", new DateTimeFormatterBuilder().appendPattern("HH:mm").toFormatter());
@@ -268,9 +201,7 @@ public class ChatController {
 			@RequestParam("senderName") String senderName, @RequestParam("status") String status,
 			@RequestParam("senderId") String senderId, @RequestParam("recipientId") String recipientId) {
 
-		// Получаем данные о текущем пользователе
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
+		
 
 		// LocalDateTime нужен потому что, время сообщения входят в составной primary
 		// key (без этого сообщения не сортируются) и без него мы не
@@ -317,12 +248,9 @@ public class ChatController {
 	// Страница со всеми чатами
 	@GetMapping("/users")
 	public String users(Model model, @RequestParam(value = "userName", required = false) String userName) {
-
-		// Получаем данные о текущем пользователе
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
-		String curentUserId = personDetails.getUser().getId();
-
+			
+		String currentUserId = connectionServ.getCurrentUserId();
+		
 		if (userName != null) {
 			try {
 				model.addAttribute("searchElasticUser", elasticSearchQuery.search(userName));
@@ -332,17 +260,17 @@ public class ChatController {
 
 		}
 
-		connectionServ.setUserOfline(curentUserId);
+		connectionServ.setUserOfline(currentUserId);
 
 		model.addAttribute("todayFormat", new DateTimeFormatterBuilder().appendPattern("HH:mm").toFormatter());
 		model.addAttribute("formatter", new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter());
 		model.addAttribute("todayDate",
 				LocalDateTime.now().format(new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter()));
 
-		model.addAttribute("lastMessages", messageServ.getLastMessage(chatRoomServ.findAll(curentUserId)));
-		model.addAttribute("username", userServ.findById(curentUserId).get().getUsername());
-		model.addAttribute("currentUser", curentUserId);
-		model.addAttribute("chatList", chatRoomServ.lastMessageOrder(curentUserId));
+		model.addAttribute("lastMessages", messageServ.getLastMessage(chatRoomServ.findAll(currentUserId)));
+		model.addAttribute("username", userServ.findById(currentUserId).get().getUsername());
+		model.addAttribute("currentUser", currentUserId);
+		model.addAttribute("chatList", chatRoomServ.lastMessageOrder(currentUserId));
 		model.addAttribute("files", fileService.getFiles());
 		model.addAttribute("users", userServ.findAll());
 
@@ -388,29 +316,24 @@ public class ChatController {
 	@PostMapping("/avatar")
 	public String avatar(@RequestPart("file") MultipartFile file) {
 		
-		// Получаем данные о текущем пользователе
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
-		String curentUserId = personDetails.getUser().getId();
-		User user = userServ.findById(curentUserId).get();
-
+		String currentUserId = connectionServ.getCurrentUserId();
+		
+		User user = userServ.findById(currentUserId).get();
+		
 		try {
-			if (
-				!file.getOriginalFilename().split("\\.")[1].toLowerCase().equals("mp4") && 
-				!file.getOriginalFilename().split("\\.")[1].toLowerCase().equals("mov") &&
-				!file.getOriginalFilename().split("\\.")[1].toLowerCase().equals("mob") &&
-				!file.getOriginalFilename().split("\\.")[1].toLowerCase().equals("mkv") && 
-				!file.getOriginalFilename().split("\\.")[1].toLowerCase().equals("m4b") && 
-				!file.getOriginalFilename().split("\\.")[1].toLowerCase().equals("avi") ) {
+			if (!file.getOriginalFilename().split("\\.")[1].toLowerCase().equals("mp4")
+					&& !file.getOriginalFilename().split("\\.")[1].toLowerCase().equals("mov")
+					&& !file.getOriginalFilename().split("\\.")[1].toLowerCase().equals("mob")
+					&& !file.getOriginalFilename().split("\\.")[1].toLowerCase().equals("mkv")
+					&& !file.getOriginalFilename().split("\\.")[1].toLowerCase().equals("m4b")
+					&& !file.getOriginalFilename().split("\\.")[1].toLowerCase().equals("avi")) {
 				user.setAvatar(ByteBuffer.wrap(file.getBytes()));
 				userServ.editUser(user);
 			}
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		
 
 		return "redirect:/users";
 	}

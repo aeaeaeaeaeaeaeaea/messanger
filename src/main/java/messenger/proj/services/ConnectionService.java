@@ -9,10 +9,13 @@ import javax.servlet.http.HttpServletRequest;
 import org.hibernate.validator.internal.util.privilegedactions.NewInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import messenger.proj.models.ConnectionInfo;
 import messenger.proj.models.User;
+import messenger.proj.security.PersonDetails;
 
 @Service
 public class ConnectionService {
@@ -25,6 +28,15 @@ public class ConnectionService {
 		super();
 		this.userServ = userServ;
 		this.redisTemplate = redisTemplate;
+	}
+	
+	public String getCurrentUserId() {
+		// Получаем данные о текущем пользователе
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
+		String currentUserId = personDetails.getUser().getId();
+		
+		return currentUserId;
 	}
 
 	public void userConnection(String userId, ConnectionInfo connectionInfo, HttpServletRequest request) {
