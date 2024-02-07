@@ -405,21 +405,47 @@
 					</div>
 
 					<!-- Username пользователя -->
-					<div class="h6 ml-2 font-weight-bold chat__header-user-name">
+					<div id="userInfoDiv" class="h6 ml-2 font-weight-bold chat__header-user-name">
 						<div th:text="${recipientUserName}">username</div>
 
 						<!-- Статус пользователя Online или Offline -->
-						<div th:if="${connectionInfo != null}">
-							<small class="chat__header-info chat__header-info--online h6 "
-								th:if="${connectionInfo.equals('Online')}"> Online </small>
-						</div>
-
-						<div th:if="${connectionInfo == null}">
-							<small class="chat__header-info chat__header-info--online h6 "> last seen recently
-							</small>
-						</div>
+						<small class="chat__header-info chat__header-info--online h6" id="statusInfo"></small>
 
 					</div>
+
+					<div id="userInfoDiv1" th:data-userid="${chatId}"></div>
+
+					<script th:inline="javascript">
+						function updateUserStatus() {
+							// AJAX-запрос для обновления статуса пользователя
+							var userId = $("#userInfoDiv1").attr("data-userid");
+							console.log("USER ID " + userId);
+
+							$.get("/update-user-info/" + userId, function (data) {
+								// Парсим данные из JSON
+								var jsonData = JSON.parse(data);
+
+								// Проверяем, является ли JSON пустым
+								if ($.isEmptyObject(jsonData)) {
+									// Если JSON пуст, выводим "last seen recently"
+									$("#userInfoDiv #statusInfo").text("last seen recently");
+								} else {
+									// В противном случае, обновляем статус пользователя в вашем div
+									$("#userInfoDiv #statusInfo").text(jsonData.connectionInfo);
+								}
+							});
+						}
+
+						// Вызываем функцию при загрузке страницы
+						$(document).ready(function () {
+							updateUserStatus();
+
+							// Запускаем интервал обновления каждые 10 секунд
+							setInterval(updateUserStatus, 10000);
+						});
+					</script>
+
+
 
 
 				</div>

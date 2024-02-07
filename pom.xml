@@ -20,6 +20,12 @@
 
 	<dependencies>
 
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20210307</version> <!-- Или использовать актуальную версию -->
+		</dependency>
+
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>

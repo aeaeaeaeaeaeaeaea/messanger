@@ -18,6 +18,7 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.HttpClientErrorException.Forbidden;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -106,6 +108,8 @@ public class ChatController {
 	@GetMapping("/chat/{userId}")
 	public String chat(@PathVariable("userId") String userId, Model model, HttpServletRequest request) {
 
+		model.addAttribute("chatId", userId);
+
 		String currentUserId = connectionServ.getCurrentUserId();
 
 		// Получаем чат по его Id
@@ -122,15 +126,15 @@ public class ChatController {
 
 		// Устанавливаем recipientId и senderId для сообщений
 		if (chat.get().getSenderId().equals(currentUserId)) {
-			
+
 			if (connectionServ.getUserConnection(chat.get().getRecipientId()) != null) {
 				model.addAttribute("connectionInfo",
 						connectionServ.getUserConnection(chat.get().getRecipientId()).getOnlineStatus());
 			}
-			
+
 			User currentUser = userServ.findById(chat.get().getSenderId()).get();
 			User recipientUser = userServ.findById(chat.get().getRecipientId()).get();
-			
+
 			model.addAttribute("recipientId", chat.get().getRecipientId());
 			model.addAttribute("currentUser", chat.get().getSenderId());
 			model.addAttribute("recipientUserName", userServ.findById(chat.get().getRecipientId()).get().getUsername());
@@ -138,17 +142,17 @@ public class ChatController {
 			model.addAttribute("currentUserPhoneNumber", currentUser.getPhoneNumber());
 			model.addAttribute("currentUserAvatar", userServ.getCurrentUserAvatar(currentUser));
 			model.addAttribute("recipientUserAvatar", userServ.getRecipientUserAvatar(recipientUser));
-			
+
 		} else if (chat.get().getRecipientId().equals(currentUserId)) {
-			
+
 			if (connectionServ.getUserConnection(chat.get().getSenderId()) != null) {
 				model.addAttribute("connectionInfo",
 						connectionServ.getUserConnection(chat.get().getSenderId()).getOnlineStatus());
 			}
-			
+
 			User currentUser = userServ.findById(chat.get().getRecipientId()).get();
 			User recipientUser = userServ.findById(chat.get().getSenderId()).get();
-			
+
 			model.addAttribute("recipientUserPhoneNumber", recipientUser.getPhoneNumber());
 			model.addAttribute("currentUserPhoneNumber", currentUser.getPhoneNumber());
 			model.addAttribute("currentUserAvatar", userServ.getCurrentUserAvatar(currentUser));
@@ -156,7 +160,7 @@ public class ChatController {
 			model.addAttribute("currentUser", chat.get().getRecipientId());
 			model.addAttribute("recipientId", chat.get().getSenderId());
 			model.addAttribute("recipientUserName", userServ.findById(chat.get().getSenderId()).get().getUsername());
-			
+
 		}
 
 		model.addAttribute("unreadSenderMessages", chat.get().getUnreadSenderMessages());
@@ -200,8 +204,6 @@ public class ChatController {
 			@RequestParam("sendTime") String sendTime, @RequestParam("content") String content,
 			@RequestParam("senderName") String senderName, @RequestParam("status") String status,
 			@RequestParam("senderId") String senderId, @RequestParam("recipientId") String recipientId) {
-
-		
 
 		// LocalDateTime нужен потому что, время сообщения входят в составной primary
 		// key (без этого сообщения не сортируются) и без него мы не
@@ -248,9 +250,9 @@ public class ChatController {
 	// Страница со всеми чатами
 	@GetMapping("/users")
 	public String users(Model model, @RequestParam(value = "userName", required = false) String userName) {
-			
+
 		String currentUserId = connectionServ.getCurrentUserId();
-		
+
 		if (userName != null) {
 			try {
 				model.addAttribute("searchElasticUser", elasticSearchQuery.search(userName));
@@ -315,11 +317,11 @@ public class ChatController {
 
 	@PostMapping("/avatar")
 	public String avatar(@RequestPart("file") MultipartFile file) {
-		
+
 		String currentUserId = connectionServ.getCurrentUserId();
-		
+
 		User user = userServ.findById(currentUserId).get();
-		
+
 		try {
 			if (!file.getOriginalFilename().split("\\.")[1].toLowerCase().equals("mp4")
 					&& !file.getOriginalFilename().split("\\.")[1].toLowerCase().equals("mov")
@@ -336,6 +338,32 @@ public class ChatController {
 		}
 
 		return "redirect:/users";
+	}
+
+	@GetMapping("/update-user-info/{chatId}")
+	@ResponseBody
+	public String updateUserInfo(@PathVariable("chatId") String userId, Model model) {
+		
+		System.out.println("USER ID " + userId);
+
+		String currentUserId = connectionServ.getCurrentUserId();
+		Optional<ChatRoom> chat = chatRoomServ.findById(userId);
+		JSONObject jsonObject = new JSONObject();
+
+		if (chat.get().getSenderId().equals(currentUserId)) {
+			if (connectionServ.getUserConnection(chat.get().getRecipientId()) != null) {
+				jsonObject.put("connectionInfo",
+						connectionServ.getUserConnection(chat.get().getRecipientId()).getOnlineStatus());
+			}
+		} else if (chat.get().getRecipientId().equals(currentUserId)) {
+			if (connectionServ.getUserConnection(chat.get().getSenderId()) != null) {
+				jsonObject.put("connectionInfo",
+						connectionServ.getUserConnection(chat.get().getSenderId()).getOnlineStatus());
+			}
+		}
+
+		System.err.println("TEST " + jsonObject.toString());
+		return jsonObject.toString();
 	}
 
 }
