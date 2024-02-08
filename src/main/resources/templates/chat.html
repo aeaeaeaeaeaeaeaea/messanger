@@ -421,7 +421,7 @@
 							var userId = $("#userInfoDiv1").attr("data-userid");
 							console.log("USER ID " + userId);
 
-							$.get("/update-user-info/" + userId, function (data) {
+							$.get("/updateUserStatus/" + userId, function (data) {
 								// Парсим данные из JSON
 								var jsonData = JSON.parse(data);
 

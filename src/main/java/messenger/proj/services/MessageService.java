@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import messenger.proj.models.ChatRoom;
+import messenger.proj.models.ConnectionInfo;
 import messenger.proj.models.message;
 import messenger.proj.repositories.ChatRoomRepository;
 import messenger.proj.repositories.MessageRepositroy;
@@ -36,12 +37,14 @@ public class MessageService {
 	private final RedisTemplate<String, message> redisTemplate;
 	private final RedisTemplate<String, String> redisTemplate1;
 	private final ChatRoomRepository chatRoomRepository;
+	private final ConnectionService connectionService;
 
 	@Autowired
-	public MessageService(MessageRepositroy messageRep, ChatRoomRepository chatRoomRepository,
+	public MessageService(MessageRepositroy messageRep, ConnectionService connectionService, ChatRoomRepository chatRoomRepository,
 			MessageRedisService messageRedisServ, RedisTemplate<String, message> redisTemplate,
 			RedisTemplate<String, String> redisTemplate1) {
 		this.messageRep = messageRep;
+		this.connectionService = connectionService;
 		this.chatRoomRepository = chatRoomRepository;
 		this.redisTemplate1 = redisTemplate1;
 		this.redisTemplate = redisTemplate;
@@ -98,6 +101,11 @@ public class MessageService {
 				edit(message.getId(), message.getContent(), message.getChatId(), message.getSendTime(), 
 					message.getSenderName(), message.getSenderId(), message.getRecipientId(), message.getStatus());
 			}
+			
+		}
+		
+		if (flag) {
+			connectionService.userConnection(curentUserId, new ConnectionInfo());
 		}
 
 		for (message message : findByChatId(chatId)) {
@@ -112,6 +120,8 @@ public class MessageService {
 		chat.setUnreadRecipientMessages(0);
 		chat.setUnreadSenderMessages(0);
 		chatRoomRepository.save(chat);
+		
+		
 		
 	}
 

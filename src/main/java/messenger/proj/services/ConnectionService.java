@@ -3,6 +3,7 @@ package messenger.proj.services;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -39,18 +40,19 @@ public class ConnectionService {
 		return currentUserId;
 	}
 
-	public void userConnection(String userId, ConnectionInfo connectionInfo, HttpServletRequest request) {
+	public void userConnection(String userId, ConnectionInfo connectionInfo) {
 
 		User user = userServ.findById(userId).get();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
 		connectionInfo.setUserName(user.getUsername());
 		connectionInfo.setUserId(userId);
-		connectionInfo.setIpAddress(request.getRemoteAddr().toString());
 		connectionInfo.setLogInTime(LocalDateTime.now().format(formatter).toString());
 		connectionInfo.setOnlineStatus("Online");
 
 		redisTemplate.opsForValue().set("user:" + userId, connectionInfo);
+		
+		redisTemplate.expire("user:" + userId, 10, TimeUnit.SECONDS);
 	}
 
 	public void setUserOfline(String userId) {

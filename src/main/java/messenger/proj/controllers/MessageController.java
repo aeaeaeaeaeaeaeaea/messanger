@@ -38,11 +38,13 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import messenger.proj.models.ChatRoom;
+import messenger.proj.models.ConnectionInfo;
 import messenger.proj.models.FileEntry;
 import messenger.proj.models.User;
 import messenger.proj.models.message;
 import messenger.proj.security.PersonDetails;
 import messenger.proj.services.ChatRoomService;
+import messenger.proj.services.ConnectionService;
 import messenger.proj.services.MessageService;
 import messenger.proj.services.UserService;
 
@@ -53,11 +55,13 @@ public class MessageController {
 	private MessageService messageServ;
 	private ChatRoomService chatRoomServ;
 	private UserService userServ;
+	private ConnectionService connectionService;
 
 	@Autowired
-	public MessageController(UserService userServ, SimpMessagingTemplate messagingTemplate, MessageService messageServ,
+	public MessageController(UserService userServ, ConnectionService connectionService, SimpMessagingTemplate messagingTemplate, MessageService messageServ,
 			ChatRoomService chatRoomServ) {
 		this.userServ = userServ;
+		this.connectionService = connectionService;
 		this.messagingTemplate = messagingTemplate;
 		this.messageServ = messageServ;
 		this.chatRoomServ = chatRoomServ;
@@ -71,7 +75,11 @@ public class MessageController {
 		
 		
 		
+		
 		if (!message.getContent().equals("")) {
+			
+			
+			
 			ObjectMapper objectMapper = new ObjectMapper();
 			objectMapper.registerModule(new JavaTimeModule());
 
@@ -88,6 +96,8 @@ public class MessageController {
 			message.setSenderName(userServ.findById(senderId).get().getUsername());
 
 			messageServ.save(extractedChatId, message);
+			
+			connectionService.userConnection(senderId, new ConnectionInfo());
 
 			messagingTemplate.convertAndSend("/topic/" + extractedChatId, message);
 

@@ -6,7 +6,6 @@ public class ConnectionInfo {
 	
 	private String userName;
 	private String userId;
-	private String ipAddress;
 	private String logInTime;
 	private String onlineStatus;
 	
@@ -14,12 +13,11 @@ public class ConnectionInfo {
 		
 	}
 	
-	public ConnectionInfo(String userName, String onlineStatus, String userId, String ipAddress, String logInTime) {
+	public ConnectionInfo(String userName, String onlineStatus, String userId, String logInTime) {
 		super();
 		this.onlineStatus = onlineStatus;
 		this.userName = userName;
 		this.userId = userId;
-		this.ipAddress = ipAddress;
 		this.logInTime = logInTime;
 	}
 
@@ -45,14 +43,6 @@ public class ConnectionInfo {
 
 	public void setUserId(String userId) {
 		this.userId = userId;
-	}
-
-	public String getIpAddress() {
-		return ipAddress;
-	}
-
-	public void setIpAddress(String ipAddress) {
-		this.ipAddress = ipAddress;
 	}
 
 	public String getLogInTime() {

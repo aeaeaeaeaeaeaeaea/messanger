@@ -106,7 +106,7 @@ public class ChatController {
 	// Страница с чатом между 2-мя пользователями
 	// ДЛИНА ПОСЛЕДНЕГО СООБЩЕНИЯ В СПИСКАХ ЧАТОВ (СДЕЛАЮ ПОТОМ)
 	@GetMapping("/chat/{userId}")
-	public String chat(@PathVariable("userId") String userId, Model model, HttpServletRequest request) {
+	public String chat(@PathVariable("userId") String userId, Model model) {
 
 		model.addAttribute("chatId", userId);
 
@@ -115,7 +115,7 @@ public class ChatController {
 		// Получаем чат по его Id
 		Optional<ChatRoom> chat = chatRoomServ.findById(userId);
 
-		connectionServ.userConnection(currentUserId, new ConnectionInfo(), request);
+		
 
 		// Редирект на главную страницу, если чат не существует
 		chatRoomServ.reidrectIfChatRoomDontExist(chat, currentUserId);
@@ -340,30 +340,6 @@ public class ChatController {
 		return "redirect:/users";
 	}
 
-	@GetMapping("/update-user-info/{chatId}")
-	@ResponseBody
-	public String updateUserInfo(@PathVariable("chatId") String userId, Model model) {
-		
-		System.out.println("USER ID " + userId);
-
-		String currentUserId = connectionServ.getCurrentUserId();
-		Optional<ChatRoom> chat = chatRoomServ.findById(userId);
-		JSONObject jsonObject = new JSONObject();
-
-		if (chat.get().getSenderId().equals(currentUserId)) {
-			if (connectionServ.getUserConnection(chat.get().getRecipientId()) != null) {
-				jsonObject.put("connectionInfo",
-						connectionServ.getUserConnection(chat.get().getRecipientId()).getOnlineStatus());
-			}
-		} else if (chat.get().getRecipientId().equals(currentUserId)) {
-			if (connectionServ.getUserConnection(chat.get().getSenderId()) != null) {
-				jsonObject.put("connectionInfo",
-						connectionServ.getUserConnection(chat.get().getSenderId()).getOnlineStatus());
-			}
-		}
-
-		System.err.println("TEST " + jsonObject.toString());
-		return jsonObject.toString();
-	}
+	
 
 }
