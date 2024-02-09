@@ -1,5 +1,6 @@
 package messenger.proj.controllers;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.json.JSONObject;
@@ -10,26 +11,34 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import messenger.proj.models.ChatRoom;
+import messenger.proj.models.message;
 import messenger.proj.services.ChatRoomService;
 import messenger.proj.services.ConnectionService;
+import messenger.proj.services.MessageService;
 
 @Controller
 public class AutoUpdateController {
-	
+
 	private final ConnectionService connectionService;
 	private final ChatRoomService chatRoomService;
-	
+	private final MessageService messageService;
+
 	@Autowired
-	public AutoUpdateController(ConnectionService connectionService, ChatRoomService chatRoomService) {
+	public AutoUpdateController(ConnectionService connectionService, MessageService messageService,
+			ChatRoomService chatRoomService) {
 		this.connectionService = connectionService;
+		this.messageService = messageService;
 		this.chatRoomService = chatRoomService;
 	}
-	
+
 	@GetMapping("/updateUserStatus/{chatId}")
 	@ResponseBody
 	public String updateUserInfo(@PathVariable("chatId") String userId, Model model) {
-		
+
 		System.out.println("USER ID " + userId);
 
 		String currentUserId = connectionService.getCurrentUserId();
@@ -52,4 +61,32 @@ public class AutoUpdateController {
 		return jsonObject.toString();
 	}
 
+	@GetMapping("/updateMessages/{chatId}")
+	@ResponseBody
+	public String updateMessages(@PathVariable("chatId") String chatId) {
+		// Загрузите новые сообщения из вашей службы
+		List<message> updatedMessages = messageService.getCassandraMessages(chatId);
+
+		// Возвращаем данные в формате JSON
+		return convertMessagesToJson(updatedMessages);
+	}
+
+	public static String convertMessagesToJson(List<message> list) {
+		String jsonResult = "";
+
+		// Используйте ObjectMapper для конвертации в JSON
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		try {
+			// Преобразование списка объектов в JSON
+			jsonResult = objectMapper.writeValueAsString(list);
+
+			// Вывод результата
+			System.out.println(jsonResult);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+
+		return jsonResult;
+	}
 }

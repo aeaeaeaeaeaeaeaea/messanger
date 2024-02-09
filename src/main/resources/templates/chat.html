@@ -25,6 +25,8 @@
 
 <body class="body d-flex flex-column h-100" style="overflow: hidden;">
 
+
+
 	<div class="d-flex flex-column bg-light" style="height:100%">
 		<div class="row g-0" style="height:100%">
 
@@ -733,6 +735,103 @@
 						</div>
 
 					</div>
+
+					<script th:inline="javascript">
+						function updateMessages() {
+							// AJAX-запрос для обновления сообщений
+							var chatId = $("#userInfoDiv1").attr("data-userid");
+
+							$.get("/updateMessages/" + chatId, function (data) {
+								// Парсим данные из JSON
+								var updatedMessages = JSON.parse(data);
+
+								// Обновляем ваш блок сообщений
+								// Пример: предполагается, что у вас есть функция для обновления сообщений
+								updateMessageBlock(updatedMessages);
+							});
+						}
+
+						// Вызываем функцию при загрузке страницы
+						$(document).ready(function () {
+							updateMessages();
+
+							// Запускаем интервал обновления каждые 10 секунд
+							setInterval(updateMessages, 10000);
+						});
+
+						function updateMessageBlock(updatedMessages) {
+							// Очищаем текущий блок сообщений
+							$("#messagesContainer").empty();
+
+							// Проходимся по обновленным сообщениям и добавляем их в блок
+							for (var i = 0; i < updatedMessages.length; i++) {
+								var message = updatedMessages[i];
+
+								var messageWrapper = $("<div>").addClass("message__wrapper d-flex align-items-end mb-2 mt-2").css("word-break", "break-word");
+								var messageContent = $("<div>").addClass("message-content message__wrapper-box position-relative p-2")
+									.attr("th:senderName", message.senderName)
+									.attr("th:status", message.status)
+									.attr("th:content", message.content)
+									.attr("th:id", message.id)
+									.attr("th:sendtime", message.sendTime)
+									.attr("th:chatId", message.chatId)
+									.attr("th:recipientId", message.recipientId)
+									.attr("th:senderId", message.senderId);
+
+								var messageWrapperTop = $("<div>").addClass("message__wrapper-top d-flex justify-content-between align-items-center");
+								messageWrapperTop.append($("<p>").addClass("message__user-name").attr("th:text", message.senderName).text("Lifehack"));
+								messageWrapperTop.append($("<span>").addClass("message__reply"));
+
+								messageContent.append(messageWrapperTop);
+
+								// Вывод файла (если есть)
+								var files = message.files;
+								if (files && files.length > 0) {
+									for (var j = 0; j < files.length; j++) {
+										var file = files[j];
+										var fileDiv;
+
+										switch (file.type.toLowerCase()) {
+											case 'jpg':
+											case 'jpeg':
+											case 'png':
+											case 'gif':
+												fileDiv = $("<img>").attr("th:src", "'/Files/' + " + file.fileName).attr("width", "400").attr("height", "400");
+												break;
+											case 'mp4':
+											case 'avi':
+											case 'mkv':
+												fileDiv = $("<video>").attr("width", "400").attr("height", "400").attr("controls", true)
+													.append($("<source>").attr("th:src", "'/Files/' + " + file.fileName).attr("type", "video/" + file.type));
+												break;
+											default:
+												// Обработка других типов файлов, если необходимо
+												break;
+										}
+
+										messageContent.append(fileDiv);
+									}
+								}
+
+								var messageWrapperBottom = $("<div>").addClass("message__wrapper-bottom d-flex align-items-end justify-content-between");
+								messageWrapperBottom.append($("<p>").addClass("message__wrapper-text").attr("th:senderName", message.senderName).attr("th:text", message.content));
+
+								var messageWrapperBottomRight = $("<div>").addClass("message__wrapper-bottom-right d-flex align-items-center");
+								messageWrapperBottomRight.append($("<time>").addClass("message__time").attr("th:text", message.sendTime).text("11"));
+								messageWrapperBottomRight.append($("<span>").addClass("message__status"));
+
+								messageWrapperBottom.append(messageWrapperBottomRight);
+								messageContent.append(messageWrapperBottom);
+
+								messageContent.append($("<span>").addClass("message__curve"));
+								messageWrapper.append(messageContent);
+
+								$("#messagesContainer").append(messageWrapper);
+							}
+						}
+
+					</script>
+
 
 				</div>
 				<!-- Конец сообщений -->
