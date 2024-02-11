@@ -462,7 +462,7 @@
 					<div class="message">
 
 						<!-- Сообщения с БД -->
-						<div th:each="cassandraMessage : ${cassandraMessages}">
+						<div id="cassandraMessages" th:each="cassandraMessage : ${cassandraMessages}">
 
 							<div class="message__wrapper d-flex align-items-end mb-2 mt-2"
 								style="word-break: break-word;">
@@ -601,105 +601,111 @@
 						<!-- Кэшированные сообщения -->
 						<div th:each="cachedMessage : ${cachedMessages}">
 
-							<div class="message__wrapper d-flex align-items-end mb-2 mt-2"
-								style="word-break: break-word;">
-
-								<!-- Информация о сообщение -->
-								<div class="message-content message__wrapper-box position-relative p-2"
-									th:senderName="${cachedMessage.getSenderName()}"
-									th:content="${cachedMessage.getContent()}" th:id="${cachedMessage.getId()}"
-									th:sendtime="${cachedMessage.getSendTime()}"
-									th:chatId="${cachedMessage.getChatId()}" th:status="${cachedMessage.getStatus()}"
-									th:recipientId="${cachedMessage.getRecipientId()}"
-									th:senderId="${cachedMessage.getSenderId()}">
-
-									<!-- Username отправителя сообщение -->
-									<div class="message__wrapper-top d-flex justify-content-between align-items-center">
-										<p class="message__user-name" th:text="${cachedMessage.getSenderName()}">
-											Lifehack</p>
-										<span class="message__reply"></span>
-									</div>
-
-									<!-- Если у сообщения есть файл вывести его тут -->
-									<div th:if="${files.get(cachedMessage.getId())} != null">
+							<div id="cachedMessages">
 
 
 
-										<!-- Проверка расширения файла для изображений -->
+								<div class="message__wrapper d-flex align-items-end mb-2 mt-2"
+									style="word-break: break-word;">
+
+									<!-- Информация о сообщение -->
+									<div class="cachedMessages message-content message__wrapper-box position-relative p-2"
+										th:senderName="${cachedMessage.getSenderName()}"
+										th:content="${cachedMessage.getContent()}" th:id="${cachedMessage.getId()}"
+										th:sendtime="${cachedMessage.getSendTime()}"
+										th:chatId="${cachedMessage.getChatId()}"
+										th:status="${cachedMessage.getStatus()}"
+										th:recipientId="${cachedMessage.getRecipientId()}"
+										th:senderId="${cachedMessage.getSenderId()}">
+
+										<!-- Username отправителя сообщение -->
 										<div
-											th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('jpg')}">
-
-											<img th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
-												width="400" height="400" />
-
+											class="message__wrapper-top d-flex justify-content-between align-items-center">
+											<p class="message__user-name" th:text="${cachedMessage.getSenderName()}">
+												Lifehack</p>
+											<span class="message__reply"></span>
 										</div>
 
-										<div
-											th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('jpeg')}">
-											>
-
-											<img th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
-												width="400" height="400" />
+										<!-- Если у сообщения есть файл вывести его тут -->
+										<div th:if="${files.get(cachedMessage.getId())} != null">
 
 
-										</div>
 
-										<div
-											th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('png')}">
+											<!-- Проверка расширения файла для изображений -->
+											<div
+												th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('jpg')}">
 
-											<img th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
-												width="400" height="400" />
+												<img th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
+													width="400" height="400" />
 
+											</div>
 
-										</div>
+											<div
+												th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('jpeg')}">
+												>
 
-										<div
-											th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('gif')}">
-
-											<img th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
-												width="400" height="400" />
-
-
-										</div>
-
-										<!-- Проверка расширения файла для видео -->
-										<div
-											th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('mp4')}">
-
-											<video width="400" height="400" controls>
-												<source
-													th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
-													type="video/mp4" />
-											</video>
+												<img th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
+													width="400" height="400" />
 
 
-										</div>
+											</div>
 
-										<div
-											th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('avi')}">
+											<div
+												th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('png')}">
 
-											<video width="400" height="400" controls>
-												<source
-													th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
-													type="video/x-msvideo" />
-											</video>
+												<img th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
+													width="400" height="400" />
 
 
-										</div>
+											</div>
 
-										<div
-											th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('mkv')}">
+											<div
+												th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('gif')}">
 
-											<video width="400" height="400" controls>
-												<source
-													th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
-													type="video/x-matroska" />
-											</video>
+												<img th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
+													width="400" height="400" />
 
 
-										</div>
+											</div>
 
-										<!-- 
+											<!-- Проверка расширения файла для видео -->
+											<div
+												th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('mp4')}">
+
+												<video width="400" height="400" controls>
+													<source
+														th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
+														type="video/mp4" />
+												</video>
+
+
+											</div>
+
+											<div
+												th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('avi')}">
+
+												<video width="400" height="400" controls>
+													<source
+														th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
+														type="video/x-msvideo" />
+												</video>
+
+
+											</div>
+
+											<div
+												th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('mkv')}">
+
+												<video width="400" height="400" controls>
+													<source
+														th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
+														type="video/x-matroska" />
+												</video>
+
+
+											</div>
+
+											<!-- 
 											
 										<th:default th:if="${!otherFound}" th:remove="tag">
 											<p>Неподдерживаемый тип файла</p>
@@ -709,28 +715,33 @@
 										
 										-->
 
-									</div>
-
-									<div class="message__wrapper-bottom d-flex align-items-end justify-content-between">
-
-										<!-- Текст сообщения -->
-										<p th:text="${cachedMessage.getContent()}"
-											th:senderName="${cachedMessage.getSenderName()}"
-											class="message__wrapper-text">
-										</p>
-
-										<!-- Время отправки сообщения -->
-										<div class="message__wrapper-bottom-right d-flex align-items-center">
-											<time class="message__time"
-												th:text="${cachedMessage.getSendTime().format(todayFormat)}"></time>
-											<span class="message__status"></span>
 										</div>
 
-									</div>
-									<span class="message__curve"></span>
+										<div
+											class="message__wrapper-bottom d-flex align-items-end justify-content-between">
 
+											<!-- Текст сообщения -->
+											<p th:text="${cachedMessage.getContent()}"
+												th:senderName="${cachedMessage.getSenderName()}"
+												class="message__wrapper-text">
+											</p>
+
+											<!-- Время отправки сообщения -->
+											<div class="message__wrapper-bottom-right d-flex align-items-center">
+												<time class="message__time"
+													th:text="${cachedMessage.getSendTime().format(todayFormat)}"></time>
+												<span class="message__status"></span>
+											</div>
+
+										</div>
+										<span class="message__curve"></span>
+
+									</div>
 								</div>
+
+
 							</div>
+
 
 						</div>
 
@@ -741,9 +752,11 @@
 							// AJAX-запрос для обновления сообщений
 							var chatId = $("#userInfoDiv1").attr("data-userid");
 
-							$.get("/updateMessages/" + chatId, function (data) {
+							$.get("/updateCachedMessages/" + chatId, function (data) {
 								// Парсим данные из JSON
 								var updatedMessages = JSON.parse(data);
+
+								console.log("TTTTTTTTTEST ", updatedMessages);
 
 								// Обновляем ваш блок сообщений
 								// Пример: предполагается, что у вас есть функция для обновления сообщений
@@ -756,16 +769,22 @@
 							updateMessages();
 
 							// Запускаем интервал обновления каждые 10 секунд
-							setInterval(updateMessages, 10000);
+							setInterval(updateMessages, 1000);
 						});
 
 						function updateMessageBlock(updatedMessages) {
-							// Очищаем текущий блок сообщений
-							$("#messagesContainer").empty();
+							
+							$("#cachedMessages").empty();
 
 							// Проходимся по обновленным сообщениям и добавляем их в блок
 							for (var i = 0; i < updatedMessages.length; i++) {
+								
+								
+								
 								var message = updatedMessages[i];
+
+					
+								
 
 								var messageWrapper = $("<div>").addClass("message__wrapper d-flex align-items-end mb-2 mt-2").css("word-break", "break-word");
 								var messageContent = $("<div>").addClass("message-content message__wrapper-box position-relative p-2")
@@ -779,7 +798,7 @@
 									.attr("th:senderId", message.senderId);
 
 								var messageWrapperTop = $("<div>").addClass("message__wrapper-top d-flex justify-content-between align-items-center");
-								messageWrapperTop.append($("<p>").addClass("message__user-name").attr("th:text", message.senderName).text("Lifehack"));
+								messageWrapperTop.append($("<p>").addClass("message__user-name").attr("th:text", message.senderName).text(message.senderName));
 								messageWrapperTop.append($("<span>").addClass("message__reply"));
 
 								messageContent.append(messageWrapperTop);
@@ -814,10 +833,10 @@
 								}
 
 								var messageWrapperBottom = $("<div>").addClass("message__wrapper-bottom d-flex align-items-end justify-content-between");
-								messageWrapperBottom.append($("<p>").addClass("message__wrapper-text").attr("th:senderName", message.senderName).attr("th:text", message.content));
+								messageWrapperBottom.append($("<p>").addClass("message__wrapper-text").attr("th:senderName", message.senderName).attr("th:text", message.content)).text(message.content);
 
 								var messageWrapperBottomRight = $("<div>").addClass("message__wrapper-bottom-right d-flex align-items-center");
-								messageWrapperBottomRight.append($("<time>").addClass("message__time").attr("th:text", message.sendTime).text("11"));
+								messageWrapperBottomRight.append($("<time>").addClass("message__time").attr("th:text", message.sendTime).text(message.sendTime));
 								messageWrapperBottomRight.append($("<span>").addClass("message__status"));
 
 								messageWrapperBottom.append(messageWrapperBottomRight);
@@ -826,11 +845,14 @@
 								messageContent.append($("<span>").addClass("message__curve"));
 								messageWrapper.append(messageContent);
 
-								$("#messagesContainer").append(messageWrapper);
+								$("#cachedMessages").append(messageWrapper);
 							}
 						}
 
 					</script>
+
+
+
 
 
 				</div>
@@ -1208,7 +1230,7 @@
 	<script src="/js/messageScripts/messageContextMenuEdit.js"></script>
 	<script src="/js/messageScripts/messageEditOrDelete.js"></script>
 	<script src="/js/messageScripts/webSocket.js"></script>
-	<script src="/js/messageScripts/messageColor.js"></script>
+
 	<script src="/js/messageScripts/SideBarModalWindow.js"></script>
 	<script src="/js/chatScripts/ChatDelete.js"></script>
 	<script src="/js/scripts/bootstrap.bundle.min.js"></script>

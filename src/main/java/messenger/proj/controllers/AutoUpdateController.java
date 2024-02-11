@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import messenger.proj.models.ChatRoom;
 import messenger.proj.models.message;
@@ -61,11 +62,23 @@ public class AutoUpdateController {
 		return jsonObject.toString();
 	}
 
-	@GetMapping("/updateMessages/{chatId}")
+	@GetMapping("/updateCassandraMessages/{chatId}")
 	@ResponseBody
-	public String updateMessages(@PathVariable("chatId") String chatId) {
+	public String updateCasssandraMessages(@PathVariable("chatId") String chatId) {
 		// Загрузите новые сообщения из вашей службы
 		List<message> updatedMessages = messageService.getCassandraMessages(chatId);
+
+		// Возвращаем данные в формате JSON
+		return convertMessagesToJson(updatedMessages);
+	}
+	
+	@GetMapping("/updateCachedMessages/{chatId}")
+	@ResponseBody
+	public String updateCachedMessages(@PathVariable("chatId") String chatId) {
+		// Загрузите новые сообщения из вашей службы
+		List<message> updatedMessages = messageService.getCaсhedMessages(chatId);
+		
+		System.out.println("CachedMessages " + updatedMessages);
 
 		// Возвращаем данные в формате JSON
 		return convertMessagesToJson(updatedMessages);
@@ -76,6 +89,7 @@ public class AutoUpdateController {
 
 		// Используйте ObjectMapper для конвертации в JSON
 		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.registerModule(new JavaTimeModule());
 
 		try {
 			// Преобразование списка объектов в JSON
