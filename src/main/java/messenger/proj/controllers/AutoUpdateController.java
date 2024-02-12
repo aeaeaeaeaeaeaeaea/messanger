@@ -74,14 +74,14 @@ public class AutoUpdateController {
 	
 	@GetMapping("/updateCachedMessages/{chatId}")
 	@ResponseBody
-	public String updateCachedMessages(@PathVariable("chatId") String chatId) {
+	public List<message> updateCachedMessages(@PathVariable("chatId") String chatId) {
 		// Загрузите новые сообщения из вашей службы
 		List<message> updatedMessages = messageService.getCaсhedMessages(chatId);
 		
 		System.out.println("CachedMessages " + updatedMessages);
 
 		// Возвращаем данные в формате JSON
-		return convertMessagesToJson(updatedMessages);
+		return updatedMessages;
 	}
 
 	public static String convertMessagesToJson(List<message> list) {
