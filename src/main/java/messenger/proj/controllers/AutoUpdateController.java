@@ -40,7 +40,6 @@ public class AutoUpdateController {
 	@ResponseBody
 	public String updateUserInfo(@PathVariable("chatId") String userId, Model model) {
 
-		System.out.println("USER ID " + userId);
 
 		String currentUserId = connectionService.getCurrentUserId();
 		Optional<ChatRoom> chat = chatRoomService.findById(userId);
@@ -58,7 +57,7 @@ public class AutoUpdateController {
 			}
 		}
 
-		System.err.println("TEST " + jsonObject.toString());
+	
 		return jsonObject.toString();
 	}
 
@@ -78,7 +77,7 @@ public class AutoUpdateController {
 		// Загрузите новые сообщения из вашей службы
 		List<message> updatedMessages = messageService.getCaсhedMessages(chatId);
 		
-		System.out.println("CachedMessages " + updatedMessages);
+	
 
 		// Возвращаем данные в формате JSON
 		return updatedMessages;
@@ -95,8 +94,7 @@ public class AutoUpdateController {
 			// Преобразование списка объектов в JSON
 			jsonResult = objectMapper.writeValueAsString(list);
 
-			// Вывод результата
-			System.out.println(jsonResult);
+			
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}

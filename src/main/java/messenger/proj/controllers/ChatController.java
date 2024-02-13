@@ -209,7 +209,11 @@ public class ChatController {
 		// key (без этого сообщения не сортируются) и без него мы не
 		// сможем удалить сообщение
 		LocalDateTime ldt = LocalDateTime.parse(sendTime);
-
+		
+		System.out.println("EDIT TEST messageId: " + messageId + " chatId:  " + chatId 
+				+ "  sendTime: " + sendTime + " content:  " + content + " senderName: " + senderName +
+				 " status: " + status + " senderId: " + senderId + " recipientId: " + recipientId);
+ 
 		// Если сообщения состоит только из пробелов и у него нет файла, то оно
 		// удаляется при редактировании
 		if (content.trim().isEmpty() && !fileService.getFiles().containsKey(messageId)) {

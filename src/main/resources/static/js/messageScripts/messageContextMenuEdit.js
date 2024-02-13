@@ -5,12 +5,22 @@ $(function() {
 	var messageId;
 	const editMessageInput = document.getElementById("editMessageInput");
 
-	$(".message-content").on('contextmenu', function(e) {
+	$("#cachedMessagesContainer").on('contextmenu', function(e) {
 		e.preventDefault();
-		messageId = $(this).attr("id");
+
+		// Найти ближайший родительский элемент с классом message__wrapper
+		var messageWrapper = $(this).closest('.message__wrapper');
+
+		// Получить доступ к элементу с классом message-content внутри message__wrapper
+		var messageContent = messageWrapper.find('.message-content');
+
+		// Теперь у вас есть доступ к элементу с классом message-content
+		messageId = messageContent.attr("th:id");
+
 		modal.css({ top: e.pageY + "px", left: e.pageX + "px" });
 		modal.show();
 	});
+
 
 	$(".close").on("click", function() {
 		modal.hide();
@@ -28,7 +38,10 @@ $(function() {
 		modal.hide();
 
 		var mess = document.getElementById(messageId);
-
+		
+		console.log("MESSAGE " + mess);
+		console.log("MESSAGE ID " + messageId);
+		
 		var sendTime = mess.getAttribute("sendtime");
 		var senderName = mess.getAttribute("senderName");
 		var chatId = mess.getAttribute("chatId");
