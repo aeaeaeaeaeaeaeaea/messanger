@@ -187,10 +187,14 @@ public class ChatController {
 	@PostMapping("/deleteMessage")
 	public String deleteMessage(@RequestParam("messageId") String messageId, @RequestParam("chatId") String chatId,
 			@RequestParam("sendTime") String sendTime) {
+		
+		System.out.println("DELETE TEST");
+		
 		// LocalDateTime нужен потому что, время сообщения входят в составной primary
 		// key (без этого сообщения не сортируются) и без него мы не
 		// сможем удалить сообщение
-		LocalDateTime ldt = LocalDateTime.parse(sendTime);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		LocalDateTime ldt = LocalDateTime.parse(sendTime, formatter);
 
 		// Удаляем сообщения по ID
 		messageServ.deleteById(messageId, ldt, chatId);
@@ -204,16 +208,13 @@ public class ChatController {
 			@RequestParam("sendTime") String sendTime, @RequestParam("content") String content,
 			@RequestParam("senderName") String senderName, @RequestParam("status") String status,
 			@RequestParam("senderId") String senderId, @RequestParam("recipientId") String recipientId) {
-
+		
 		// LocalDateTime нужен потому что, время сообщения входят в составной primary
 		// key (без этого сообщения не сортируются) и без него мы не
 		// сможем удалить сообщение
-		LocalDateTime ldt = LocalDateTime.parse(sendTime);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		LocalDateTime ldt = LocalDateTime.parse(sendTime, formatter);
 		
-		System.out.println("EDIT TEST messageId: " + messageId + " chatId:  " + chatId 
-				+ "  sendTime: " + sendTime + " content:  " + content + " senderName: " + senderName +
-				 " status: " + status + " senderId: " + senderId + " recipientId: " + recipientId);
- 
 		// Если сообщения состоит только из пробелов и у него нет файла, то оно
 		// удаляется при редактировании
 		if (content.trim().isEmpty() && !fileService.getFiles().containsKey(messageId)) {

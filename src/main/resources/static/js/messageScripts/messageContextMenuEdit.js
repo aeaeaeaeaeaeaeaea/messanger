@@ -3,19 +3,26 @@ $(function() {
 	var deleteButton = $("#deleteButton1");
 	var editButton = $("#editButton1");
 	var messageId;
+	var sendTime;
+	var senderName;
+	var chatId;
+	var content;
+	var senderId;
+	var recipientId;
+	var status;
 	const editMessageInput = document.getElementById("editMessageInput");
 
-	$("#cachedMessagesContainer").on('contextmenu', function(e) {
+	$('#cachedMessagesContainer').on('contextmenu', '#divId', function(e) {
 		e.preventDefault();
+		messageId = $(this).attr("th:id");
 
-		// Найти ближайший родительский элемент с классом message__wrapper
-		var messageWrapper = $(this).closest('.message__wrapper');
-
-		// Получить доступ к элементу с классом message-content внутри message__wrapper
-		var messageContent = messageWrapper.find('.message-content');
-
-		// Теперь у вас есть доступ к элементу с классом message-content
-		messageId = messageContent.attr("th:id");
+		sendTime = $(this).attr("th:sendtime");
+		senderName = $(this).attr("th:senderName");
+		chatId = $(this).attr("th:chatId");
+		content = $(this).attr("th:content");
+		senderId = $(this).attr("th:senderId");
+		recipientId = $(this).attr("th:recipientId");
+		status = $(this).attr("th:status");
 
 		modal.css({ top: e.pageY + "px", left: e.pageX + "px" });
 		modal.show();
@@ -27,7 +34,7 @@ $(function() {
 	});
 
 	deleteButton.on("click", function() {
-		deleteMessage(messageId);
+		deleteMessage(messageId, sendTime, chatId);
 		modal.hide();
 	});
 
@@ -38,17 +45,10 @@ $(function() {
 		modal.hide();
 
 		var mess = document.getElementById(messageId);
-		
-		console.log("MESSAGE " + mess);
-		console.log("MESSAGE ID " + messageId);
-		
-		var sendTime = mess.getAttribute("sendtime");
-		var senderName = mess.getAttribute("senderName");
-		var chatId = mess.getAttribute("chatId");
-		var content = mess.getAttribute("content");
-		var senderId = mess.getAttribute("senderId");
-		var recipientId = mess.getAttribute("recipientId");
-		var status = mess.getAttribute("status");
+
+	
+
+
 
 		editMessageInput.value = content;
 

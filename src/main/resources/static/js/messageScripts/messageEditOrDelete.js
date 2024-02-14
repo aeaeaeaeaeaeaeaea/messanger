@@ -1,11 +1,6 @@
-function deleteMessage(messageId) {
-
-	var mess = document.getElementById(messageId);
-	var sendTime = mess.getAttribute("sendtime");
-	var chatId = mess.getAttribute("chatId");
+function deleteMessage(messageId, sendTime, chatId) {
 
 	const deleteMessageUrl = `/deleteMessage?messageId=${messageId}&chatId=${chatId}&sendTime=${sendTime}`;
-
 
 	fetch(deleteMessageUrl, {
 		method: 'POST'
@@ -15,7 +10,5 @@ function deleteMessage(messageId) {
 			window.location.href = `/chat/${chatId}`;
 		}
 	});
-
-
 }
 
