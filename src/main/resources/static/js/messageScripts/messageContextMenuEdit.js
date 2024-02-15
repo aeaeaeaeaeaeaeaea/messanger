@@ -11,6 +11,22 @@ $(function() {
 	var recipientId;
 	var status;
 	const editMessageInput = document.getElementById("editMessageInput");
+	
+	$('#cassandraMessagesContainer').on('contextmenu', '#divId', function(e) {
+		e.preventDefault();
+		messageId = $(this).attr("th:id");
+
+		sendTime = $(this).attr("th:sendtime");
+		senderName = $(this).attr("th:senderName");
+		chatId = $(this).attr("th:chatId");
+		content = $(this).attr("th:content");
+		senderId = $(this).attr("th:senderId");
+		recipientId = $(this).attr("th:recipientId");
+		status = $(this).attr("th:status");
+
+		modal.css({ top: e.pageY + "px", left: e.pageX + "px" });
+		modal.show();
+	});
 
 	$('#cachedMessagesContainer').on('contextmenu', '#divId', function(e) {
 		e.preventDefault();
@@ -45,10 +61,6 @@ $(function() {
 		modal.hide();
 
 		var mess = document.getElementById(messageId);
-
-	
-
-
 
 		editMessageInput.value = content;
 

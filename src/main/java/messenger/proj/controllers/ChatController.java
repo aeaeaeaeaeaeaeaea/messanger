@@ -92,7 +92,7 @@ public class ChatController {
 	@PostMapping("/chat")
 	public ResponseEntity<String> createChat(@RequestParam(value = "userId", required = false) String userId,
 			@RequestParam(value = "currentUser", required = false) String currentUser) {
-
+		
 		chatRoomServ.save(currentUser, userId);
 
 		Optional<ChatRoom> chat = chatRoomServ.findBySenderIdAndRecipientId(currentUser, userId);
@@ -106,7 +106,9 @@ public class ChatController {
 	// Страница с чатом между 2-мя пользователями
 	// ДЛИНА ПОСЛЕДНЕГО СООБЩЕНИЯ В СПИСКАХ ЧАТОВ (СДЕЛАЮ ПОТОМ)
 	@GetMapping("/chat/{userId}")
-	public String chat(@PathVariable("userId") String userId, Model model) {
+	public String chat(@PathVariable("userId") String userId, Model model, HttpServletRequest request) {
+		
+		System.err.println("URL " + request.getSession().getAttribute("currentMapping"));
 
 		model.addAttribute("chatId", userId);
 

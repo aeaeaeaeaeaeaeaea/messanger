@@ -63,24 +63,20 @@ public class AutoUpdateController {
 
 	@GetMapping("/updateCassandraMessages/{chatId}")
 	@ResponseBody
-	public String updateCasssandraMessages(@PathVariable("chatId") String chatId) {
+	public List<message> updateCasssandraMessages(@PathVariable("chatId") String chatId) {
 		// Загрузите новые сообщения из вашей службы
-		List<message> updatedMessages = messageService.getCassandraMessages(chatId);
-
+		List<message> updatedCassandarMessages = messageService.getCassandraMessages(chatId);
 		// Возвращаем данные в формате JSON
-		return convertMessagesToJson(updatedMessages);
+		return updatedCassandarMessages;
 	}
 	
 	@GetMapping("/updateCachedMessages/{chatId}")
 	@ResponseBody
 	public List<message> updateCachedMessages(@PathVariable("chatId") String chatId) {
 		// Загрузите новые сообщения из вашей службы
-		List<message> updatedMessages = messageService.getCaсhedMessages(chatId);
-		
-	
-
+		List<message> updatedCachedMessages = messageService.getCaсhedMessages(chatId);
 		// Возвращаем данные в формате JSON
-		return updatedMessages;
+		return updatedCachedMessages;
 	}
 
 	public static String convertMessagesToJson(List<message> list) {

@@ -17,6 +17,13 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="/css/styles.css">
 
+	<!-- Подключение jQuery -->
+	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+	<!-- Подключение moment.js -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+
 
 
 
@@ -417,37 +424,6 @@
 
 					<div id="userInfoDiv1" th:data-userid="${chatId}"></div>
 
-					<script th:inline="javascript">
-						function updateUserStatus() {
-							// AJAX-запрос для обновления статуса пользователя
-							var userId = $("#userInfoDiv1").attr("data-userid");
-							console.log("USER ID " + userId);
-
-							$.get("/updateUserStatus/" + userId, function (data) {
-								// Парсим данные из JSON
-								var jsonData = JSON.parse(data);
-
-								// Проверяем, является ли JSON пустым
-								if ($.isEmptyObject(jsonData)) {
-									// Если JSON пуст, выводим "last seen recently"
-									$("#userInfoDiv #statusInfo").text("last seen recently");
-								} else {
-									// В противном случае, обновляем статус пользователя в вашем div
-									$("#userInfoDiv #statusInfo").text(jsonData.connectionInfo);
-								}
-							});
-						}
-
-						// Вызываем функцию при загрузке страницы
-						$(document).ready(function () {
-							updateUserStatus();
-
-							// Запускаем интервал обновления каждые 10 секунд
-							setInterval(updateUserStatus, 10000);
-						});
-					</script>
-
-
 
 
 				</div>
@@ -460,156 +436,22 @@
 
 					<!-- Сообщения -->
 					<div class="message">
+						
+						<!-- Для автообновления сообщений (используется в js скрипте) -->
+						<div id="formatDate" th:date="${todayFormat}"></div>
 
-						<!-- Сообщения с БД -->
-						<div id="cassandraMessages" th:each="cassandraMessage : ${cassandraMessages}">
+						<!-- Сообщения из БД -->
+						<div id="cassandraMessagesContainer" >
 
-							<div class="message__wrapper d-flex align-items-end mb-2 mt-2"
-								style="word-break: break-word;">
-
-								<!-- Данные о сообщение -->
-								<div class="message-content message__wrapper-box position-relative p-2"
-									th:senderName="${cassandraMessage.getSenderName()}"
-									th:status="${cassandraMessage.getStatus()}"
-									th:content="${cassandraMessage.getContent()}" th:id="${cassandraMessage.getId()}"
-									th:sendtime="${cassandraMessage.getSendTime()}"
-									th:chatId="${cassandraMessage.getChatId()}"
-									th:recipientId="${cassandraMessage.getRecipientId()}"
-									th:senderId="${cassandraMessage.getSenderId()}">
-
-									<!-- Username пользователя, который отправялет сообщение -->
-									<div class="message__wrapper-top d-flex justify-content-between align-items-center">
-										<p class="message__user-name" th:text="${cassandraMessage.getSenderName()}">
-											Lifehack</p>
-										<span class="message__reply"></span>
-									</div>
-
-									<!-- Вывод файла (если есть) -->
-									<div th:if="${files.get(cassandraMessage.getId())} != null">
-
-										<div
-											th:if="${#strings.toLowerCase(files.get(cassandraMessage.getId()).getFileName().split('\.')[1]).equals('jpg')}">
-
-											<img th:src="'/Files/' + ${files.get(cassandraMessage.getId()).getFileName()}"
-												width="400" height="400" />
-
-										</div>
-
-										<div
-											th:if="${#strings.toLowerCase(files.get(cassandraMessage.getId()).getFileName().split('\.')[1]).equals('jpeg')}">
-											>
-
-											<img th:src="'/Files/' + ${files.get(cassandraMessage.getId()).getFileName()}"
-												width="400" height="400" />
-
-
-										</div>
-
-										<div
-											th:if="${#strings.toLowerCase(files.get(cassandraMessage.getId()).getFileName().split('\.')[1]).equals('png')}">
-
-											<img th:src="'/Files/' + ${files.get(cassandraMessage.getId()).getFileName()}"
-												width="400" height="400" />
-
-
-										</div>
-
-										<div
-											th:if="${#strings.toLowerCase(files.get(cassandraMessage.getId()).getFileName().split('\.')[1]).equals('gif')}">
-
-											<img th:src="'/Files/' + ${files.get(cassandraMessage.getId()).getFileName()}"
-												width="400" height="400" />
-
-
-										</div>
-
-
-										<div
-											th:if="${#strings.toLowerCase(files.get(cassandraMessage.getId()).getFileName().split('\.')[1]).equals('mp4')}">
-
-											<video width="400" height="400" controls>
-												<source
-													th:src="'/Files/' + ${files.get(cassandraMessage.getId()).getFileName()}"
-													type="video/mp4" />
-											</video>
-
-
-										</div>
-
-										<div
-											th:if="${#strings.toLowerCase(files.get(cassandraMessage.getId()).getFileName().split('\.')[1]).equals('avi')}">
-
-											<video width="400" height="400" controls>
-												<source
-													th:src="'/Files/' + ${files.get(cassandraMessage.getId()).getFileName()}"
-													type="video/x-msvideo" />
-											</video>
-
-
-										</div>
-
-										<div
-											th:if="${#strings.toLowerCase(files.get(cassandraMessage.getId()).getFileName().split('\.')[1]).equals('mkv')}">
-
-											<video width="400" height="400" controls>
-												<source
-													th:src="'/Files/' + ${files.get(cassandraMessage.getId()).getFileName()}"
-													type="video/x-matroska" />
-											</video>
-
-
-										</div>
-
-
-
-										<!--<th:default th:if="${!otherFound}" th:remove="tag">
-											<p>Неподдерживаемый тип файла</p>
-											<th:block th:remove="tag" th:with="otherFound=true"></th:block>
-										</th:default>
-										</th:block>-->
-
-
-
-									</div>
-
-
-									<div class="message__wrapper-bottom d-flex align-items-end justify-content-between">
-
-										<!-- Сообщение -->
-										<p class="message__wrapper-text"
-											th:senderName="${cassandraMessage.getSenderName()}"
-											th:text="${cassandraMessage.getContent()}">
-										</p>
-
-										<!-- Время отправки -->
-										<div class="message__wrapper-bottom-right d-flex align-items-center">
-											<time class="message__time"
-												th:text="${cassandraMessage.getSendTime().format(todayFormat)}">11</time>
-											<span class="message__status"></span>
-										</div>
-
-									</div>
-
-									<span class="message__curve"></span>
-
-								</div>
-
-							</div>
-
+						
 						</div>
 
+						
+						<!-- Сообщения из redis'-->
 						<div id="cachedMessagesContainer">
 
 
 						</div>
-
-						<!-- Для автообновления сообщений (используется в js скрипте) -->
-						<div id="formatDate" th:date="${todayFormat}"></div>
-
-						<script src="/js/messageScripts/CachedMessageAutoUpdateScript.js"></script>
-						<script>		
-							setInterval(updateCachedMessages(), 1000);
-						</script>
 
 					</div>
 				</div>
@@ -982,12 +824,14 @@
 
 
 	<script src="/js/messageScripts/MyAccountModal.js"></script>
+	<script src="/js/messageScripts/UserStatusUpdateScript.js"></script>
 	<script src="/js/messageScripts/SettingsModalWindow.js"></script>
 	<script src="/js/messageScripts/messageScroll.js"></script>
 	<script src="/js/messageScripts/messageContextMenuEdit.js"></script>
 	<script src="/js/messageScripts/messageEditOrDelete.js"></script>
 	<script src="/js/messageScripts/webSocket.js"></script>
-
+	<script src="/js/messageScripts/CachedMessageAutoUpdateScript.js"></script>
+	<script src="/js/messageScripts/CassandraMessageAutoUpdateScript.js"></script>
 	<script src="/js/messageScripts/SideBarModalWindow.js"></script>
 	<script src="/js/chatScripts/ChatDelete.js"></script>
 	<script src="/js/scripts/bootstrap.bundle.min.js"></script>

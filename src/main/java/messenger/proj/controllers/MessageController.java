@@ -73,12 +73,7 @@ public class MessageController {
 								   @PathVariable("chatId") String chatId) 
 								   throws JsonMappingException, JsonProcessingException, IOException {
 		
-		
-		
-		
 		if (!message.getContent().equals("")) {
-			
-			
 			
 			ObjectMapper objectMapper = new ObjectMapper();
 			objectMapper.registerModule(new JavaTimeModule());

@@ -1,19 +1,17 @@
-
-// Функция для обновления данных
-function updateCachedMessages() {
+function updateCassandraMessages() {
 
 	var chatId = $("#userInfoDiv1").attr("data-userid");
 	var todayFormat = $("#formatDate").attr("date");
 	$.ajax({
-		url: '/updateCachedMessages/' + chatId, // URL вашего контроллера
+		url: '/updateCassandraMessages/' + chatId, // URL вашего контроллера
 		type: 'GET',
 		success: function(data) {
 			// Обновление данных на странице
-			$('#cachedMessagesContainer').empty();
+			$('#cassandraMessagesContainer').empty();
 
-			$.each(data, function(index, cachedMessage) {
+			$.each(data, function(index, cassandraMessages) {
 
-				var sendTime = moment(cachedMessage.sendTime);
+				var sendTime = moment(cassandraMessages.sendTime);
 				var formattedTime = sendTime.format('HH:mm');
 
 				// Создание HTML-кода для каждого сообщения
@@ -21,20 +19,20 @@ function updateCachedMessages() {
 
 				// Вставьте ваш код Thymeleaf для отображения сообщения
 				messageHtml += '<div id="divId" class="message-content message__wrapper-box position-relative p-2"';
-				messageHtml += 'th:senderName="' + cachedMessage.senderName + '"';
-				messageHtml += 'th:content="' + cachedMessage.content + '"';
-				messageHtml += 'th:id="' + cachedMessage.id + '"';
-				messageHtml += 'th:sendtime="' + cachedMessage.sendTime + '"';
-				messageHtml += 'th:chatId="' + cachedMessage.chatId + '"';
-				messageHtml += 'th:status="' + cachedMessage.status + '"';
-				messageHtml += 'th:recipientId="' + cachedMessage.recipientId + '"';
-				messageHtml += 'th:senderId="' + cachedMessage.senderId + '">';
+				messageHtml += 'th:senderName="' + cassandraMessages.senderName + '"';
+				messageHtml += 'th:content="' + cassandraMessages.content + '"';
+				messageHtml += 'th:id="' + cassandraMessages.id + '"';
+				messageHtml += 'th:sendtime="' + cassandraMessages.sendTime + '"';
+				messageHtml += 'th:chatId="' + cassandraMessages.chatId + '"';
+				messageHtml += 'th:status="' + cassandraMessages.status + '"';
+				messageHtml += 'th:recipientId="' + cassandraMessages.recipientId + '"';
+				messageHtml += 'th:senderId="' + cassandraMessages.senderId + '">';
 
 				// Вставьте ваш код Thymeleaf для отображения содержимого файла и других деталей сообщения
 				// ...
 
 				messageHtml += '<div class="message__wrapper-top d-flex justify-content-between align-items-center">';
-				messageHtml += '<p class="message__user-name" >' + cachedMessage.senderName + '</p>';
+				messageHtml += '<p class="message__user-name" >' + cassandraMessages.senderName + '</p>';
 				messageHtml += '<span class="message__reply"></span>';
 				messageHtml += '</div>';
 
@@ -46,7 +44,7 @@ function updateCachedMessages() {
 				messageHtml += '</div>';
 
 				messageHtml += '<div class="message__wrapper-bottom d-flex align-items-end justify-content-between">';
-				messageHtml += '<p  th:senderName="${' + cachedMessage.senderName + '}" class="message__wrapper-text">' + cachedMessage.content + '</p>';
+				messageHtml += '<p  th:senderName="${' + cassandraMessages.senderName + '}" class="message__wrapper-text">' + cassandraMessages.content + '</p>';
 				messageHtml += '<div class="message__wrapper-bottom-right d-flex align-items-center">';
 				messageHtml += '<time class="message__time" >' + formattedTime + '</time>';
 				messageHtml += '<span class="message__status"></span>';
@@ -58,7 +56,7 @@ function updateCachedMessages() {
 				messageHtml += '</div>';
 
 				// Добавление HTML-кода в контейнер
-				$('#cachedMessagesContainer').append(messageHtml);
+				$('#cassandraMessagesContainer').append(messageHtml);
 			});
 
 		},
@@ -71,5 +69,5 @@ function updateCachedMessages() {
 $(document).ready(function() {
 	updateCachedMessages();
 
-	setInterval(updateCachedMessages, 1000);
+	setInterval(updateCassandraMessages, 1000);
 });
