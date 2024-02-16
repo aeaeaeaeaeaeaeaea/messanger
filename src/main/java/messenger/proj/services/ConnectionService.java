@@ -30,13 +30,13 @@ public class ConnectionService {
 		this.userServ = userServ;
 		this.redisTemplate = redisTemplate;
 	}
-	
+
 	public String getCurrentUserId() {
 		// Получаем данные о текущем пользователе
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
 		String currentUserId = personDetails.getUser().getId();
-		
+
 		return currentUserId;
 	}
 
@@ -51,11 +51,33 @@ public class ConnectionService {
 		connectionInfo.setOnlineStatus("Online");
 
 		redisTemplate.opsForValue().set("user:" + userId, connectionInfo);
-		
+
 		redisTemplate.expire("user:" + userId, 10, TimeUnit.SECONDS);
 	}
 
-	public void setUserOfline(String userId) {
+	public void userConnection(String userId, ConnectionInfo connectionInfo, String currentPage) {
+		
+		if (connectionInfo != null) {
+			connectionInfo.setCurrentPage(currentPage);
+			redisTemplate.opsForValue().set("user:" + userId, connectionInfo);
+		} else {
+			User user = userServ.findById(userId).get();
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+			ConnectionInfo connectionInfo2 = new ConnectionInfo();
+			connectionInfo2.setUserName(user.getUsername());
+			connectionInfo2.setUserId(userId);
+			connectionInfo2.setLogInTime(LocalDateTime.now().format(formatter).toString());
+			
+			//connectionInfo2.setOnlineStatus("Online");
+			
+			connectionInfo2.setCurrentPage(currentPage);
+			redisTemplate.opsForValue().set("user:" + userId, connectionInfo2);
+		}
+		
+		//redisTemplate.expire("user:" + userId, 10, TimeUnit.SECONDS);
+	}
+
+	public void setUserOffline(String userId) {
 		redisTemplate.delete("user:" + userId);
 	}
 

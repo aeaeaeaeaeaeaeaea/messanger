@@ -68,21 +68,21 @@ public class ChatController {
 	private final ChatRoomService chatRoomServ;
 	private final UserService userServ;
 	private final RedisTemplate<String, message> redisTemplate;
-	private final ConnectionService connectionServ;
+	private final ConnectionService connectionService;
 	private final ElasticSearchQuery elasticSearchQuery;
 	private final MessageRedisService messageRedisService;
 	private final FileService fileService;
 	private final String FILE_SAVE_PATH = "C:\\messanger-main\\messanger-main\\src\\main\\resources\\static\\Files\\";
 
 	@Autowired
-	public ChatController(ConnectionService connectionServ, RedisTemplate<String, message> redisTemplate,
+	public ChatController(ConnectionService connectionService, RedisTemplate<String, message> redisTemplate,
 			MessageRedisService messageRedisService, UserService userServ, ChatRoomService chatRoomServ,
 			MessageService messageServ, ElasticSearchQuery elasticSearchQuery, FileService fileService) {
 
 		this.elasticSearchQuery = elasticSearchQuery;
 		this.fileService = fileService;
 		this.messageRedisService = messageRedisService;
-		this.connectionServ = connectionServ;
+		this.connectionService = connectionService;
 		this.redisTemplate = redisTemplate;
 		this.chatRoomServ = chatRoomServ;
 		this.userServ = userServ;
@@ -108,30 +108,46 @@ public class ChatController {
 	@GetMapping("/chat/{userId}")
 	public String chat(@PathVariable("userId") String userId, Model model, HttpServletRequest request) {
 		
-		System.err.println("URL " + request.getSession().getAttribute("currentMapping"));
+		
+		
 
 		model.addAttribute("chatId", userId);
 
-		String currentUserId = connectionServ.getCurrentUserId();
-
+		String currentUserId = connectionService.getCurrentUserId();
+		
+		
+		
+		System.err.println("CURRENT PAGE TEST " + request.getSession().getAttribute("currentMapping"));
+		connectionService.userConnection(currentUserId, connectionService.getUserConnection(currentUserId), 
+				(String) request.getSession().getAttribute("currentMapping"));
+		
+		
+		
+		
 		// Получаем чат по его Id
 		Optional<ChatRoom> chat = chatRoomServ.findById(userId);
 
-		
-
 		// Редирект на главную страницу, если чат не существует
 		chatRoomServ.reidrectIfChatRoomDontExist(chat, currentUserId);
+		
+		
+		
+		
 		// Читаем сообщения со статусом Unread и устанавливаем для них статус Read
-		messageServ.readMessages(userId, currentUserId, chat.get());
+		messageServ.readMessages(userId, currentUserId, chat.get(), request);
+		
+		
+		
+		
 		// Устанавливаем статус 'Unread' для сообщений и считаем их
 		messageServ.setMessageStatus(chat.get(), userId);
 
 		// Устанавливаем recipientId и senderId для сообщений
 		if (chat.get().getSenderId().equals(currentUserId)) {
 
-			if (connectionServ.getUserConnection(chat.get().getRecipientId()) != null) {
+			if (connectionService.getUserConnection(chat.get().getRecipientId()) != null) {
 				model.addAttribute("connectionInfo",
-						connectionServ.getUserConnection(chat.get().getRecipientId()).getOnlineStatus());
+						connectionService.getUserConnection(chat.get().getRecipientId()).getOnlineStatus());
 			}
 
 			User currentUser = userServ.findById(chat.get().getSenderId()).get();
@@ -147,9 +163,9 @@ public class ChatController {
 
 		} else if (chat.get().getRecipientId().equals(currentUserId)) {
 
-			if (connectionServ.getUserConnection(chat.get().getSenderId()) != null) {
+			if (connectionService.getUserConnection(chat.get().getSenderId()) != null) {
 				model.addAttribute("connectionInfo",
-						connectionServ.getUserConnection(chat.get().getSenderId()).getOnlineStatus());
+						connectionService.getUserConnection(chat.get().getSenderId()).getOnlineStatus());
 			}
 
 			User currentUser = userServ.findById(chat.get().getRecipientId()).get();
@@ -189,8 +205,6 @@ public class ChatController {
 	@PostMapping("/deleteMessage")
 	public String deleteMessage(@RequestParam("messageId") String messageId, @RequestParam("chatId") String chatId,
 			@RequestParam("sendTime") String sendTime) {
-		
-		System.out.println("DELETE TEST");
 		
 		// LocalDateTime нужен потому что, время сообщения входят в составной primary
 		// key (без этого сообщения не сортируются) и без него мы не
@@ -256,9 +270,12 @@ public class ChatController {
 
 	// Страница со всеми чатами
 	@GetMapping("/users")
-	public String users(Model model, @RequestParam(value = "userName", required = false) String userName) {
+	public String users(Model model, @RequestParam(value = "userName", required = false) String userName, HttpServletRequest request) {
 
-		String currentUserId = connectionServ.getCurrentUserId();
+		String currentUserId = connectionService.getCurrentUserId();
+		
+		connectionService.userConnection(currentUserId, connectionService.getUserConnection(currentUserId), 
+				(String) request.getSession().getAttribute("currentMapping"));
 
 		if (userName != null) {
 			try {
@@ -269,7 +286,7 @@ public class ChatController {
 
 		}
 
-		connectionServ.setUserOfline(currentUserId);
+		connectionService.setUserOffline(currentUserId);
 
 		model.addAttribute("todayFormat", new DateTimeFormatterBuilder().appendPattern("HH:mm").toFormatter());
 		model.addAttribute("formatter", new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter());
@@ -325,7 +342,7 @@ public class ChatController {
 	@PostMapping("/avatar")
 	public String avatar(@RequestPart("file") MultipartFile file) {
 
-		String currentUserId = connectionServ.getCurrentUserId();
+		String currentUserId = connectionService.getCurrentUserId();
 
 		User user = userServ.findById(currentUserId).get();
 

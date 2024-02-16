@@ -13,6 +13,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -90,7 +92,7 @@ public class MessageService {
 		}
 	}
 
-	public void readMessages(String chatId, String curentUserId, ChatRoom chat) {
+	public void readMessages(String chatId, String curentUserId, ChatRoom chat, HttpServletRequest request) {
 		
 		boolean flag = false;
 
@@ -105,7 +107,7 @@ public class MessageService {
 		}
 		
 		if (flag) {
-			connectionService.userConnection(curentUserId, new ConnectionInfo());
+			connectionService.userConnection(curentUserId, new ConnectionInfo(), (String) request.getSession().getAttribute("currentMapping"));
 		}
 
 		for (message message : findByChatId(chatId)) {
