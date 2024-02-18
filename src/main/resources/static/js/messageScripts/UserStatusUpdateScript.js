@@ -22,6 +22,6 @@ function updateUserStatus() {
 $(document).ready(function() {
 	updateUserStatus();
 
-	// Запускаем интервал обновления каждые 10 секунд
-	setInterval(updateUserStatus, 10000);
+	
+	setInterval(updateUserStatus, 3000);
 });

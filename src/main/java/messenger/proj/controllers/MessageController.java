@@ -93,7 +93,7 @@ public class MessageController {
 
 			messageServ.save(extractedChatId, message);
 			
-			connectionService.userConnection(senderId, new ConnectionInfo());
+			connectionService.userConnection(senderId, connectionService.getUserConnection(senderId), recipId);
 			System.out.println(connectionService.getUserConnection(recipId));
 
 			messagingTemplate.convertAndSend("/topic/" + extractedChatId, message);

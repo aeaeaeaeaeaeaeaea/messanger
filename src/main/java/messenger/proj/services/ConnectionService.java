@@ -3,10 +3,13 @@ package messenger.proj.services;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.elasticsearch.index.mapper.StringFieldType;
 import org.hibernate.validator.internal.util.privilegedactions.NewInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -40,7 +43,25 @@ public class ConnectionService {
 		return currentUserId;
 	}
 
-	public void userConnection(String userId, ConnectionInfo connectionInfo) {
+	public void userConnection(String userId, ConnectionInfo connectionInfo, String recipientId) {
+
+		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+		ConnectionInfo recipientUserConnectionInfo = getUserConnection(recipientId);
+
+		if (connectionInfo.getCurrentPage().substring(6)
+				.equals(recipientUserConnectionInfo.getCurrentPage().substring(6))) {
+
+			recipientUserConnectionInfo.setOnlineStatus("Online");
+			redisTemplate.opsForValue().set("user:" + recipientId, recipientUserConnectionInfo);
+
+			// Определенный метод, который вы хотите вызвать через 10 секунд
+			Runnable task = () -> recipientUserConnectionInfo.setOnlineStatus(null);
+			Runnable task2 = () -> redisTemplate.opsForValue().set("user:" + recipientId, recipientUserConnectionInfo);
+
+			scheduler.schedule(task, 10, TimeUnit.SECONDS);
+			scheduler.schedule(task2, 11, TimeUnit.SECONDS);
+		}
 
 		User user = userServ.findById(userId).get();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -52,11 +73,16 @@ public class ConnectionService {
 
 		redisTemplate.opsForValue().set("user:" + userId, connectionInfo);
 
-		redisTemplate.expire("user:" + userId, 10, TimeUnit.SECONDS);
+		// Определенный метод, который вы хотите вызвать через 10 секунд
+		Runnable task = () -> connectionInfo.setOnlineStatus(null);
+		Runnable task2 = () -> redisTemplate.opsForValue().set("user:" + userId, connectionInfo);
+
+		scheduler.schedule(task, 10, TimeUnit.SECONDS);
+		scheduler.schedule(task2, 11, TimeUnit.SECONDS);
 	}
 
-	public void userConnection(String userId, ConnectionInfo connectionInfo, String currentPage) {
-		
+	public void setCurrentPageForUserConnection(String userId, ConnectionInfo connectionInfo, String currentPage) {
+
 		if (connectionInfo != null) {
 			connectionInfo.setCurrentPage(currentPage);
 			redisTemplate.opsForValue().set("user:" + userId, connectionInfo);
@@ -67,14 +93,14 @@ public class ConnectionService {
 			connectionInfo2.setUserName(user.getUsername());
 			connectionInfo2.setUserId(userId);
 			connectionInfo2.setLogInTime(LocalDateTime.now().format(formatter).toString());
-			
-			//connectionInfo2.setOnlineStatus("Online");
-			
+
+			// connectionInfo2.setOnlineStatus("Online");
+
 			connectionInfo2.setCurrentPage(currentPage);
 			redisTemplate.opsForValue().set("user:" + userId, connectionInfo2);
 		}
-		
-		//redisTemplate.expire("user:" + userId, 10, TimeUnit.SECONDS);
+
+		// redisTemplate.expire("user:" + userId, 1, TimeUnit.MINUTES);
 	}
 
 	public void setUserOffline(String userId) {

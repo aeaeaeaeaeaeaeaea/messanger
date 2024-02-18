@@ -106,9 +106,11 @@ public class MessageService {
 			
 		}
 		
-		if (flag) {
-			connectionService.userConnection(curentUserId, new ConnectionInfo(), (String) request.getSession().getAttribute("currentMapping"));
-		}
+		/*
+		 * if (flag) { connectionService.userConnection(curentUserId, new
+		 * ConnectionInfo(), (String)
+		 * request.getSession().getAttribute("currentMapping")); }
+		 */
 
 		for (message message : findByChatId(chatId)) {
 			if (message.getStatus().equals("Unread") && message.getRecipientId().equals(curentUserId)) {

@@ -108,36 +108,20 @@ public class ChatController {
 	@GetMapping("/chat/{userId}")
 	public String chat(@PathVariable("userId") String userId, Model model, HttpServletRequest request) {
 		
-		
-		
-
 		model.addAttribute("chatId", userId);
-
 		String currentUserId = connectionService.getCurrentUserId();
 		
-		
-		
-		System.err.println("CURRENT PAGE TEST " + request.getSession().getAttribute("currentMapping"));
-		connectionService.userConnection(currentUserId, connectionService.getUserConnection(currentUserId), 
+		connectionService.setCurrentPageForUserConnection(currentUserId, connectionService.getUserConnection(currentUserId), 
 				(String) request.getSession().getAttribute("currentMapping"));
-		
-		
-		
 		
 		// Получаем чат по его Id
 		Optional<ChatRoom> chat = chatRoomServ.findById(userId);
 
 		// Редирект на главную страницу, если чат не существует
 		chatRoomServ.reidrectIfChatRoomDontExist(chat, currentUserId);
-		
-		
-		
-		
+
 		// Читаем сообщения со статусом Unread и устанавливаем для них статус Read
 		messageServ.readMessages(userId, currentUserId, chat.get(), request);
-		
-		
-		
 		
 		// Устанавливаем статус 'Unread' для сообщений и считаем их
 		messageServ.setMessageStatus(chat.get(), userId);
@@ -274,7 +258,8 @@ public class ChatController {
 
 		String currentUserId = connectionService.getCurrentUserId();
 		
-		connectionService.userConnection(currentUserId, connectionService.getUserConnection(currentUserId), 
+		
+		connectionService.setCurrentPageForUserConnection(currentUserId, connectionService.getUserConnection(currentUserId), 
 				(String) request.getSession().getAttribute("currentMapping"));
 
 		if (userName != null) {
@@ -285,8 +270,9 @@ public class ChatController {
 			}
 
 		}
-
-		connectionService.setUserOffline(currentUserId);
+		
+		//Кринж?
+		//connectionService.setUserOffline(currentUserId);
 
 		model.addAttribute("todayFormat", new DateTimeFormatterBuilder().appendPattern("HH:mm").toFormatter());
 		model.addAttribute("formatter", new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter());
