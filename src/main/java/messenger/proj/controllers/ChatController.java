@@ -295,7 +295,9 @@ public class ChatController {
 			@RequestParam("file") MultipartFile file, @RequestParam("content") String content,
 			@RequestParam("dataSenderId") String dataSenderId, @RequestParam("dataRecipId") String dataRecipId)
 			throws JsonMappingException, JsonProcessingException {
-
+		
+		System.err.println("FILE TEST ");
+		
 		message.setChatId(chatId);
 		message.setSenderId(dataSenderId);
 		message.setRecipientId(dataRecipId);

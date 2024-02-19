@@ -1,5 +1,5 @@
 // Обработка события изменения значения input
-$('#fileInput').change(function() {
+$('#fileAvatarInput').change(function() {
 	// Проверка, что файл выбран
 	if (this.files.length > 0) {
 		// Создание объекта FormData для отправки файла

@@ -49,7 +49,7 @@ public class ConnectionService {
 
 		ConnectionInfo recipientUserConnectionInfo = getUserConnection(recipientId);
 
-		if (connectionInfo.getCurrentPage().substring(6)
+		if (connectionInfo != null && connectionInfo.getCurrentPage().substring(6)
 				.equals(recipientUserConnectionInfo.getCurrentPage().substring(6))) {
 
 			recipientUserConnectionInfo.setOnlineStatus("Online");
@@ -72,16 +72,11 @@ public class ConnectionService {
 		connectionInfo.setOnlineStatus("Online");
 
 		redisTemplate.opsForValue().set("user:" + userId, connectionInfo);
-
-		// Определенный метод, который вы хотите вызвать через 10 секунд
-		Runnable task = () -> connectionInfo.setOnlineStatus(null);
-		Runnable task2 = () -> redisTemplate.opsForValue().set("user:" + userId, connectionInfo);
-
-		scheduler.schedule(task, 10, TimeUnit.SECONDS);
-		scheduler.schedule(task2, 11, TimeUnit.SECONDS);
 	}
 
 	public void setCurrentPageForUserConnection(String userId, ConnectionInfo connectionInfo, String currentPage) {
+		
+		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
 		if (connectionInfo != null) {
 			connectionInfo.setCurrentPage(currentPage);
@@ -94,13 +89,11 @@ public class ConnectionService {
 			connectionInfo2.setUserId(userId);
 			connectionInfo2.setLogInTime(LocalDateTime.now().format(formatter).toString());
 
-			// connectionInfo2.setOnlineStatus("Online");
-
 			connectionInfo2.setCurrentPage(currentPage);
 			redisTemplate.opsForValue().set("user:" + userId, connectionInfo2);
 		}
 
-		// redisTemplate.expire("user:" + userId, 1, TimeUnit.MINUTES);
+		
 	}
 
 	public void setUserOffline(String userId) {

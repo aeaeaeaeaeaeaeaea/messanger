@@ -4,6 +4,8 @@ function updateCachedMessages() {
 
 	var chatId = $("#userInfoDiv1").attr("data-userid");
 	var todayFormat = $("#formatDate").attr("date");
+	var filesList = $("#filesList").attr("files");
+
 	$.ajax({
 		url: '/updateCachedMessages/' + chatId, // URL вашего контроллера
 		type: 'GET',
@@ -12,6 +14,8 @@ function updateCachedMessages() {
 			$('#cachedMessagesContainer').empty();
 
 			$.each(data, function(index, cachedMessage) {
+
+				var filePath = filesList[cachedMessage.id]
 
 				var sendTime = moment(cachedMessage.sendTime);
 				var formattedTime = sendTime.format('HH:mm');
@@ -30,20 +34,21 @@ function updateCachedMessages() {
 				messageHtml += 'th:recipientId="' + cachedMessage.recipientId + '"';
 				messageHtml += 'th:senderId="' + cachedMessage.senderId + '">';
 
-				// Вставьте ваш код Thymeleaf для отображения содержимого файла и других деталей сообщения
-				// ...
+				
 
 				messageHtml += '<div class="message__wrapper-top d-flex justify-content-between align-items-center">';
 				messageHtml += '<p class="message__user-name" >' + cachedMessage.senderName + '</p>';
 				messageHtml += '<span class="message__reply"></span>';
 				messageHtml += '</div>';
 
-				messageHtml += '<div th:if="${files.get(cachedMessage.getId())} != null">';
+				// Ваш остальной код
+				// ...
+
 
 				// Вставьте ваш код Thymeleaf для отображения файлов
 				// ...
 
-				messageHtml += '</div>';
+
 
 				messageHtml += '<div class="message__wrapper-bottom d-flex align-items-end justify-content-between">';
 				messageHtml += '<p  th:senderName="${' + cachedMessage.senderName + '}" class="message__wrapper-text">' + cachedMessage.content + '</p>';

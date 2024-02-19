@@ -17,8 +17,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="/css/styles.css">
 
-	<!-- Подключение jQuery -->
-	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+	
 
 	<!-- Подключение moment.js -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
@@ -439,6 +438,7 @@
 						
 						<!-- Для автообновления сообщений (используется в js скрипте) -->
 						<div id="formatDate" th:date="${todayFormat}"></div>
+						<div id="filesList" th:files="${files}"></div>
 
 						<!-- Сообщения из БД -->
 						<div id="cassandraMessagesContainer" >
@@ -521,11 +521,7 @@
 				</div>
 
 			</div>
-
-
-
 		</div>
-
 	</div>
 
 
@@ -782,7 +778,7 @@
 				<div class="d-flex align-items-center justify-content-between p-2" style="margin-left: 25%;">
 
 					<!-- Скрытый input для выбора файла -->
-					<input type="file" id="fileInput" style="display: none;" />
+					<input type="file" id="fileAvatarInput" style="display: none;" />
 
 					<script src="/js/messageScripts/AvatarScript.js"></script>
 

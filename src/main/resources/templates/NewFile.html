@@ -33,13 +33,10 @@
 
 
 					<!-- Проверка расширения файла для изображений -->
-					<div
-						th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('jpg')}">
+					
 
-						<img th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}" width="400"
-							height="400" />
-
-					</div>
+						
+					
 
 					<div
 						th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('jpeg')}">
