@@ -2,105 +2,109 @@
 <html>
 
 <head>
+	<meta http-equiv="refresh" content="1">
 	<meta charset="UTF-8">
 	<title>Insert title here</title>
 </head>
 
 <body>
 
-	<!-- Кэшированные сообщения -->
-	<div th:each="cachedMessage : ${cachedMessages}">
+	<div th:fragment="test_frag">
+		
+		
+		<!-- Кэшированные сообщения -->
+		<div th:each="cachedMessage : ${cachedMessages}">
 
-		<div class="message__wrapper d-flex align-items-end mb-2 mt-2" style="word-break: break-word;">
+			<div class="message__wrapper d-flex align-items-end mb-2 mt-2" style="word-break: break-word;">
 
-			<!-- Информация о сообщение -->
-			<div class="cachedMessages message-content message__wrapper-box position-relative p-2"
-				th:senderName="${cachedMessage.getSenderName()}" th:content="${cachedMessage.getContent()}"
-				th:id="${cachedMessage.getId()}" th:sendtime="${cachedMessage.getSendTime()}"
-				th:chatId="${cachedMessage.getChatId()}" th:status="${cachedMessage.getStatus()}"
-				th:recipientId="${cachedMessage.getRecipientId()}" th:senderId="${cachedMessage.getSenderId()}">
+				<!-- Информация о сообщение -->
+				<div class="cachedMessages message-content message__wrapper-box position-relative p-2"
+					th:senderName="${cachedMessage.getSenderName()}" th:content="${cachedMessage.getContent()}"
+					th:id="${cachedMessage.getId()}" th:sendtime="${cachedMessage.getSendTime()}"
+					th:chatId="${cachedMessage.getChatId()}" th:status="${cachedMessage.getStatus()}"
+					th:recipientId="${cachedMessage.getRecipientId()}" th:senderId="${cachedMessage.getSenderId()}">
 
-				<!-- Username отправителя сообщение -->
-				<div class="message__wrapper-top d-flex justify-content-between align-items-center">
-					<p class="message__user-name" th:text="${cachedMessage.getSenderName()}">
-						Lifehack</p>
-					<span class="message__reply"></span>
-				</div>
-
-				<!-- Если у сообщения есть файл вывести его тут -->
-				<div th:if="${files.get(cachedMessage.getId())} != null">
-
-
-
-					<!-- Проверка расширения файла для изображений -->
-					
-
-						
-					
-
-					<div
-						th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('jpeg')}">
-						>
-
-						<img th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}" width="400"
-							height="400" />
-
-
+					<!-- Username отправителя сообщение -->
+					<div class="message__wrapper-top d-flex justify-content-between align-items-center">
+						<p class="message__user-name" th:text="${cachedMessage.getSenderName()}">
+							Lifehack</p>
+						<span class="message__reply"></span>
 					</div>
 
-					<div
-						th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('png')}">
-
-						<img th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}" width="400"
-							height="400" />
+					<!-- Если у сообщения есть файл вывести его тут -->
+					<div th:if="${files.get(cachedMessage.getId())} != null">
 
 
-					</div>
 
-					<div
-						th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('gif')}">
-
-						<img th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}" width="400"
-							height="400" />
+						<!-- Проверка расширения файла для изображений -->
 
 
-					</div>
-
-					<!-- Проверка расширения файла для видео -->
-					<div
-						th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('mp4')}">
-
-						<video width="400" height="400" controls>
-							<source th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
-								type="video/mp4" />
-						</video>
 
 
-					</div>
 
-					<div
-						th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('avi')}">
+						<div
+							th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('jpeg')}">
+							>
 
-						<video width="400" height="400" controls>
-							<source th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
-								type="video/x-msvideo" />
-						</video>
+							<img th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}" width="400"
+								height="400" />
 
 
-					</div>
+						</div>
 
-					<div
-						th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('mkv')}">
+						<div
+							th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('png')}">
 
-						<video width="400" height="400" controls>
-							<source th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
-								type="video/x-matroska" />
-						</video>
+							<img th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}" width="400"
+								height="400" />
 
 
-					</div>
+						</div>
 
-					<!-- 
+						<div
+							th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('gif')}">
+
+							<img th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}" width="400"
+								height="400" />
+
+
+						</div>
+
+						<!-- Проверка расширения файла для видео -->
+						<div
+							th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('mp4')}">
+
+							<video width="400" height="400" controls>
+								<source th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
+									type="video/mp4" />
+							</video>
+
+
+						</div>
+
+						<div
+							th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('avi')}">
+
+							<video width="400" height="400" controls>
+								<source th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
+									type="video/x-msvideo" />
+							</video>
+
+
+						</div>
+
+						<div
+							th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split('\.')[1]).equals('mkv')}">
+
+							<video width="400" height="400" controls>
+								<source th:src="'/Files/' + ${files.get(cachedMessage.getId()).getFileName()}"
+									type="video/x-matroska" />
+							</video>
+
+
+						</div>
+
+						<!-- 
 											
 										<th:default th:if="${!otherFound}" th:remove="tag">
 											<p>Неподдерживаемый тип файла</p>
@@ -110,26 +114,29 @@
 										
 										-->
 
-				</div>
-
-				<div class="message__wrapper-bottom d-flex align-items-end justify-content-between">
-
-					<!-- Текст сообщения -->
-					<p th:text="${cachedMessage.getContent()}" th:senderName="${cachedMessage.getSenderName()}"
-						class="message__wrapper-text">
-					</p>
-
-					<!-- Время отправки сообщения -->
-					<div class="message__wrapper-bottom-right d-flex align-items-center">
-						<time class="message__time" th:text="${cachedMessage.getSendTime().format(todayFormat)}"></time>
-						<span class="message__status"></span>
 					</div>
 
-				</div>
-				<span class="message__curve"></span>
+					<div class="message__wrapper-bottom d-flex align-items-end justify-content-between">
 
+						<!-- Текст сообщения -->
+						<p th:text="${cachedMessage.getContent()}" th:senderName="${cachedMessage.getSenderName()}"
+							class="message__wrapper-text">
+						</p>
+
+						<!-- Время отправки сообщения -->
+						<div class="message__wrapper-bottom-right d-flex align-items-center">
+							<time class="message__time"
+								th:text="${cachedMessage.getSendTime().format(todayFormat)}"></time>
+							<span class="message__status"></span>
+						</div>
+
+					</div>
+					<span class="message__curve"></span>
+
+				</div>
 			</div>
 		</div>
+		
 	</div>
 
 </body>

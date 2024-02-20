@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html style="height:100%">
+<html style="height:100%" xmlns:th="http://www.thymeleaf.org">
 
 <head>
 	<meta charset="UTF-8">
@@ -17,7 +17,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="/css/styles.css">
 
-	
+
 
 	<!-- Подключение moment.js -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
@@ -435,23 +435,43 @@
 
 					<!-- Сообщения -->
 					<div class="message">
-						
+
 						<!-- Для автообновления сообщений (используется в js скрипте) -->
 						<div id="formatDate" th:date="${todayFormat}"></div>
 						<div id="filesList" th:files="${files}"></div>
 
 						<!-- Сообщения из БД -->
-						<div id="cassandraMessagesContainer" >
+						<div id="cassandraMessagesContainer">
 
-						
+
 						</div>
 
-						
+
 						<!-- Сообщения из redis'-->
 						<div id="cachedMessagesContainer">
 
 
+							<script>
+								function updateOutput() {
+									$.post("/cachedTest").done(function (fragment) {
+										console.log(fragment);
+										$("#cachedMessagesContainer").replaceWith(fragment);
+									});
+								}
+								$(document).ready(function () {
+									updateOutput();
+
+									setInterval(updateOutput, 1000);
+								});
+
+							</script>
+
 						</div>
+
+
+
+
+
 
 					</div>
 				</div>
@@ -826,8 +846,12 @@
 	<script src="/js/messageScripts/messageContextMenuEdit.js"></script>
 	<script src="/js/messageScripts/messageEditOrDelete.js"></script>
 	<script src="/js/messageScripts/webSocket.js"></script>
+
+	<!--
 	<script src="/js/messageScripts/CachedMessageAutoUpdateScript.js"></script>
 	<script src="/js/messageScripts/CassandraMessageAutoUpdateScript.js"></script>
+	-->
+
 	<script src="/js/messageScripts/SideBarModalWindow.js"></script>
 	<script src="/js/chatScripts/ChatDelete.js"></script>
 	<script src="/js/scripts/bootstrap.bundle.min.js"></script>

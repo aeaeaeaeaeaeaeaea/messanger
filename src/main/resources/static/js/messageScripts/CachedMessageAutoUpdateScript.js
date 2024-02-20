@@ -33,8 +33,29 @@ function updateCachedMessages() {
 				messageHtml += 'th:status="' + cachedMessage.status + '"';
 				messageHtml += 'th:recipientId="' + cachedMessage.recipientId + '"';
 				messageHtml += 'th:senderId="' + cachedMessage.senderId + '">';
-
 				
+				// Вставьте ваш код Thymeleaf для отображения содержимого файла и других деталей сообщения
+				var filesHtml = '<div th:if="${files.get(cachedMessage.getId())} != null">';
+
+				// Проверка расширения файла для изображений
+				filesHtml += '<div th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split(\'\.\')[1]).equals(\'jpg\')}">';
+				filesHtml += '<img th:src="\'/Files/\' + ${files.get(cachedMessage.getId()).getFileName()}" width="400" height="400" />';
+				filesHtml += '</div>';
+
+				filesHtml += '<div th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split(\'\.\')[1]).equals(\'jpeg\')}">';
+				filesHtml += '<img th:src="\'/Files/\' + ${files.get(cachedMessage.getId()).getFileName()}" width="400" height="400" />';
+				filesHtml += '</div>';
+
+				filesHtml += '<div th:if="${#strings.toLowerCase(files.get(cachedMessage.getId()).getFileName().split(\'\.\')[1]).equals(\'png\')}">';
+				filesHtml += '<img th:src="\'/Files/\' + ${files.get(cachedMessage.getId()).getFileName()}" width="400" height="400" />';
+				filesHtml += '</div>';
+
+				// Добавьте обработку других типов файлов, таких как gif, mp4, avi, mkv и другие
+				// ...
+
+				filesHtml += '</div>';
+
+				messageHtml += filesHtml;
 
 				messageHtml += '<div class="message__wrapper-top d-flex justify-content-between align-items-center">';
 				messageHtml += '<p class="message__user-name" >' + cachedMessage.senderName + '</p>';
@@ -43,12 +64,6 @@ function updateCachedMessages() {
 
 				// Ваш остальной код
 				// ...
-
-
-				// Вставьте ваш код Thymeleaf для отображения файлов
-				// ...
-
-
 
 				messageHtml += '<div class="message__wrapper-bottom d-flex align-items-end justify-content-between">';
 				messageHtml += '<p  th:senderName="${' + cachedMessage.senderName + '}" class="message__wrapper-text">' + cachedMessage.content + '</p>';

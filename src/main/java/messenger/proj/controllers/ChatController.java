@@ -92,7 +92,7 @@ public class ChatController {
 	@PostMapping("/chat")
 	public ResponseEntity<String> createChat(@RequestParam(value = "userId", required = false) String userId,
 			@RequestParam(value = "currentUser", required = false) String currentUser) {
-		
+
 		chatRoomServ.save(currentUser, userId);
 
 		Optional<ChatRoom> chat = chatRoomServ.findBySenderIdAndRecipientId(currentUser, userId);
@@ -107,13 +107,14 @@ public class ChatController {
 	// ДЛИНА ПОСЛЕДНЕГО СООБЩЕНИЯ В СПИСКАХ ЧАТОВ (СДЕЛАЮ ПОТОМ)
 	@GetMapping("/chat/{userId}")
 	public String chat(@PathVariable("userId") String userId, Model model, HttpServletRequest request) {
-		
+
 		model.addAttribute("chatId", userId);
 		String currentUserId = connectionService.getCurrentUserId();
-		
-		connectionService.setCurrentPageForUserConnection(currentUserId, connectionService.getUserConnection(currentUserId), 
+
+		connectionService.setCurrentPageForUserConnection(currentUserId,
+				connectionService.getUserConnection(currentUserId),
 				(String) request.getSession().getAttribute("currentMapping"));
-		
+
 		// Получаем чат по его Id
 		Optional<ChatRoom> chat = chatRoomServ.findById(userId);
 
@@ -122,7 +123,7 @@ public class ChatController {
 
 		// Читаем сообщения со статусом Unread и устанавливаем для них статус Read
 		messageServ.readMessages(userId, currentUserId, chat.get(), request);
-		
+
 		// Устанавливаем статус 'Unread' для сообщений и считаем их
 		messageServ.setMessageStatus(chat.get(), userId);
 
@@ -189,7 +190,7 @@ public class ChatController {
 	@PostMapping("/deleteMessage")
 	public String deleteMessage(@RequestParam("messageId") String messageId, @RequestParam("chatId") String chatId,
 			@RequestParam("sendTime") String sendTime) {
-		
+
 		// LocalDateTime нужен потому что, время сообщения входят в составной primary
 		// key (без этого сообщения не сортируются) и без него мы не
 		// сможем удалить сообщение
@@ -208,13 +209,13 @@ public class ChatController {
 			@RequestParam("sendTime") String sendTime, @RequestParam("content") String content,
 			@RequestParam("senderName") String senderName, @RequestParam("status") String status,
 			@RequestParam("senderId") String senderId, @RequestParam("recipientId") String recipientId) {
-		
+
 		// LocalDateTime нужен потому что, время сообщения входят в составной primary
 		// key (без этого сообщения не сортируются) и без него мы не
 		// сможем удалить сообщение
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		LocalDateTime ldt = LocalDateTime.parse(sendTime, formatter);
-		
+
 		// Если сообщения состоит только из пробелов и у него нет файла, то оно
 		// удаляется при редактировании
 		if (content.trim().isEmpty() && !fileService.getFiles().containsKey(messageId)) {
@@ -254,12 +255,13 @@ public class ChatController {
 
 	// Страница со всеми чатами
 	@GetMapping("/users")
-	public String users(Model model, @RequestParam(value = "userName", required = false) String userName, HttpServletRequest request) {
+	public String users(Model model, @RequestParam(value = "userName", required = false) String userName,
+			HttpServletRequest request) {
 
 		String currentUserId = connectionService.getCurrentUserId();
-		
-		
-		connectionService.setCurrentPageForUserConnection(currentUserId, connectionService.getUserConnection(currentUserId), 
+
+		connectionService.setCurrentPageForUserConnection(currentUserId,
+				connectionService.getUserConnection(currentUserId),
 				(String) request.getSession().getAttribute("currentMapping"));
 
 		if (userName != null) {
@@ -270,9 +272,9 @@ public class ChatController {
 			}
 
 		}
-		
-		//Кринж?
-		//connectionService.setUserOffline(currentUserId);
+
+		// Кринж?
+		// connectionService.setUserOffline(currentUserId);
 
 		model.addAttribute("todayFormat", new DateTimeFormatterBuilder().appendPattern("HH:mm").toFormatter());
 		model.addAttribute("formatter", new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter());
@@ -295,9 +297,9 @@ public class ChatController {
 			@RequestParam("file") MultipartFile file, @RequestParam("content") String content,
 			@RequestParam("dataSenderId") String dataSenderId, @RequestParam("dataRecipId") String dataRecipId)
 			throws JsonMappingException, JsonProcessingException {
-		
+
 		System.err.println("FILE TEST ");
-		
+
 		message.setChatId(chatId);
 		message.setSenderId(dataSenderId);
 		message.setRecipientId(dataRecipId);
@@ -352,6 +354,19 @@ public class ChatController {
 		return "redirect:/users";
 	}
 
-	
+	@PostMapping("/cachedTest")
+	public String teString(Model model) {
+		String userId = "0cbbb13e-80d2-4993-a371-fde9a3aaab3c";
+
+		model.addAttribute("todayFormat", new DateTimeFormatterBuilder().appendPattern("HH:mm").toFormatter());
+		model.addAttribute("formatter", new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter());
+		model.addAttribute("todayDate",
+				LocalDateTime.now().format(new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter()));
+		model.addAttribute("cachedMessages", messageServ.getCaсhedMessages(userId));
+		model.addAttribute("cassandraMessages", messageServ.findByChatId(userId));
+
+		model.addAttribute("files", fileService.getFiles());
+		return "NewFile :: test_frag";
+	}
 
 }

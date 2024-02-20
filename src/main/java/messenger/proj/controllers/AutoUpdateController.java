@@ -1,14 +1,19 @@
 package messenger.proj.controllers;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.List;
 import java.util.Optional;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -17,29 +22,39 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import messenger.proj.models.ChatRoom;
 import messenger.proj.models.message;
+import messenger.proj.repositories.ElasticSearchQuery;
 import messenger.proj.services.ChatRoomService;
 import messenger.proj.services.ConnectionService;
+import messenger.proj.services.FileService;
+import messenger.proj.services.MessageRedisService;
 import messenger.proj.services.MessageService;
+import messenger.proj.services.UserService;
 
 @Controller
 public class AutoUpdateController {
 
-	private final ConnectionService connectionService;
-	private final ChatRoomService chatRoomService;
 	private final MessageService messageService;
+	private final ChatRoomService chatRoomService;
+	private final ConnectionService connectionService;
+	private final FileService fileService;
+	private final UserService userService;
 
 	@Autowired
-	public AutoUpdateController(ConnectionService connectionService, MessageService messageService,
-			ChatRoomService chatRoomService) {
+	public AutoUpdateController(ConnectionService connectionService,
+			UserService userService
+			, MessageService messageService,
+			ChatRoomService chatRoomService, FileService fileService) {
+		this.fileService = fileService;
+		this.userService = userService;
 		this.connectionService = connectionService;
 		this.messageService = messageService;
 		this.chatRoomService = chatRoomService;
+
 	}
 
 	@GetMapping("/updateUserStatus/{chatId}")
 	@ResponseBody
 	public String updateUserInfo(@PathVariable("chatId") String userId, Model model) {
-
 
 		String currentUserId = connectionService.getCurrentUserId();
 		Optional<ChatRoom> chat = chatRoomService.findById(userId);
@@ -57,7 +72,6 @@ public class AutoUpdateController {
 			}
 		}
 
-	
 		return jsonObject.toString();
 	}
 
@@ -69,7 +83,7 @@ public class AutoUpdateController {
 		// Возвращаем данные в формате JSON
 		return updatedCassandarMessages;
 	}
-	
+
 	@GetMapping("/updateCachedMessages/{chatId}")
 	@ResponseBody
 	public List<message> updateCachedMessages(@PathVariable("chatId") String chatId) {
@@ -90,11 +104,12 @@ public class AutoUpdateController {
 			// Преобразование списка объектов в JSON
 			jsonResult = objectMapper.writeValueAsString(list);
 
-			
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
 
 		return jsonResult;
 	}
+	
+	
 }
