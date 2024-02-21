@@ -2,6 +2,7 @@ package messenger.proj.models;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.elasticsearch.cluster.metadata.AliasAction.NewAliasValidator;
@@ -115,6 +116,28 @@ public class ChatRoom {
 		this.unreadSenderMessages = unreadSenderMessages;
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, recipientId, recipientName, senderId, senderName, unreadRecipientMessages,
+				unreadSenderMessages);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ChatRoom other = (ChatRoom) obj;
+		return  Objects.equals(recipientId, other.recipientId)
+				&& Objects.equals(recipientName, other.recipientName) && Objects.equals(senderId, other.senderId)
+				&& Objects.equals(senderName, other.senderName);
+	}
+		
+	
+	
 	
 	
 	

@@ -1,6 +1,7 @@
 package messenger.proj.services;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -12,6 +13,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -42,9 +45,9 @@ public class MessageService {
 	private final ConnectionService connectionService;
 
 	@Autowired
-	public MessageService(MessageRepositroy messageRep, ConnectionService connectionService, ChatRoomRepository chatRoomRepository,
-			MessageRedisService messageRedisServ, RedisTemplate<String, message> redisTemplate,
-			RedisTemplate<String, String> redisTemplate1) {
+	public MessageService(MessageRepositroy messageRep, ConnectionService connectionService,
+			ChatRoomRepository chatRoomRepository, MessageRedisService messageRedisServ,
+			RedisTemplate<String, message> redisTemplate, RedisTemplate<String, String> redisTemplate1) {
 		this.messageRep = messageRep;
 		this.connectionService = connectionService;
 		this.chatRoomRepository = chatRoomRepository;
@@ -62,50 +65,47 @@ public class MessageService {
 	}
 
 	@Transactional
-	public void save(String chatId, message message) {
+	public void save(message message) {
 		String id = UUID.randomUUID().toString();
 		message.setId(id);
-		messageRedisServ.cacheMessage(id, chatId, message);
+		message.setSendTime(LocalDateTime.now());
+		messageRedisServ.cacheMessage(id, message.getChatId(), message);
 	}
 
 	public List<message> findByChatId(String chatId) {
-		return messageRep.findByChatId(chatId);
+		return Stream.concat(getCassandraMessages(chatId).stream(), getCaсhedMessages(chatId).stream())
+				.collect(Collectors.toList());
 	}
 
 	@Transactional
-	public void deleteById(String messageId, LocalDateTime localDateTime, String chatId) {
+	public void deleteById(message message) {
 
-		messageRep.deleteByChatId(chatId, localDateTime, messageId);
-
-		redisTemplate.delete("message:" + chatId + ":" + messageId);
-		redisTemplate1.opsForList().remove(chatId, 0, "message:" + chatId + ":" + messageId);
+		messageRep.deleteByChatId(message.getId());
+		redisTemplate.delete("message:" + message.getChatId() + ":" + message.getId());
+		redisTemplate1.opsForList().remove(message.getChatId(), 0,
+				"message:" + message.getChatId() + ":" + message.getId());
 
 	}
-	
-	public void deleteAllMessagesFromChat(String chatId) {
-		for (message m : getCaсhedMessages(chatId)) {
-			deleteById(m.getId(), m.getSendTime(), chatId);
-		}
 
-		for (message m : findByChatId(chatId)) {
-			deleteById(m.getId(), m.getSendTime(), chatId);
-		}
+	public void deleteAllMessagesFromChat(String chatId) {
+		getCaсhedMessages(chatId).forEach(x -> deleteById(x));
+		findByChatId(chatId).forEach(x -> deleteById(x));
 	}
 
 	public void readMessages(String chatId, String curentUserId, ChatRoom chat, HttpServletRequest request) {
-		
+
 		boolean flag = false;
 
 		for (message message : getCaсhedMessages(chatId)) {
 			if (message.getStatus().equals("Unread") && message.getRecipientId().equals(curentUserId)) {
 				message.setStatus("Read");
 				flag = true;
-				edit(message.getId(), message.getContent(), message.getChatId(), message.getSendTime(), 
-					message.getSenderName(), message.getSenderId(), message.getRecipientId(), message.getStatus());
+				edit(message.getId(), message.getContent(), message.getChatId(), message.getSendTime(),
+						message.getSenderName(), message.getSenderId(), message.getRecipientId(), message.getStatus());
 			}
-			
+
 		}
-		
+
 		/*
 		 * if (flag) { connectionService.userConnection(curentUserId, new
 		 * ConnectionInfo(), (String)
@@ -116,24 +116,23 @@ public class MessageService {
 			if (message.getStatus().equals("Unread") && message.getRecipientId().equals(curentUserId)) {
 				message.setStatus("Read");
 				flag = true;
-				edit(message.getId(), message.getContent(), message.getChatId(), message.getSendTime(), 
-					 message.getSenderName(), message.getSenderId(), message.getRecipientId(), message.getStatus());
+				edit(message.getId(), message.getContent(), message.getChatId(), message.getSendTime(),
+						message.getSenderName(), message.getSenderId(), message.getRecipientId(), message.getStatus());
 			}
 		}
 
 		chat.setUnreadRecipientMessages(0);
 		chat.setUnreadSenderMessages(0);
 		chatRoomRepository.save(chat);
-		
-		
-		
+
 	}
 
 	// Метод, который считает сообщения со статусом 'Unread'
 	public void setMessageStatus(ChatRoom chat, String chatId) {
 
 		for (message message : messageRedisServ.getLatestMessages(chatId)) {
-			if (message != null && message.getStatus().equals("Unread") && message.getSenderId().equals(chat.getSenderId())) {
+			if (message != null && message.getStatus().equals("Unread")
+					&& message.getSenderId().equals(chat.getSenderId())) {
 				// Увеличиваем счетчик для unreadRecipientMessages
 				chat.setUnreadRecipientMessages(chat.getUnreadRecipientMessages() + 1);
 				chatRoomRepository.save(chat);
@@ -145,7 +144,8 @@ public class MessageService {
 		}
 
 		for (message message : findByChatId(chatId)) {
-			if (message != null && message.getStatus().equals("Unread") && message.getSenderId().equals(chat.getSenderId())) {
+			if (message != null && message.getStatus().equals("Unread")
+					&& message.getSenderId().equals(chat.getSenderId())) {
 				// Увеличиваем счетчик для unreadRecipientMessages
 				chat.setUnreadRecipientMessages(chat.getUnreadRecipientMessages() + 1);
 				chatRoomRepository.save(chat);
@@ -159,12 +159,9 @@ public class MessageService {
 	}
 
 	@Transactional
-	public void edit(String messageId, String content, 
-					 String chatId, LocalDateTime ldt, 
-					 String senderName, String senderId,
-					 String recipientId, String status
-					 ) {
-		
+	public void edit(String messageId, String content, String chatId, LocalDateTime ldt, String senderName,
+			String senderId, String recipientId, String status) {
+
 		message message = new message();
 
 		message.setId(messageId);
@@ -175,8 +172,7 @@ public class MessageService {
 		message.setSenderId(senderId);
 		message.setRecipientId(recipientId);
 		message.setStatus(status);
-		
-		
+
 		List<message> messages = getCaсhedMessages(message.getChatId());
 
 		if (messages.contains(message)) {

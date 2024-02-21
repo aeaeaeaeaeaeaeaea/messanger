@@ -58,51 +58,8 @@ public class UserService {
 		return userRep.findById(id);
 	}
 
-	public String getCurrentUserAvatar(User currentUser) {
+	
 
-		ByteBuffer currentUserimageByteBuffer = currentUser.getAvatar();
-		String currentUserAvatar = "";
-		
-		if (currentUserimageByteBuffer != null) {
-
-			ByteBuffer currentUserduplicateBuffer = currentUserimageByteBuffer.duplicate();
-			// Преобразуем ByteBuffer в массив байт
-			byte[] imageBytes = new byte[currentUserduplicateBuffer.remaining()];
-			currentUserduplicateBuffer.get(imageBytes);
-
-			// Кодируем массив байт в строку Base64
-			currentUserAvatar = Base64.getEncoder().encodeToString(imageBytes);
-
-			// Передаем строку Base64 в представление через modal.addAttribute
-
-		}
-		
-		return currentUserAvatar;
-
-	}
-
-	public String getRecipientUserAvatar(User recipientUser) {
-
-		ByteBuffer recipientUserimageByteBuffer = recipientUser.getAvatar();
-		String recipientUserAvatar = "";
-		
-		
-		if (recipientUserimageByteBuffer != null) {
-
-			ByteBuffer recipientUserduplicateBuffer = recipientUserimageByteBuffer.duplicate();
-			// Преобразуем ByteBuffer в массив байт
-			byte[] imageBytes = new byte[recipientUserduplicateBuffer.remaining()];
-			recipientUserduplicateBuffer.get(imageBytes);
-
-			// Кодируем массив байт в строку Base64
-			recipientUserAvatar = Base64.getEncoder().encodeToString(imageBytes);
-
-			// Передаем строку Base64 в представление через modal.addAttribute
-
-		}
-		
-		return recipientUserAvatar;
-
-	}
+	
 
 }

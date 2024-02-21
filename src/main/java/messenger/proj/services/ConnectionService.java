@@ -74,22 +74,25 @@ public class ConnectionService {
 		redisTemplate.opsForValue().set("user:" + userId, connectionInfo);
 	}
 
-	public void setCurrentPageForUserConnection(String userId, ConnectionInfo connectionInfo, String currentPage) {
+	public void setCurrentPage(String userId, ConnectionInfo connectionInfo, String currentPage) {
 		
-		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-
+		
 		if (connectionInfo != null) {
+			
 			connectionInfo.setCurrentPage(currentPage);
 			redisTemplate.opsForValue().set("user:" + userId, connectionInfo);
+			
 		} else {
 			User user = userServ.findById(userId).get();
+			
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 			ConnectionInfo connectionInfo2 = new ConnectionInfo();
+			
 			connectionInfo2.setUserName(user.getUsername());
 			connectionInfo2.setUserId(userId);
 			connectionInfo2.setLogInTime(LocalDateTime.now().format(formatter).toString());
-
 			connectionInfo2.setCurrentPage(currentPage);
+			
 			redisTemplate.opsForValue().set("user:" + userId, connectionInfo2);
 		}
 

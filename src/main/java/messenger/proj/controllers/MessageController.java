@@ -1,33 +1,14 @@
 package messenger.proj.controllers;
 
-import java.io.IOException;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -49,55 +30,37 @@ import messenger.proj.services.ConnectionService;
 import messenger.proj.services.MessageService;
 import messenger.proj.services.UserService;
 
-@Controller
+@RestController
+@RequestMapping("/message")
 public class MessageController {
 
-	private SimpMessagingTemplate messagingTemplate;
+
 	private MessageService messageServ;
 	private ChatRoomService chatRoomServ;
 	private UserService userServ;
 	private ConnectionService connectionService;
 
 	@Autowired
-	public MessageController(UserService userServ, ConnectionService connectionService, SimpMessagingTemplate messagingTemplate, MessageService messageServ,
+	public MessageController(UserService userServ, ConnectionService connectionService, MessageService messageServ,
 			ChatRoomService chatRoomServ) {
 		this.userServ = userServ;
 		this.connectionService = connectionService;
-		this.messagingTemplate = messagingTemplate;
+		
 		this.messageServ = messageServ;
 		this.chatRoomServ = chatRoomServ;
 	}
 
-	@MessageMapping("/chat/{chatId}/sendMessage")
-	@SendTo("/topic/{chatId}")
-	public void processChatMessage(@Payload message message, 
-								   @PathVariable("chatId") String chatId) 
-								   throws JsonMappingException, JsonProcessingException, IOException {
+	@PostMapping("/chat/{chatId}/sendMessage")
+	public ResponseEntity<String> processChatMessage(@RequestBody message message) {
 		
 		if (!message.getContent().equals("")) {
 			
-			ObjectMapper objectMapper = new ObjectMapper();
-			objectMapper.registerModule(new JavaTimeModule());
-
-			JsonNode jsonNode = objectMapper.readTree(chatId);
-			String extractedChatId = jsonNode.get("chatId").asText();
-			String senderId = jsonNode.get("dataSenderId").asText();
-			String recipId = jsonNode.get("dataRecipId").asText();
-
-			message.setChatId(extractedChatId);
-			message.setSenderId(senderId);
-			message.setRecipientId(recipId);
-			message.setSendTime(LocalDateTime.now());
-			message.setStatus("Unread");
-			message.setSenderName(userServ.findById(senderId).get().getUsername());
-
-			messageServ.save(extractedChatId, message);
+			messageServ.save(message);
 			
-			connectionService.userConnection(senderId, connectionService.getUserConnection(senderId), recipId);
-			System.out.println(connectionService.getUserConnection(recipId));
-
-			messagingTemplate.convertAndSend("/topic/" + extractedChatId, message);
+			//connectionService.userConnection(senderId, connectionService.getUserConnection(senderId), recipId);
 		}
+		
+		return ResponseEntity.ok("Message has been sent");
 
 	}
 
