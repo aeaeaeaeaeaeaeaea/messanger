@@ -180,8 +180,8 @@ public class message {
 		message other = (message) obj;
 		
 		return  Objects.equals(chatId, other.chatId) 
-				&& Objects.equals(id, other.id) 
-				&& Objects.equals(sendTime, other.sendTime);
+				&& Objects.equals(id, other.id);
+				
 	}
 	
 	

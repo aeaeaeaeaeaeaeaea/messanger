@@ -14,8 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -109,9 +111,6 @@ public class ChatController {
 		/*
 		 * // Получаем чат по его Id Optional<ChatRoom> chat =
 		 * chatRoomServ.findById(chatId);
-		 * 
-		 * 
-		 * 
 		 * // Читаем сообщения со статусом Unread и устанавливаем для них статус Read
 		 * messageServ.readMessages(chatId, currentUserId, chat.get(), request);
 		 * 
@@ -125,41 +124,32 @@ public class ChatController {
 	// Удаления сообщений
 	@DeleteMapping("/deleteMessage")
 	public ResponseEntity<String> deleteMessage(@RequestBody message message) {
-		
-		System.err.println("TEST");
-
 		// Удаляем сообщения по ID
 		messageServ.deleteById(message);
-
-		return ResponseEntity.ok("Message was deleted");
+		return ResponseEntity.ok("The message has been deleted");
 	}
 
-	// Редактируем сообещения
-	@DeleteMapping("/editMessage")
-	public String editMessage(@RequestParam("messageId") String messageId, @RequestParam("chatId") String chatId,
-			@RequestParam("sendTime") String sendTime, @RequestParam("content") String content,
-			@RequestParam("senderName") String senderName, @RequestParam("status") String status,
-			@RequestParam("senderId") String senderId, @RequestParam("recipientId") String recipientId) {
+	// Редактируем сообщение
+	@PatchMapping("/editMessage")
+	public ResponseEntity<String> editMessage(@RequestBody message message) {
 
-		/*
-		 * // LocalDateTime нужен потому что, время сообщения входят в составной primary
-		 * // key (без этого сообщения не сортируются) и без него мы не // сможем
-		 * удалить сообщение DateTimeFormatter formatter =
-		 * DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"); LocalDateTime ldt =
-		 * LocalDateTime.parse(sendTime, formatter);
-		 * 
+		
+		 System.err.println("TEST 1");
+		 /* 
 		 * // Если сообщения состоит только из пробелов и у него нет файла, то оно //
-		 * удаляется при редактировании if (content.trim().isEmpty() &&
+		 * удаляется при редактировании 
+		 * if (content.trim().isEmpty() &&
 		 * !fileService.getFiles().containsKey(messageId)) { // Удаляем сообщение по ID
 		 * messageServ.deleteById(messageId, ldt, chatId);
 		 * 
 		 * }
 		 * 
-		 * // Редактируем сообщение messageServ.edit(messageId, content, chatId, ldt,
-		 * senderName, senderId, recipientId, status);
+		 * // Редактируем сообщение 
 		 */
+		
+		messageServ.edit(message);
 
-		return "";
+		return ResponseEntity.ok("The message has been edited!");
 	}
 
 	/*

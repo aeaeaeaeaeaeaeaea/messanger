@@ -80,7 +80,7 @@ public class MessageService {
 	@Transactional
 	public void deleteById(message message) {
 
-		messageRep.deleteByChatId(message.getId());
+		messageRep.deleteById(message.getId());
 		redisTemplate.delete("message:" + message.getChatId() + ":" + message.getId());
 		redisTemplate1.opsForList().remove(message.getChatId(), 0,
 				"message:" + message.getChatId() + ":" + message.getId());
@@ -100,9 +100,13 @@ public class MessageService {
 			if (message.getStatus().equals("Unread") && message.getRecipientId().equals(curentUserId)) {
 				message.setStatus("Read");
 				flag = true;
-				edit(message.getId(), message.getContent(), message.getChatId(), message.getSendTime(),
-						message.getSenderName(), message.getSenderId(), message.getRecipientId(), message.getStatus());
-			}
+				
+				/*
+				 * edit(message.getId(), message.getContent(), message.getChatId(),
+				 * message.getSendTime(), message.getSenderName(), message.getSenderId(),
+				 * message.getRecipientId(), message.getStatus());
+				 */
+				}
 
 		}
 
@@ -116,9 +120,13 @@ public class MessageService {
 			if (message.getStatus().equals("Unread") && message.getRecipientId().equals(curentUserId)) {
 				message.setStatus("Read");
 				flag = true;
-				edit(message.getId(), message.getContent(), message.getChatId(), message.getSendTime(),
-						message.getSenderName(), message.getSenderId(), message.getRecipientId(), message.getStatus());
-			}
+				
+				/*
+				 * edit(message.getId(), message.getContent(), message.getChatId(),
+				 * message.getSendTime(), message.getSenderName(), message.getSenderId(),
+				 * message.getRecipientId(), message.getStatus());
+				 */
+				}
 		}
 
 		chat.setUnreadRecipientMessages(0);
@@ -159,25 +167,19 @@ public class MessageService {
 	}
 
 	@Transactional
-	public void edit(String messageId, String content, String chatId, LocalDateTime ldt, String senderName,
-			String senderId, String recipientId, String status) {
-
-		message message = new message();
-
-		message.setId(messageId);
-		message.setContent(content);
-		message.setChatId(chatId);
-		message.setSendTime(ldt);
-		message.setSenderName(senderName);
-		message.setSenderId(senderId);
-		message.setRecipientId(recipientId);
-		message.setStatus(status);
-
+	public void edit(message message) {
+		
+		System.err.println("TEST 2 " + message);
+		
 		List<message> messages = getCaсhedMessages(message.getChatId());
+		
+		System.out.println("MESSAGES " + messages);
 
 		if (messages.contains(message)) {
-			redisTemplate.opsForValue().set("message:" + message.getChatId() + ":" + messageId, message);
+			System.err.println("TEST 3");
+			redisTemplate.opsForValue().set("message:" + message.getChatId() + ":" + message.getId(), message);
 		} else {
+			System.err.println("TEST 4");
 			messageRep.save(message);
 		}
 
