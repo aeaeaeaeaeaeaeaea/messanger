@@ -73,6 +73,7 @@ public class MessageService {
 	}
 
 	public List<message> findByChatId(String chatId) {
+		
 		return Stream.concat(getCassandraMessages(chatId).stream(), getCaсhedMessages(chatId).stream())
 				.collect(Collectors.toList());
 	}
@@ -168,21 +169,12 @@ public class MessageService {
 
 	@Transactional
 	public void edit(message message) {
-		
-		System.err.println("TEST 2 " + message);
-		
 		List<message> messages = getCaсhedMessages(message.getChatId());
-		
-		System.out.println("MESSAGES " + messages);
-
 		if (messages.contains(message)) {
-			System.err.println("TEST 3");
 			redisTemplate.opsForValue().set("message:" + message.getChatId() + ":" + message.getId(), message);
 		} else {
-			System.err.println("TEST 4");
 			messageRep.save(message);
 		}
-
 	}
 
 	public List<message> getCaсhedMessages(String chatId) {

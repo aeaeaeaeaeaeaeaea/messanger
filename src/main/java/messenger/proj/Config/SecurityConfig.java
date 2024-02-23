@@ -1,4 +1,4 @@
-package messenger.proj.config;
+package messenger.proj.Config;
 
 
 import org.springframework.beans.factory.annotation.Autowired;

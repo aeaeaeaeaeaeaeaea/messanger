@@ -95,8 +95,6 @@ public class ConnectionService {
 			
 			redisTemplate.opsForValue().set("user:" + userId, connectionInfo2);
 		}
-
-		
 	}
 
 	public void setUserOffline(String userId) {

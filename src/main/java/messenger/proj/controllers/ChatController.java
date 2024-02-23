@@ -40,9 +40,9 @@ import messenger.proj.services.UserService;
 @RequestMapping("/k")
 public class ChatController {
 
-	private final MessageService messageServ;
-	private final ChatRoomService chatRoomServ;
-	private final UserService userServ;
+	private final MessageService messageService;
+	private final ChatRoomService chatRoomService;
+	private final UserService userService;
 	private final RedisTemplate<String, message> redisTemplate;
 	private final ConnectionService connectionService;
 	private final ElasticSearchQuery elasticSearchQuery;
@@ -51,17 +51,17 @@ public class ChatController {
 
 	@Autowired
 	public ChatController(ConnectionService connectionService, RedisTemplate<String, message> redisTemplate,
-			MessageRedisService messageRedisService, UserService userServ, ChatRoomService chatRoomServ,
-			MessageService messageServ, ElasticSearchQuery elasticSearchQuery, FileService fileService) {
+			MessageRedisService messageRedisService, UserService userService, ChatRoomService chatRoomService,
+			MessageService messageService, ElasticSearchQuery elasticSearchQuery, FileService fileService) {
 
 		this.elasticSearchQuery = elasticSearchQuery;
 		this.fileService = fileService;
 		this.messageRedisService = messageRedisService;
 		this.connectionService = connectionService;
 		this.redisTemplate = redisTemplate;
-		this.chatRoomServ = chatRoomServ;
-		this.userServ = userServ;
-		this.messageServ = messageServ;
+		this.chatRoomService = chatRoomService;
+		this.userService = userService;
+		this.messageService = messageService;
 	}
 
 	// Страница со всеми чатами
@@ -72,13 +72,13 @@ public class ChatController {
 		connectionService.setCurrentPage(currentUserId, connectionService.getUserConnection(currentUserId),
 				(String) request.getSession().getAttribute("currentMapping"));
 
-		return chatRoomServ.findUsersChats(currentUserId);
+		return chatRoomService.findUsersChats(currentUserId);
 	}
 
 	// Создание нового чата
 	@PostMapping("/createChat")
 	public ResponseEntity<String> createChat(@RequestBody ChatRoom chatRoom) {
-		chatRoomServ.save(chatRoom);
+		chatRoomService.save(chatRoom);
 		return ResponseEntity.ok("Chat was created!");
 	}
 
@@ -86,9 +86,9 @@ public class ChatController {
 	@DeleteMapping("/deleteChat/{chatId}")
 	public ResponseEntity<String> deleteChat(@PathVariable("chatId") String chatId) {
 		// Удаляем все сообщения из чата
-		messageServ.deleteAllMessagesFromChat(chatId);
+		messageService.deleteAllMessagesFromChat(chatId);
 		// Удаляем чат
-		chatRoomServ.deleteById(chatId);
+		chatRoomService.deleteById(chatId);
 		return ResponseEntity.ok("Chat was deleted!");
 	}
 
@@ -96,7 +96,7 @@ public class ChatController {
 	@DeleteMapping("/deleteChatMessage/{chatId}")
 	public ResponseEntity<String> deleteChatMessages(@PathVariable("chatId") String chatId) {
 		// Удаляем все сообщения из чата
-		messageServ.deleteAllMessagesFromChat(chatId);
+		messageService.deleteAllMessagesFromChat(chatId);
 		return ResponseEntity.ok("Chat messages were deleted!");
 	}
 
@@ -118,23 +118,20 @@ public class ChatController {
 		 * messageServ.setMessageStatus(chat.get(), chatId);
 		 */
 
-		return messageServ.findByChatId(chatId);
+		return messageService.findByChatId(chatId);
 	}
 
 	// Удаления сообщений
 	@DeleteMapping("/deleteMessage")
 	public ResponseEntity<String> deleteMessage(@RequestBody message message) {
 		// Удаляем сообщения по ID
-		messageServ.deleteById(message);
+		messageService.deleteById(message);
 		return ResponseEntity.ok("The message has been deleted");
 	}
 
 	// Редактируем сообщение
 	@PatchMapping("/editMessage")
 	public ResponseEntity<String> editMessage(@RequestBody message message) {
-
-		
-		 System.err.println("TEST 1");
 		 /* 
 		 * // Если сообщения состоит только из пробелов и у него нет файла, то оно //
 		 * удаляется при редактировании 
@@ -144,11 +141,16 @@ public class ChatController {
 		 * 
 		 * }
 		 * 
-		 * // Редактируем сообщение 
+		 * 
 		 */
 		
-		messageServ.edit(message);
-
+		// Если сообщения состоит только из пробелов, то оно удаляется при редактировании 
+		if (message.getContent().trim().isEmpty()) {
+			messageService.deleteById(message);
+			return ResponseEntity.ok("The message has been deleted because it was empty");
+		}
+		
+		messageService.edit(message);
 		return ResponseEntity.ok("The message has been edited!");
 	}
 
