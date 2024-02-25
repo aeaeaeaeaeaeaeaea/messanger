@@ -14,7 +14,7 @@ import messenger.proj.models.message;
 @Repository
 public interface MessageRepositroy extends CassandraRepository<message, String> {
 
-	@Query("SELECT * FROM message WHERE chatId = ?0 ORDER BY sendtime")
+	@Query("SELECT * FROM testmessages WHERE chatId = ?0 ALLOW FILTERING")
 	List<message> findByChatId(String chatId);
 	
 	/*

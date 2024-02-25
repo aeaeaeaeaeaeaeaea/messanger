@@ -1,6 +1,5 @@
 package messenger.proj.services;
 
-
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.Optional;
@@ -11,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import messenger.proj.models.ChatRoom;
-
+import messenger.proj.models.message;
 import messenger.proj.repositories.ChatRoomRepository;
 
 import java.util.HashMap;
@@ -22,39 +21,39 @@ import java.util.Map;
 @Transactional(readOnly = true)
 public class ChatRoomService {
 
-	private final ChatRoomRepository chatRoomRep;
+	private final ChatRoomRepository chatRoomRepository;
 	private final UserService userService;
-	private final MessageService messageServ;
 
+	
 	@Autowired
-	public ChatRoomService(MessageService messageServ, UserService userService, ChatRoomRepository chatRoomRep) {
-		this.chatRoomRep = chatRoomRep;
-		this.messageServ = messageServ;
+	public ChatRoomService(UserService userService, ChatRoomRepository chatRoomRepository) {
+		this.chatRoomRepository = chatRoomRepository;
 		this.userService = userService;
+	}
+	
+	@Transactional
+	public void edit(ChatRoom chatRoom) {
+		chatRoomRepository.save(chatRoom);
 	}
 
 	public Optional<ChatRoom> findById(String chatId) {
-		return chatRoomRep.findById(chatId);
+		return chatRoomRepository.findById(chatId);
 	}
 
 	@Transactional
 	public void save(ChatRoom chatRoom) {
 		if (!findAll().contains(chatRoom)) {
 			chatRoom.setId(UUID.randomUUID().toString());
-			chatRoomRep.save(chatRoom);
+			chatRoomRepository.save(chatRoom);
 		}
 	}
 
 	public Optional<ChatRoom> findBySenderIdAndRecipientId(String senderId, String recipientId) {
-		Optional<ChatRoom> chatRoom = chatRoomRep.findBySenderIdAndRecipientId(senderId, recipientId);
+		Optional<ChatRoom> chatRoom = chatRoomRepository.findBySenderIdAndRecipientId(senderId, recipientId);
 		return chatRoom;
 	}
 
-	public void readUnreadMessages(ChatRoom chat) {
-		chat.setUnreadRecipientMessages(0);
-		chat.setUnreadSenderMessages(0);
-		chatRoomRep.save(chat);
-	}
+	
 
 	/*
 	 * public List<ChatRoom> lastMessageOrder(String curentUserId) {
@@ -78,8 +77,8 @@ public class ChatRoomService {
 
 	public Map<String, ChatRoom> findAllHashMap(String userId) {
 
-		List<ChatRoom> listOne = chatRoomRep.findBySenderId(userId);
-		List<ChatRoom> listTwo = chatRoomRep.findByRecipientId(userId);
+		List<ChatRoom> listOne = chatRoomRepository.findBySenderId(userId);
+		List<ChatRoom> listTwo = chatRoomRepository.findByRecipientId(userId);
 
 		List<ChatRoom> newList = Stream.concat(listOne.stream(), listTwo.stream()).toList();
 
@@ -93,17 +92,57 @@ public class ChatRoomService {
 	}
 
 	public List<ChatRoom> findUsersChats(String userId) {
-		return Stream.concat(chatRoomRep.findBySenderId(userId).stream(), 
-				chatRoomRep.findByRecipientId(userId).stream()).collect(Collectors.toList());
+		return Stream
+				.concat(chatRoomRepository.findBySenderId(userId).stream(), chatRoomRepository.findByRecipientId(userId).stream())
+				.collect(Collectors.toList());
 	}
 
 	public List<ChatRoom> findAll() {
-		return chatRoomRep.findAll();
+		return chatRoomRepository.findAll();
 	}
 
 	@Transactional
 	public void deleteById(String chatId) {
-		chatRoomRep.deleteById(chatId);
+		chatRoomRepository.deleteById(chatId);
 	}
+
+	/*
+	 * // Метод, который считает сообщения со статусом 'Unread' public void
+	 * countUnreadMessages(String chatId) {
+	 * 
+	 * Optional<ChatRoom> chat = findById(chatId);
+	 * 
+	 * if (chat.isPresent()) {
+	 * 
+	 * for (message message : messageService.getCaсhedMessages(chatId)) {
+	 * 
+	 * 
+	 * 
+	 * }
+	 * 
+	 * for (message message : messageService.getCassandraMessages(chatId)) {
+	 * 
+	 * if (message != null && message.getStatus().equals("Unread") &&
+	 * message.getSenderId().equals(chat.get().getSenderId())) {
+	 * 
+	 * // Увеличиваем счетчик для unreadRecipientMessages
+	 * chat.get().setUnreadRecipientMessages(chat.get().getUnreadRecipientMessages()
+	 * + 1); save(chat.get());
+	 * 
+	 * } else if (message.getStatus().equals("Unread") &&
+	 * message.getRecipientId().equals(chat.get().getSenderId())) {
+	 * 
+	 * // Увеличиваем счетчик для unreadSenderMessages
+	 * chat.get().setUnreadSenderMessages(chat.get().getUnreadSenderMessages() + 1);
+	 * save(chat.get());
+	 * 
+	 * }
+	 * 
+	 * }
+	 * 
+	 * }
+	 * 
+	 * }
+	 */
 
 }

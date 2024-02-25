@@ -41,16 +41,17 @@ public class MessageService {
 	private final MessageRedisService messageRedisServ;
 	private final RedisTemplate<String, message> redisTemplate;
 	private final RedisTemplate<String, String> redisTemplate1;
-	private final ChatRoomRepository chatRoomRepository;
 	private final ConnectionService connectionService;
+	private final ChatRoomService chatRoomService;
 
 	@Autowired
-	public MessageService(MessageRepositroy messageRep, ConnectionService connectionService,
-			ChatRoomRepository chatRoomRepository, MessageRedisService messageRedisServ,
+	public MessageService(MessageRepositroy messageRep, ChatRoomService chatRoomService,
+			ConnectionService connectionService, MessageRedisService messageRedisServ,
 			RedisTemplate<String, message> redisTemplate, RedisTemplate<String, String> redisTemplate1) {
+
+		this.chatRoomService = chatRoomService;
 		this.messageRep = messageRep;
 		this.connectionService = connectionService;
-		this.chatRoomRepository = chatRoomRepository;
 		this.redisTemplate1 = redisTemplate1;
 		this.redisTemplate = redisTemplate;
 		this.messageRedisServ = messageRedisServ;
@@ -66,14 +67,37 @@ public class MessageService {
 
 	@Transactional
 	public void save(message message) {
+		
 		String id = UUID.randomUUID().toString();
 		message.setId(id);
 		message.setSendTime(LocalDateTime.now());
 		messageRedisServ.cacheMessage(id, message.getChatId(), message);
+
+		Optional<ChatRoom> chat = chatRoomService.findById(message.getChatId());
+		
+		if (chat.isPresent()) {
+
+			if (message != null && message.getStatus().equals("Unread")
+					&& message.getSenderId().equals(chat.get().getSenderId())) {
+				
+				// Увеличиваем счетчик для unreadRecipientMessages
+				chat.get().setUnreadRecipientMessages(chat.get().getUnreadRecipientMessages() + 1);
+				chatRoomService.edit(chat.get());
+
+			} else if (message.getStatus().equals("Unread")
+					&& message.getRecipientId().equals(chat.get().getSenderId())) {
+				
+				// Увеличиваем счетчик для unreadSenderMessages
+				chat.get().setUnreadSenderMessages(chat.get().getUnreadSenderMessages() + 1);
+				chatRoomService.edit(chat.get());
+
+			}
+
+		}
+
 	}
 
 	public List<message> findByChatId(String chatId) {
-		
 		return Stream.concat(getCassandraMessages(chatId).stream(), getCaсhedMessages(chatId).stream())
 				.collect(Collectors.toList());
 	}
@@ -89,83 +113,62 @@ public class MessageService {
 	}
 
 	public void deleteAllMessagesFromChat(String chatId) {
-		getCaсhedMessages(chatId).forEach(x -> deleteById(x));
 		findByChatId(chatId).forEach(x -> deleteById(x));
+		getCaсhedMessages(chatId).forEach(x -> deleteById(x));
+		
+		Optional<ChatRoom> chat = chatRoomService.findById(chatId);
+		
+		if (chat.isPresent()) {
+			chat.get().setUnreadRecipientMessages(0);
+			chat.get().setUnreadSenderMessages(0);
+			chatRoomService.edit(chat.get());
+		}
+		
 	}
 
-	public void readMessages(String chatId, String curentUserId, ChatRoom chat, HttpServletRequest request) {
-
-		boolean flag = false;
-
-		for (message message : getCaсhedMessages(chatId)) {
-			if (message.getStatus().equals("Unread") && message.getRecipientId().equals(curentUserId)) {
-				message.setStatus("Read");
-				flag = true;
-				
-				/*
-				 * edit(message.getId(), message.getContent(), message.getChatId(),
-				 * message.getSendTime(), message.getSenderName(), message.getSenderId(),
-				 * message.getRecipientId(), message.getStatus());
-				 */
-				}
-
-		}
-
-		/*
-		 * if (flag) { connectionService.userConnection(curentUserId, new
-		 * ConnectionInfo(), (String)
-		 * request.getSession().getAttribute("currentMapping")); }
-		 */
-
-		for (message message : findByChatId(chatId)) {
-			if (message.getStatus().equals("Unread") && message.getRecipientId().equals(curentUserId)) {
-				message.setStatus("Read");
-				flag = true;
-				
-				/*
-				 * edit(message.getId(), message.getContent(), message.getChatId(),
-				 * message.getSendTime(), message.getSenderName(), message.getSenderId(),
-				 * message.getRecipientId(), message.getStatus());
-				 */
-				}
-		}
-
-		chat.setUnreadRecipientMessages(0);
-		chat.setUnreadSenderMessages(0);
-		chatRoomRepository.save(chat);
-
-	}
-
-	// Метод, который считает сообщения со статусом 'Unread'
-	public void setMessageStatus(ChatRoom chat, String chatId) {
-
-		for (message message : messageRedisServ.getLatestMessages(chatId)) {
-			if (message != null && message.getStatus().equals("Unread")
-					&& message.getSenderId().equals(chat.getSenderId())) {
-				// Увеличиваем счетчик для unreadRecipientMessages
-				chat.setUnreadRecipientMessages(chat.getUnreadRecipientMessages() + 1);
-				chatRoomRepository.save(chat);
-			} else if (message.getStatus().equals("Unread") && message.getRecipientId().equals(chat.getSenderId())) {
-				// Увеличиваем счетчик для unreadSenderMessages
-				chat.setUnreadSenderMessages(chat.getUnreadSenderMessages() + 1);
-				chatRoomRepository.save(chat);
-			}
-		}
-
-		for (message message : findByChatId(chatId)) {
-			if (message != null && message.getStatus().equals("Unread")
-					&& message.getSenderId().equals(chat.getSenderId())) {
-				// Увеличиваем счетчик для unreadRecipientMessages
-				chat.setUnreadRecipientMessages(chat.getUnreadRecipientMessages() + 1);
-				chatRoomRepository.save(chat);
-			} else if (message.getStatus().equals("Unread") && message.getRecipientId().equals(chat.getSenderId())) {
-				// Увеличиваем счетчик для unreadSenderMessages
-				chat.setUnreadSenderMessages(chat.getUnreadSenderMessages() + 1);
-				chatRoomRepository.save(chat);
-			}
-		}
-
-	}
+	/*
+	 * public void readMessages(String chatId, String curentUserId, ChatRoom chat,
+	 * HttpServletRequest request) {
+	 * 
+	 * boolean flag = false;
+	 * 
+	 * for (message message : getCaсhedMessages(chatId)) { if
+	 * (message.getStatus().equals("Unread") &&
+	 * message.getRecipientId().equals(curentUserId)) { message.setStatus("Read");
+	 * flag = true;
+	 * 
+	 * 
+	 * edit(message.getId(), message.getContent(), message.getChatId(),
+	 * message.getSendTime(), message.getSenderName(), message.getSenderId(),
+	 * message.getRecipientId(), message.getStatus());
+	 * 
+	 * }
+	 * 
+	 * }
+	 * 
+	 * 
+	 * if (flag) { connectionService.userConnection(curentUserId, new
+	 * ConnectionInfo(), (String)
+	 * request.getSession().getAttribute("currentMapping")); }
+	 * 
+	 * 
+	 * for (message message : findByChatId(chatId)) { if
+	 * (message.getStatus().equals("Unread") &&
+	 * message.getRecipientId().equals(curentUserId)) { message.setStatus("Read");
+	 * flag = true;
+	 * 
+	 * 
+	 * edit(message.getId(), message.getContent(), message.getChatId(),
+	 * message.getSendTime(), message.getSenderName(), message.getSenderId(),
+	 * message.getRecipientId(), message.getStatus());
+	 * 
+	 * } }
+	 * 
+	 * chat.setUnreadRecipientMessages(0); chat.setUnreadSenderMessages(0);
+	 * chatRoomRepository.save(chat);
+	 * 
+	 * }
+	 */
 
 	@Transactional
 	public void edit(message message) {

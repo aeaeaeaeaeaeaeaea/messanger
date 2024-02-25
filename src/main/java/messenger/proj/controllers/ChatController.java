@@ -113,10 +113,9 @@ public class ChatController {
 		 * chatRoomServ.findById(chatId);
 		 * // Читаем сообщения со статусом Unread и устанавливаем для них статус Read
 		 * messageServ.readMessages(chatId, currentUserId, chat.get(), request);
-		 * 
-		 * // Устанавливаем статус 'Unread' для сообщений и считаем их
-		 * messageServ.setMessageStatus(chat.get(), chatId);
-		 */
+		*/ 
+		 
+		 
 
 		return messageService.findByChatId(chatId);
 	}
@@ -132,6 +131,7 @@ public class ChatController {
 	// Редактируем сообщение
 	@PatchMapping("/editMessage")
 	public ResponseEntity<String> editMessage(@RequestBody message message) {
+		
 		 /* 
 		 * // Если сообщения состоит только из пробелов и у него нет файла, то оно //
 		 * удаляется при редактировании 
