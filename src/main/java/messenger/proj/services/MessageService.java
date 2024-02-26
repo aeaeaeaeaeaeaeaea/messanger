@@ -27,6 +27,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jnr.ffi.Struct.int16_t;
 import messenger.proj.models.ChatRoom;
 import messenger.proj.models.ConnectionInfo;
 import messenger.proj.models.message;
@@ -67,28 +68,61 @@ public class MessageService {
 
 	@Transactional
 	public void save(message message) {
-		
+
 		String id = UUID.randomUUID().toString();
 		message.setId(id);
 		message.setSendTime(LocalDateTime.now());
 		messageRedisServ.cacheMessage(id, message.getChatId(), message);
 
+		increaseUnreadMessageCounter(message);
+	}
+
+	@Transactional
+	public void increaseUnreadMessageCounter(message message) {
+
 		Optional<ChatRoom> chat = chatRoomService.findById(message.getChatId());
-		
+
 		if (chat.isPresent()) {
 
 			if (message != null && message.getStatus().equals("Unread")
 					&& message.getSenderId().equals(chat.get().getSenderId())) {
-				
+
 				// Увеличиваем счетчик для unreadRecipientMessages
 				chat.get().setUnreadRecipientMessages(chat.get().getUnreadRecipientMessages() + 1);
 				chatRoomService.edit(chat.get());
 
 			} else if (message.getStatus().equals("Unread")
 					&& message.getRecipientId().equals(chat.get().getSenderId())) {
-				
+
 				// Увеличиваем счетчик для unreadSenderMessages
 				chat.get().setUnreadSenderMessages(chat.get().getUnreadSenderMessages() + 1);
+				chatRoomService.edit(chat.get());
+
+			}
+
+		}
+
+	}
+
+	@Transactional
+	public void decreaseUnreadMessageCounter(message message) {
+
+		Optional<ChatRoom> chat = chatRoomService.findById(message.getChatId());
+
+		if (chat.isPresent()) {
+
+			if (message != null && message.getStatus().equals("Unread")
+					&& message.getSenderId().equals(chat.get().getSenderId())) {
+
+				// Увеличиваем счетчик для unreadRecipientMessages
+				chat.get().setUnreadRecipientMessages(chat.get().getUnreadRecipientMessages() - 1);
+				chatRoomService.edit(chat.get());
+
+			} else if (message.getStatus().equals("Unread")
+					&& message.getRecipientId().equals(chat.get().getSenderId())) {
+
+				// Увеличиваем счетчик для unreadSenderMessages
+				chat.get().setUnreadSenderMessages(chat.get().getUnreadSenderMessages() - 1);
 				chatRoomService.edit(chat.get());
 
 			}
@@ -110,65 +144,59 @@ public class MessageService {
 		redisTemplate1.opsForList().remove(message.getChatId(), 0,
 				"message:" + message.getChatId() + ":" + message.getId());
 
+		decreaseUnreadMessageCounter(message);
+
 	}
 
 	public void deleteAllMessagesFromChat(String chatId) {
 		findByChatId(chatId).forEach(x -> deleteById(x));
 		getCaсhedMessages(chatId).forEach(x -> deleteById(x));
-		
+
 		Optional<ChatRoom> chat = chatRoomService.findById(chatId);
-		
+
 		if (chat.isPresent()) {
 			chat.get().setUnreadRecipientMessages(0);
 			chat.get().setUnreadSenderMessages(0);
 			chatRoomService.edit(chat.get());
 		}
-		
+
 	}
 
-	/*
-	 * public void readMessages(String chatId, String curentUserId, ChatRoom chat,
-	 * HttpServletRequest request) {
-	 * 
-	 * boolean flag = false;
-	 * 
-	 * for (message message : getCaсhedMessages(chatId)) { if
-	 * (message.getStatus().equals("Unread") &&
-	 * message.getRecipientId().equals(curentUserId)) { message.setStatus("Read");
-	 * flag = true;
-	 * 
-	 * 
-	 * edit(message.getId(), message.getContent(), message.getChatId(),
-	 * message.getSendTime(), message.getSenderName(), message.getSenderId(),
-	 * message.getRecipientId(), message.getStatus());
-	 * 
-	 * }
-	 * 
-	 * }
-	 * 
-	 * 
-	 * if (flag) { connectionService.userConnection(curentUserId, new
-	 * ConnectionInfo(), (String)
-	 * request.getSession().getAttribute("currentMapping")); }
-	 * 
-	 * 
-	 * for (message message : findByChatId(chatId)) { if
-	 * (message.getStatus().equals("Unread") &&
-	 * message.getRecipientId().equals(curentUserId)) { message.setStatus("Read");
-	 * flag = true;
-	 * 
-	 * 
-	 * edit(message.getId(), message.getContent(), message.getChatId(),
-	 * message.getSendTime(), message.getSenderName(), message.getSenderId(),
-	 * message.getRecipientId(), message.getStatus());
-	 * 
-	 * } }
-	 * 
-	 * chat.setUnreadRecipientMessages(0); chat.setUnreadSenderMessages(0);
-	 * chatRoomRepository.save(chat);
-	 * 
-	 * }
-	 */
+	public void readMessages(String curentUserId, ChatRoom chat, HttpServletRequest request) {
+
+		boolean flag = false;
+		
+		List<message> messages = findByChatId(chat.getId()); 
+		int end = messages.size() - 1;
+		
+		while (end >= 0 && messages.get(end).getStatus().equals("Unread")) {
+			
+			if (messages.get(end).getRecipientId().equals(curentUserId)) {
+				
+				messages.get(end).setStatus("Read");
+				edit(messages.get(end));
+				flag = true;
+
+			}
+			
+			end--;
+			
+		}
+
+		if (flag) {
+			connectionService.userConnection(curentUserId, new ConnectionInfo(), chat.getRecipientId());
+		}
+
+		
+
+		chat.setUnreadRecipientMessages(0);
+		chat.setUnreadSenderMessages(0);
+		chatRoomService.edit(chat);
+
+	}
+	
+	
+	
 
 	@Transactional
 	public void edit(message message) {

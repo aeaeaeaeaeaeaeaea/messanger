@@ -3,6 +3,7 @@ package messenger.proj.controllers;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -108,14 +109,11 @@ public class ChatController {
 
 		connectionService.setCurrentPage(currentUserId, connectionService.getUserConnection(currentUserId),
 				(String) request.getSession().getAttribute("currentMapping"));
-		/*
-		 * // Получаем чат по его Id Optional<ChatRoom> chat =
-		 * chatRoomServ.findById(chatId);
-		 * // Читаем сообщения со статусом Unread и устанавливаем для них статус Read
-		 * messageServ.readMessages(chatId, currentUserId, chat.get(), request);
-		*/ 
-		 
-		 
+
+		// Получаем чат по его Id
+		Optional<ChatRoom> chat = chatRoomService.findById(chatId);
+		// Читаем сообщения со статусом Unread и устанавливаем для них статус Read
+		messageService.readMessages(currentUserId, chat.get(), request);
 
 		return messageService.findByChatId(chatId);
 	}
@@ -131,11 +129,10 @@ public class ChatController {
 	// Редактируем сообщение
 	@PatchMapping("/editMessage")
 	public ResponseEntity<String> editMessage(@RequestBody message message) {
-		
-		 /* 
+
+		/*
 		 * // Если сообщения состоит только из пробелов и у него нет файла, то оно //
-		 * удаляется при редактировании 
-		 * if (content.trim().isEmpty() &&
+		 * удаляется при редактировании if (content.trim().isEmpty() &&
 		 * !fileService.getFiles().containsKey(messageId)) { // Удаляем сообщение по ID
 		 * messageServ.deleteById(messageId, ldt, chatId);
 		 * 
@@ -143,13 +140,14 @@ public class ChatController {
 		 * 
 		 * 
 		 */
-		
-		// Если сообщения состоит только из пробелов, то оно удаляется при редактировании 
+
+		// Если сообщения состоит только из пробелов, то оно удаляется при
+		// редактировании
 		if (message.getContent().trim().isEmpty()) {
 			messageService.deleteById(message);
 			return ResponseEntity.ok("The message has been deleted because it was empty");
 		}
-		
+
 		messageService.edit(message);
 		return ResponseEntity.ok("The message has been edited!");
 	}

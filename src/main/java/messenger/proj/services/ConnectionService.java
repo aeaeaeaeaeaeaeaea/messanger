@@ -48,6 +48,10 @@ public class ConnectionService {
 		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
 		ConnectionInfo recipientUserConnectionInfo = getUserConnection(recipientId);
+		
+		System.err.println("123 " + recipientId);
+		
+		System.err.println("CONNECTION " + recipientUserConnectionInfo);
 
 		if (connectionInfo != null && connectionInfo.getCurrentPage().substring(6)
 				.equals(recipientUserConnectionInfo.getCurrentPage().substring(6))) {
