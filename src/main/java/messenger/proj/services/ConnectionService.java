@@ -46,12 +46,8 @@ public class ConnectionService {
 	public void userConnection(String userId, ConnectionInfo connectionInfo, String recipientId) {
 
 		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-
 		ConnectionInfo recipientUserConnectionInfo = getUserConnection(recipientId);
 		
-		System.err.println("123 " + recipientId);
-		
-		System.err.println("CONNECTION " + recipientUserConnectionInfo);
 
 		if (connectionInfo != null && connectionInfo.getCurrentPage().substring(6)
 				.equals(recipientUserConnectionInfo.getCurrentPage().substring(6))) {
@@ -76,6 +72,7 @@ public class ConnectionService {
 		connectionInfo.setOnlineStatus("Online");
 
 		redisTemplate.opsForValue().set("user:" + userId, connectionInfo);
+		
 	}
 
 	public void setCurrentPage(String userId, ConnectionInfo connectionInfo, String currentPage) {

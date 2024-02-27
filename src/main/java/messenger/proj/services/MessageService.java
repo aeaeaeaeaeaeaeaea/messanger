@@ -67,14 +67,42 @@ public class MessageService {
 	}
 
 	@Transactional
-	public void save(message message) {
-
+	public void save(message message, String chatId, String currentUserId) {
+		
 		String id = UUID.randomUUID().toString();
-		message.setId(id);
-		message.setSendTime(LocalDateTime.now());
-		messageRedisServ.cacheMessage(id, message.getChatId(), message);
+		Optional<ChatRoom> chat = chatRoomService.findById(chatId);
+		
+		System.out.println();
 
-		increaseUnreadMessageCounter(message);
+		if (chat.isPresent()) {
+
+			message.setId(id);
+			message.setChatId(chatId);
+			
+			if (chat.get().getSenderId().equals(currentUserId)) {
+				
+				message.setSenderId(currentUserId);
+				message.setSenderName(chat.get().getSenderName());
+				message.setRecipientId(chat.get().getRecipientId());
+				message.setRecipientName(chat.get().getRecipientName());
+			
+			} else {
+			
+				message.setSenderId(chat.get().getRecipientId());
+				message.setSenderName(chat.get().getRecipientName());
+				message.setRecipientId(chat.get().getSenderId());
+				message.setRecipientName(chat.get().getSenderName());
+			
+			}
+				
+			message.setStatus("Unread");
+			message.setSendTime(LocalDateTime.now());
+			
+			messageRedisServ.cacheMessage(id, chatId, message);
+
+			increaseUnreadMessageCounter(message);
+		}
+	
 	}
 
 	@Transactional
@@ -165,38 +193,38 @@ public class MessageService {
 	public void readMessages(String curentUserId, ChatRoom chat, HttpServletRequest request) {
 
 		boolean flag = false;
-		
-		List<message> messages = findByChatId(chat.getId()); 
+
+		List<message> messages = findByChatId(chat.getId());
 		int end = messages.size() - 1;
-		
+
 		while (end >= 0 && messages.get(end).getStatus().equals("Unread")) {
-			
+
 			if (messages.get(end).getRecipientId().equals(curentUserId)) {
-				
+
 				messages.get(end).setStatus("Read");
 				edit(messages.get(end));
 				flag = true;
 
 			}
-			
+
 			end--;
-			
 		}
 
 		if (flag) {
-			connectionService.userConnection(curentUserId, new ConnectionInfo(), chat.getRecipientId());
-		}
+			if (chat.getRecipientId().equals(curentUserId)) {
+				connectionService.userConnection(curentUserId, connectionService.getUserConnection(curentUserId),
+						chat.getSenderId());
+			} else {
+				connectionService.userConnection(curentUserId, connectionService.getUserConnection(chat.getSenderId()),
+						chat.getRecipientId());
+			}
 
-		
+		}
 
 		chat.setUnreadRecipientMessages(0);
 		chat.setUnreadSenderMessages(0);
 		chatRoomService.edit(chat);
-
 	}
-	
-	
-	
 
 	@Transactional
 	public void edit(message message) {

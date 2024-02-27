@@ -5,6 +5,7 @@ package messenger.proj.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,11 +52,16 @@ public class MessageController {
 	}
 
 	@PostMapping("/chat/{chatId}/sendMessage")
-	public ResponseEntity<String> processChatMessage(@RequestBody message message) {
+	public ResponseEntity<String> processChatMessage(@RequestBody message message, @PathVariable("chatId") String chatId) {
+		
+		String currentUserId = connectionService.getCurrentUserId();
+		
 		
 		if (!message.getContent().equals("")) {
 			
-			messageServ.save(message);
+			System.err.println("1");
+			
+			messageServ.save(message, chatId, currentUserId);
 			
 			//connectionService.userConnection(senderId, connectionService.getUserConnection(senderId), recipId);
 		}

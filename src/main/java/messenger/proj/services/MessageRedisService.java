@@ -33,18 +33,22 @@ public class MessageRedisService {
 	}
 
 	public void cacheMessage(String messageId, String chatId, message message) {
+		
+		System.err.println("MESSAGE " + message);
 
 		List<String> list = redisTemplate1.opsForList().range(chatId, 0, -1);
 
 		if (list.size() >= 5) {
+			
 			messageRep.save(redisTemplate.opsForValue().get(list.get(0)));
-
+			
 			redisTemplate.delete(list.get(0));
 			redisTemplate1.opsForList().remove(chatId, 0, list.get(0));
 
 			redisTemplate.opsForValue().set("message:" + chatId + ":" + messageId, message);
 			redisTemplate1.opsForList().rightPush(chatId, "message:" + chatId + ":" + messageId);
 
+			System.err.println("7");
 		} else {
 			redisTemplate1.opsForList().rightPush(chatId, "message:" + chatId + ":" + messageId);
 			redisTemplate.opsForValue().set("message:" + chatId + ":" + messageId, message);
