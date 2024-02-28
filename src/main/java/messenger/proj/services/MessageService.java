@@ -38,71 +38,69 @@ import messenger.proj.repositories.MessageRepositroy;
 @Transactional(readOnly = true)
 public class MessageService {
 
-	private final MessageRepositroy messageRep;
-	private final MessageRedisService messageRedisServ;
+	private final MessageRepositroy messageRepositroy;
+	private final MessageRedisService messageRedisService;
 	private final RedisTemplate<String, message> redisTemplate;
 	private final RedisTemplate<String, String> redisTemplate1;
 	private final ConnectionService connectionService;
 	private final ChatRoomService chatRoomService;
 
 	@Autowired
-	public MessageService(MessageRepositroy messageRep, ChatRoomService chatRoomService,
-			ConnectionService connectionService, MessageRedisService messageRedisServ,
+	public MessageService(MessageRepositroy messageRepositroy, ChatRoomService chatRoomService,
+			ConnectionService connectionService, MessageRedisService messageRedisService,
 			RedisTemplate<String, message> redisTemplate, RedisTemplate<String, String> redisTemplate1) {
 
 		this.chatRoomService = chatRoomService;
-		this.messageRep = messageRep;
+		this.messageRepositroy = messageRepositroy;
 		this.connectionService = connectionService;
 		this.redisTemplate1 = redisTemplate1;
 		this.redisTemplate = redisTemplate;
-		this.messageRedisServ = messageRedisServ;
+		this.messageRedisService = messageRedisService;
 	}
 
 	public List<message> findAll() {
-		return messageRep.findAll();
+		return messageRepositroy.findAll();
 	}
 
 	public Optional<message> findById(String messageId) {
-		return messageRep.findById(messageId);
+		return messageRepositroy.findById(messageId);
 	}
 
 	@Transactional
 	public void save(message message, String chatId, String currentUserId) {
-		
+
 		String id = UUID.randomUUID().toString();
 		Optional<ChatRoom> chat = chatRoomService.findById(chatId);
-		
-		System.out.println();
 
 		if (chat.isPresent()) {
 
 			message.setId(id);
 			message.setChatId(chatId);
-			
+
 			if (chat.get().getSenderId().equals(currentUserId)) {
-				
+
 				message.setSenderId(currentUserId);
 				message.setSenderName(chat.get().getSenderName());
 				message.setRecipientId(chat.get().getRecipientId());
 				message.setRecipientName(chat.get().getRecipientName());
-			
+
 			} else {
-			
+
 				message.setSenderId(chat.get().getRecipientId());
 				message.setSenderName(chat.get().getRecipientName());
 				message.setRecipientId(chat.get().getSenderId());
 				message.setRecipientName(chat.get().getSenderName());
-			
+
 			}
-				
+
 			message.setStatus("Unread");
 			message.setSendTime(LocalDateTime.now());
-			
-			messageRedisServ.cacheMessage(id, chatId, message);
+
+			messageRedisService.cacheMessage(id, chatId, message);
 
 			increaseUnreadMessageCounter(message);
 		}
-	
+
 	}
 
 	@Transactional
@@ -165,14 +163,35 @@ public class MessageService {
 	}
 
 	@Transactional
-	public void deleteById(message message) {
+	public void deleteById(message messageForData) {
 
-		messageRep.deleteById(message.getId());
-		redisTemplate.delete("message:" + message.getChatId() + ":" + message.getId());
-		redisTemplate1.opsForList().remove(message.getChatId(), 0,
-				"message:" + message.getChatId() + ":" + message.getId());
+		Optional<message> messageOptional = findById(messageForData.getId());
+		
+		if (!messageOptional.isPresent()) {
+			message message = messageRedisService.getMessageById(messageForData.getId(), messageForData.getChatId());
+			
+			messageRepositroy.deleteById(message.getId());
+			redisTemplate.delete("message:" + message.getChatId() + ":" + message.getId());
+			redisTemplate1.opsForList().remove(message.getChatId(), 0,
+					"message:" + message.getChatId() + ":" + message.getId());
 
-		decreaseUnreadMessageCounter(message);
+			decreaseUnreadMessageCounter(message);
+			
+		}
+		
+		
+		if (messageOptional.isPresent()) {
+			
+			message message = messageOptional.get();
+			
+			messageRepositroy.deleteById(message.getId());
+			redisTemplate.delete("message:" + message.getChatId() + ":" + message.getId());
+			redisTemplate1.opsForList().remove(message.getChatId(), 0,
+					"message:" + message.getChatId() + ":" + message.getId());
+
+			decreaseUnreadMessageCounter(message);
+
+		}
 
 	}
 
@@ -205,6 +224,14 @@ public class MessageService {
 				edit(messages.get(end));
 				flag = true;
 
+				if (chat.getRecipientId().equals(curentUserId)) {
+					chat.setUnreadRecipientMessages(0);
+					chatRoomService.edit(chat);
+				} else {
+					chat.setUnreadSenderMessages(0);
+					chatRoomService.edit(chat);
+				}
+
 			}
 
 			end--;
@@ -221,9 +248,6 @@ public class MessageService {
 
 		}
 
-		chat.setUnreadRecipientMessages(0);
-		chat.setUnreadSenderMessages(0);
-		chatRoomService.edit(chat);
 	}
 
 	@Transactional
@@ -232,16 +256,16 @@ public class MessageService {
 		if (messages.contains(message)) {
 			redisTemplate.opsForValue().set("message:" + message.getChatId() + ":" + message.getId(), message);
 		} else {
-			messageRep.save(message);
+			messageRepositroy.save(message);
 		}
 	}
 
 	public List<message> getCaсhedMessages(String chatId) {
-		return messageRedisServ.getLatestMessages(chatId);
+		return messageRedisService.getLatestMessages(chatId);
 	}
 
 	public List<message> getCassandraMessages(String chatId) {
-		return messageRep.findByChatId(chatId);
+		return messageRepositroy.findByChatId(chatId);
 	}
 
 	public Map<String, message> getLastMessage(List<ChatRoom> chats) {

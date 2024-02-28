@@ -59,8 +59,6 @@ public class MessageController {
 		
 		if (!message.getContent().equals("")) {
 			
-			System.err.println("1");
-			
 			messageServ.save(message, chatId, currentUserId);
 			
 			//connectionService.userConnection(senderId, connectionService.getUserConnection(senderId), recipId);

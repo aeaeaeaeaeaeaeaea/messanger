@@ -135,10 +135,7 @@ public class ChatController {
 		 * удаляется при редактировании if (content.trim().isEmpty() &&
 		 * !fileService.getFiles().containsKey(messageId)) { // Удаляем сообщение по ID
 		 * messageServ.deleteById(messageId, ldt, chatId);
-		 * 
 		 * }
-		 * 
-		 * 
 		 */
 
 		// Если сообщения состоит только из пробелов, то оно удаляется при

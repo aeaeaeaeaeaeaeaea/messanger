@@ -31,10 +31,13 @@ public class MessageRedisService {
 		this.redisTemplate1 = redisTemplate1;
 		this.messageRep = messageRep;
 	}
+	
+	public message getMessageById(String messageId, String chatId) {
+		return redisTemplate.opsForValue().get("message:" + chatId + ":" + messageId);
+	}
 
 	public void cacheMessage(String messageId, String chatId, message message) {
 		
-		System.err.println("MESSAGE " + message);
 
 		List<String> list = redisTemplate1.opsForList().range(chatId, 0, -1);
 
@@ -48,7 +51,7 @@ public class MessageRedisService {
 			redisTemplate.opsForValue().set("message:" + chatId + ":" + messageId, message);
 			redisTemplate1.opsForList().rightPush(chatId, "message:" + chatId + ":" + messageId);
 
-			System.err.println("7");
+			
 		} else {
 			redisTemplate1.opsForList().rightPush(chatId, "message:" + chatId + ":" + messageId);
 			redisTemplate.opsForValue().set("message:" + chatId + ":" + messageId, message);
