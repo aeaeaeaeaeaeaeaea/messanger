@@ -28,9 +28,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import jnr.ffi.Struct.int16_t;
+import messenger.proj.DTO.MessageDTO;
 import messenger.proj.models.ChatRoom;
 import messenger.proj.models.ConnectionInfo;
-import messenger.proj.models.message;
+import messenger.proj.models.Message;
 import messenger.proj.repositories.ChatRoomRepository;
 import messenger.proj.repositories.MessageRepositroy;
 
@@ -40,7 +41,7 @@ public class MessageService {
 
 	private final MessageRepositroy messageRepositroy;
 	private final MessageRedisService messageRedisService;
-	private final RedisTemplate<String, message> redisTemplate;
+	private final RedisTemplate<String, Message> redisTemplate;
 	private final RedisTemplate<String, String> redisTemplate1;
 	private final ConnectionService connectionService;
 	private final ChatRoomService chatRoomService;
@@ -48,7 +49,7 @@ public class MessageService {
 	@Autowired
 	public MessageService(MessageRepositroy messageRepositroy, ChatRoomService chatRoomService,
 			ConnectionService connectionService, MessageRedisService messageRedisService,
-			RedisTemplate<String, message> redisTemplate, RedisTemplate<String, String> redisTemplate1) {
+			RedisTemplate<String, Message> redisTemplate, RedisTemplate<String, String> redisTemplate1) {
 
 		this.chatRoomService = chatRoomService;
 		this.messageRepositroy = messageRepositroy;
@@ -58,20 +59,20 @@ public class MessageService {
 		this.messageRedisService = messageRedisService;
 	}
 
-	public List<message> findAll() {
+	public List<Message> findAll() {
 		return messageRepositroy.findAll();
 	}
 
-	public Optional<message> findById(String messageId) {
+	public Optional<Message> findById(String messageId) {
 		return messageRepositroy.findById(messageId);
 	}
 
 	@Transactional
-	public void save(message message, String chatId, String currentUserId) {
+	public void save(MessageDTO message, String chatId, String currentUserId) {
 
 		String id = UUID.randomUUID().toString();
 		Optional<ChatRoom> chat = chatRoomService.findById(chatId);
-
+		
 		if (chat.isPresent()) {
 
 			message.setId(id);
@@ -104,7 +105,7 @@ public class MessageService {
 	}
 
 	@Transactional
-	public void increaseUnreadMessageCounter(message message) {
+	public void increaseUnreadMessageCounter(Message message) {
 
 		Optional<ChatRoom> chat = chatRoomService.findById(message.getChatId());
 
@@ -131,7 +132,7 @@ public class MessageService {
 	}
 
 	@Transactional
-	public void decreaseUnreadMessageCounter(message message) {
+	public void decreaseUnreadMessageCounter(Message message) {
 
 		Optional<ChatRoom> chat = chatRoomService.findById(message.getChatId());
 
@@ -157,18 +158,18 @@ public class MessageService {
 
 	}
 
-	public List<message> findByChatId(String chatId) {
+	public List<Message> findByChatId(String chatId) {
 		return Stream.concat(getCassandraMessages(chatId).stream(), getCaсhedMessages(chatId).stream())
 				.collect(Collectors.toList());
 	}
 
 	@Transactional
-	public void deleteById(message messageForData) {
+	public void deleteById(Message messageForData) {
 
-		Optional<message> messageOptional = findById(messageForData.getId());
+		Optional<Message> messageOptional = findById(messageForData.getId());
 		
 		if (!messageOptional.isPresent()) {
-			message message = messageRedisService.getMessageById(messageForData.getId(), messageForData.getChatId());
+			Message message = messageRedisService.getMessageById(messageForData.getId(), messageForData.getChatId());
 			
 			messageRepositroy.deleteById(message.getId());
 			redisTemplate.delete("message:" + message.getChatId() + ":" + message.getId());
@@ -182,7 +183,7 @@ public class MessageService {
 		
 		if (messageOptional.isPresent()) {
 			
-			message message = messageOptional.get();
+			Message message = messageOptional.get();
 			
 			messageRepositroy.deleteById(message.getId());
 			redisTemplate.delete("message:" + message.getChatId() + ":" + message.getId());
@@ -213,7 +214,7 @@ public class MessageService {
 
 		boolean flag = false;
 
-		List<message> messages = findByChatId(chat.getId());
+		List<Message> messages = findByChatId(chat.getId());
 		int end = messages.size() - 1;
 
 		while (end >= 0 && messages.get(end).getStatus().equals("Unread")) {
@@ -251,8 +252,8 @@ public class MessageService {
 	}
 
 	@Transactional
-	public void edit(message message) {
-		List<message> messages = getCaсhedMessages(message.getChatId());
+	public void edit(Message message) {
+		List<Message> messages = getCaсhedMessages(message.getChatId());
 		if (messages.contains(message)) {
 			redisTemplate.opsForValue().set("message:" + message.getChatId() + ":" + message.getId(), message);
 		} else {
@@ -260,25 +261,25 @@ public class MessageService {
 		}
 	}
 
-	public List<message> getCaсhedMessages(String chatId) {
+	public List<Message> getCaсhedMessages(String chatId) {
 		return messageRedisService.getLatestMessages(chatId);
 	}
 
-	public List<message> getCassandraMessages(String chatId) {
+	public List<Message> getCassandraMessages(String chatId) {
 		return messageRepositroy.findByChatId(chatId);
 	}
 
-	public Map<String, message> getLastMessage(List<ChatRoom> chats) {
+	public Map<String, Message> getLastMessage(List<ChatRoom> chats) {
 
-		HashMap<String, message> lastMessages = new HashMap<>();
+		HashMap<String, Message> lastMessages = new HashMap<>();
 
 		for (ChatRoom chatRoom : chats) {
 			try {
 				// Получаю последние кэшированные сообщения
-				List<message> messages = getCaсhedMessages(chatRoom.getId());
+				List<Message> messages = getCaсhedMessages(chatRoom.getId());
 				// Если последних кэшированных сообщений нет, то получаем сообщения из cassandra
 				if (messages.isEmpty()) {
-					List<message> cassandraMessages = getCassandraMessages(chatRoom.getId());
+					List<Message> cassandraMessages = getCassandraMessages(chatRoom.getId());
 					lastMessages.put(chatRoom.getId(), cassandraMessages.get(cassandraMessages.size() - 1));
 					// Кладем сообщения в hashMap для дальнейшего использования из redis'а, если они
 					// есть
@@ -293,14 +294,14 @@ public class MessageService {
 
 		if (lastMessages.size() != 0) {
 
-			List<Map.Entry<String, message>> list = new ArrayList<>(lastMessages.entrySet());
+			List<Map.Entry<String, Message>> list = new ArrayList<>(lastMessages.entrySet());
 
 			Collections.sort(list, Comparator.comparing(entry -> entry.getValue().getSendTime()));
 			Collections.reverse(list);
 
-			Map<String, message> sortedHashMap = new LinkedHashMap<>();
+			Map<String, Message> sortedHashMap = new LinkedHashMap<>();
 
-			for (Map.Entry<String, message> entry : list) {
+			for (Map.Entry<String, Message> entry : list) {
 				sortedHashMap.put(entry.getKey(), entry.getValue());
 			}
 

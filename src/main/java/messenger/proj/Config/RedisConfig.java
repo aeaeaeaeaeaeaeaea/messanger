@@ -9,8 +9,8 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import messenger.proj.models.ConnectionInfo;
+import messenger.proj.models.Message;
 import messenger.proj.models.User;
-import messenger.proj.models.message;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,12 +32,12 @@ public class RedisConfig {
 	}
 
 	@Bean
-	public RedisTemplate<String, message> redisTemplate() {
-		RedisTemplate<String, message> template = new RedisTemplate<>();
+	public RedisTemplate<String, Message> redisTemplate() {
+		RedisTemplate<String, Message> template = new RedisTemplate<>();
 		template.setConnectionFactory(redisConnectionFactory());
 		template.setKeySerializer(new StringRedisSerializer());
 
-		Jackson2JsonRedisSerializer<message> jsonSerializer = new Jackson2JsonRedisSerializer<>(message.class);
+		Jackson2JsonRedisSerializer<Message> jsonSerializer = new Jackson2JsonRedisSerializer<>(Message.class);
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.registerModule(new JavaTimeModule());
 		jsonSerializer.setObjectMapper(objectMapper);

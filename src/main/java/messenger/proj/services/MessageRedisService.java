@@ -14,29 +14,29 @@ import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import messenger.proj.models.message;
+import messenger.proj.models.Message;
 import messenger.proj.repositories.MessageRepositroy;
 
 @Service
 public class MessageRedisService {
 
-	private final RedisTemplate<String, message> redisTemplate;
+	private final RedisTemplate<String, Message> redisTemplate;
 	private final MessageRepositroy messageRep;
 	private final RedisTemplate<String, String> redisTemplate1;
 
 	@Autowired
-	public MessageRedisService(MessageRepositroy messageRep, RedisTemplate<String, message> redisTemplate,
+	public MessageRedisService(MessageRepositroy messageRep, RedisTemplate<String, Message> redisTemplate,
 			RedisTemplate<String, String> redisTemplate1) {
 		this.redisTemplate = redisTemplate;
 		this.redisTemplate1 = redisTemplate1;
 		this.messageRep = messageRep;
 	}
 	
-	public message getMessageById(String messageId, String chatId) {
+	public Message getMessageById(String messageId, String chatId) {
 		return redisTemplate.opsForValue().get("message:" + chatId + ":" + messageId);
 	}
 
-	public void cacheMessage(String messageId, String chatId, message message) {
+	public void cacheMessage(String messageId, String chatId, Message message) {
 		
 
 		List<String> list = redisTemplate1.opsForList().range(chatId, 0, -1);
@@ -59,7 +59,7 @@ public class MessageRedisService {
 
 	}
 
-	public List<message> getLatestMessages(String chatId) {
+	public List<Message> getLatestMessages(String chatId) {
 		// Возврщаем все кэшированны сообщения для каждого чата
 		return redisTemplate1.opsForList().range(chatId, 0, -1).stream()
     			.map(x -> redisTemplate.opsForValue().get(x))

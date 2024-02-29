@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @Table("testmessages")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class message {
+public class Message {
 	
 	@PrimaryKey
 	private String id;
@@ -47,10 +47,10 @@ public class message {
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime sendTime;
 
-	public message() {	
+	public Message() {	
 	}
 
-	public message(String id, LocalDateTime sendTime, String chatId, String senderId, String recipientId, String senderName,
+	public Message(String id, LocalDateTime sendTime, String chatId, String senderId, String recipientId, String senderName,
 			String recipientName, String content, String status) {
 		super();
 		this.id = id;
@@ -177,7 +177,7 @@ public class message {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		message other = (message) obj;
+		Message other = (Message) obj;
 		
 		return  Objects.equals(chatId, other.chatId) 
 				&& Objects.equals(id, other.id);

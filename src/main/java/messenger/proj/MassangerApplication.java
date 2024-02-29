@@ -18,6 +18,8 @@ public class MassangerApplication {
 		SpringApplication.run(MassangerApplication.class, args);
 	}
 	
+	
+	
 
 
 }

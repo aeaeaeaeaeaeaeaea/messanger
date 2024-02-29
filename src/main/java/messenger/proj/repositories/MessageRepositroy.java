@@ -8,14 +8,14 @@ import org.springframework.data.cassandra.repository.CassandraRepository;
 import org.springframework.data.cassandra.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import messenger.proj.models.Message;
 import messenger.proj.models.User;
-import messenger.proj.models.message;
 
 @Repository
-public interface MessageRepositroy extends CassandraRepository<message, String> {
+public interface MessageRepositroy extends CassandraRepository<Message, String> {
 
 	@Query("SELECT * FROM testmessages WHERE chatId = ?0 ALLOW FILTERING")
-	List<message> findByChatId(String chatId);
+	List<Message> findByChatId(String chatId);
 	
 	/*
 	 * @Query("SELECT * FROM message WHERE chatId = ?0 AND sendtime = ?1 AND id = ?2"
