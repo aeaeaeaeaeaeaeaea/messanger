@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import messenger.proj.DTO.MessageDTO;
 import messenger.proj.models.ChatRoom;
 import messenger.proj.models.Message;
 import messenger.proj.repositories.ElasticSearchQuery;
@@ -102,7 +103,7 @@ public class ChatController {
 
 	// Страница с чатом между 2-мя пользователями
 	@GetMapping("/chat/{chatId}")
-	public List<Message> chat(@PathVariable("chatId") String chatId, HttpServletRequest request) {
+	public List<MessageDTO> chat(@PathVariable("chatId") String chatId, HttpServletRequest request) {
 
 		String currentUserId = connectionService.getCurrentUserId();
 
@@ -114,12 +115,12 @@ public class ChatController {
 		// Читаем сообщения со статусом Unread и устанавливаем для них статус Read
 		messageService.readMessages(currentUserId, chat.get(), request);
 
-		return messageService.findByChatId(chatId);
+		return messageService.findByChatIdDTO(chatId);
 	}
 
 	// Удаления сообщений
 	@DeleteMapping("/deleteMessage")
-	public ResponseEntity<String> deleteMessage(@RequestBody Message message) {
+	public ResponseEntity<String> deleteMessage(@RequestBody MessageDTO message) {
 		// Удаляем сообщения по ID
 		messageService.deleteById(message);
 		return ResponseEntity.ok("The message has been deleted");
@@ -127,7 +128,7 @@ public class ChatController {
 
 	// Редактируем сообщение
 	@PatchMapping("/editMessage")
-	public ResponseEntity<String> editMessage(@RequestBody Message message) {
+	public ResponseEntity<String> editMessage(@RequestBody MessageDTO message) {
 
 		/*
 		 * // Если сообщения состоит только из пробелов и у него нет файла, то оно удаляется при редактировании 

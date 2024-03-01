@@ -22,6 +22,7 @@ import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.elasticsearch.cluster.coordination.Publication;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -45,13 +46,17 @@ public class MessageService {
 	private final RedisTemplate<String, String> redisTemplate1;
 	private final ConnectionService connectionService;
 	private final ChatRoomService chatRoomService;
+	private final ModelMapper modelMapper;
 
 	@Autowired
-	public MessageService(MessageRepositroy messageRepositroy, ChatRoomService chatRoomService,
+	public MessageService(MessageRepositroy messageRepositroy, 
+			ModelMapper modelMapper,
+			ChatRoomService chatRoomService,
 			ConnectionService connectionService, MessageRedisService messageRedisService,
 			RedisTemplate<String, Message> redisTemplate, RedisTemplate<String, String> redisTemplate1) {
 
 		this.chatRoomService = chatRoomService;
+		this.modelMapper = modelMapper;
 		this.messageRepositroy = messageRepositroy;
 		this.connectionService = connectionService;
 		this.redisTemplate1 = redisTemplate1;
@@ -66,15 +71,25 @@ public class MessageService {
 	public Optional<Message> findById(String messageId) {
 		return messageRepositroy.findById(messageId);
 	}
+	
+	public Message convertToMessage(MessageDTO messageDTO) {
+		return modelMapper.map(messageDTO, Message.class);
+	}
+	
+	public MessageDTO convertToDto(Message message) {
+		return modelMapper.map(message, MessageDTO.class);
+	}
 
 	@Transactional
-	public void save(MessageDTO message, String chatId, String currentUserId) {
+	public void save(MessageDTO messageDTO, String chatId, String currentUserId) {
 
 		String id = UUID.randomUUID().toString();
 		Optional<ChatRoom> chat = chatRoomService.findById(chatId);
 		
 		if (chat.isPresent()) {
-
+			
+			Message message = convertToMessage(messageDTO);
+			
 			message.setId(id);
 			message.setChatId(chatId);
 
@@ -93,7 +108,7 @@ public class MessageService {
 				message.setRecipientName(chat.get().getSenderName());
 
 			}
-
+			
 			message.setStatus("Unread");
 			message.setSendTime(LocalDateTime.now());
 
@@ -162,9 +177,16 @@ public class MessageService {
 		return Stream.concat(getCassandraMessages(chatId).stream(), getCaсhedMessages(chatId).stream())
 				.collect(Collectors.toList());
 	}
+	
+	public List<MessageDTO> findByChatIdDTO(String chatId) {
+		return Stream.concat(
+				getCassandraMessages(chatId).stream().map(x -> convertToDto(x)), 
+				getCaсhedMessages(chatId).stream().map(x -> convertToDto(x)))
+				.collect(Collectors.toList());
+	}
 
 	@Transactional
-	public void deleteById(Message messageForData) {
+	public void deleteById(MessageDTO messageForData) {
 
 		Optional<Message> messageOptional = findById(messageForData.getId());
 		
@@ -250,11 +272,12 @@ public class MessageService {
 		}
 
 	}
-
+	
+	//Остановился тут
 	@Transactional
-	public void edit(Message message) {
+	public void edit(MessageDTO message) {
 		List<Message> messages = getCaсhedMessages(message.getChatId());
-		if (messages.contains(message)) {
+		if (messages.contains(convertToMessage(message))) {
 			redisTemplate.opsForValue().set("message:" + message.getChatId() + ":" + message.getId(), message);
 		} else {
 			messageRepositroy.save(message);
