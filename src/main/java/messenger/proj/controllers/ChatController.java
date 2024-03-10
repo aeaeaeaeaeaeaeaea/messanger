@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import messenger.proj.DTO.ChatRoomDTO;
 import messenger.proj.DTO.MessageDTO;
 import messenger.proj.models.ChatRoom;
 import messenger.proj.models.Message;
@@ -78,7 +79,7 @@ public class ChatController {
 
 	// Создание нового чата
 	@PostMapping("/createChat")
-	public ResponseEntity<String> createChat(@RequestBody ChatRoom chatRoom) {
+	public ResponseEntity<String> createChat(@RequestBody ChatRoomDTO chatRoom) {
 		chatRoomService.save(chatRoom);
 		return ResponseEntity.ok("Chat was created!");
 	}

@@ -219,8 +219,8 @@ public class MessageService {
 	}
 
 	public void deleteAllMessagesFromChat(String chatId) {
-		findByChatId(chatId).forEach(x -> deleteById(x));
-		getCaсhedMessages(chatId).forEach(x -> deleteById(x));
+		findByChatId(chatId).forEach(x -> deleteById(convertToDto(x)));
+		getCaсhedMessages(chatId).forEach(x -> deleteById(convertToDto(x)));
 
 		Optional<ChatRoom> chat = chatRoomService.findById(chatId);
 
@@ -244,7 +244,7 @@ public class MessageService {
 			if (messages.get(end).getRecipientId().equals(curentUserId)) {
 
 				messages.get(end).setStatus("Read");
-				edit(messages.get(end));
+				edit(convertToDto(messages.get(end)));
 				flag = true;
 
 				if (chat.getRecipientId().equals(curentUserId)) {
@@ -278,9 +278,9 @@ public class MessageService {
 	public void edit(MessageDTO message) {
 		List<Message> messages = getCaсhedMessages(message.getChatId());
 		if (messages.contains(convertToMessage(message))) {
-			redisTemplate.opsForValue().set("message:" + message.getChatId() + ":" + message.getId(), message);
+			redisTemplate.opsForValue().set("message:" + message.getChatId() + ":" + message.getId(), convertToMessage(message));
 		} else {
-			messageRepositroy.save(message);
+			messageRepositroy.save(convertToMessage(message));
 		}
 	}
 

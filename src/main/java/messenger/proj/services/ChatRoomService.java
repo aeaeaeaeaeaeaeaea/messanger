@@ -5,11 +5,15 @@ import java.util.stream.Stream;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import messenger.proj.DTO.ChatRoomDTO;
 import messenger.proj.models.ChatRoom;
+import messenger.proj.models.User;
 import messenger.proj.repositories.ChatRoomRepository;
 
 import java.util.HashMap;
@@ -22,11 +26,15 @@ public class ChatRoomService {
 
 	private final ChatRoomRepository chatRoomRepository;
 	private final UserService userService;
+	private final ModelMapper modelMapper;
 
 	
 	@Autowired
-	public ChatRoomService(UserService userService, ChatRoomRepository chatRoomRepository) {
+	public ChatRoomService(UserService userService, 
+						ModelMapper modelMapper,
+			ChatRoomRepository chatRoomRepository) {
 		this.chatRoomRepository = chatRoomRepository;
+		this.modelMapper = modelMapper;
 		this.userService = userService;
 	}
 	
@@ -38,12 +46,29 @@ public class ChatRoomService {
 	public Optional<ChatRoom> findById(String chatId) {
 		return chatRoomRepository.findById(chatId);
 	}
+	
+	public ChatRoom convertToChatRoom(ChatRoomDTO chatRoomDTO) {
+		return modelMapper.map(chatRoomDTO, ChatRoom.class);
+	}
 
 	@Transactional
-	public void save(ChatRoom chatRoom) {
-		if (!findAll().contains(chatRoom)) {
+	public void save(ChatRoomDTO chatRoom) {
+		if (!findAll().contains(convertToChatRoom(chatRoom))) {
 			chatRoom.setId(UUID.randomUUID().toString());
-			chatRoomRepository.save(chatRoom);
+			
+			Optional<User> recipientUser = userService.findById(chatRoom.getRecipientId());
+			Optional<User> sernderUser = userService.findById(chatRoom.getSenderId());
+			
+			if (recipientUser.isPresent()) {
+				chatRoom.setRecipientName(recipientUser.get().getUsername());
+			}
+			
+			if (sernderUser.isPresent()) {
+				chatRoom.setSenderName(sernderUser.get().getUsername());
+			}
+ 			
+			
+			chatRoomRepository.save(convertToChatRoom(chatRoom));
 		}
 	}
 
