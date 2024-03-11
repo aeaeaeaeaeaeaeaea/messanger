@@ -57,7 +57,6 @@ public class ChatRoom {
 		
 	}
 	
-
 	public String getId() {
 		return id;
 	}
@@ -65,9 +64,7 @@ public class ChatRoom {
 	public void setId(String id) {
 		this.id = id;
 	}
-
 	
-
 	public String getSenderId() {
 		return senderId;
 	}
@@ -132,8 +129,7 @@ public class ChatRoom {
 			return false;
 		ChatRoom other = (ChatRoom) obj;
 		return  Objects.equals(recipientId, other.recipientId)
-				&& Objects.equals(recipientName, other.recipientName) && Objects.equals(senderId, other.senderId)
-				&& Objects.equals(senderName, other.senderName);
+				&& Objects.equals(senderId, other.senderId);
 	}
 		
 	

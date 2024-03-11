@@ -4,21 +4,13 @@ public class ChatRoomDTO {
 	
 	private String id;
 	private String senderId;
-	private String recipientName;
-	private String senderName;
 	private String recipientId;
-	private String unreadRecipientMessagesString;
-	private String unreadSenderMessages;
 	
-	public ChatRoomDTO(String id, String senderId, String senderName, String recipientName, String recipientId, String unreadRecipientMessagesString, String unreadSenderMessages) {
-		super();
-		this.id = id;
-		this.senderName = senderName;
-		this.recipientName = recipientName;
+	
+	public ChatRoomDTO(String id, String senderId, String recipientId) {
 		this.recipientId = recipientId;
 		this.senderId = senderId;
-		this.unreadRecipientMessagesString = unreadRecipientMessagesString;
-		this.unreadSenderMessages = unreadSenderMessages;
+		this.id = id;
 	}
 
 
@@ -26,26 +18,13 @@ public class ChatRoomDTO {
 		
 	}
 	
-	
-	
-	
-	public String getRecipientName() {
-		return recipientName;
+	public String getId() {
+		return id;
 	}
 
 
-	public void setRecipientName(String recipientName) {
-		this.recipientName = recipientName;
-	}
-
-
-	public String getSenderName() {
-		return senderName;
-	}
-
-
-	public void setSenderName(String senderName) {
-		this.senderName = senderName;
+	public void setId(String id) {
+		this.id = id;
 	}
 
 
@@ -69,30 +48,10 @@ public class ChatRoomDTO {
 	}
 
 
-	public String getId() {
-		return id;
+	@Override
+	public String toString() {
+		return "ChatRoomDTO [senderId=" + senderId + ", recipientId=" + recipientId + "]";
 	}
-	
-	public void setId(String id) {
-		this.id = id;
-	}
-	
-	public String getUnreadRecipientMessagesString() {
-		return unreadRecipientMessagesString;
-	}
-	
-	public void setUnreadRecipientMessagesString(String unreadRecipientMessagesString) {
-		this.unreadRecipientMessagesString = unreadRecipientMessagesString;
-	}
-	
-	public String getUnreadSenderMessages() {
-		return unreadSenderMessages;
-	}
-	
-	public void setUnreadSenderMessages(String unreadSenderMessages) {
-		this.unreadSenderMessages = unreadSenderMessages;
-	}
-	
 	
 	
 	

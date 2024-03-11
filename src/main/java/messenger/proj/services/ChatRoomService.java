@@ -50,25 +50,34 @@ public class ChatRoomService {
 	public ChatRoom convertToChatRoom(ChatRoomDTO chatRoomDTO) {
 		return modelMapper.map(chatRoomDTO, ChatRoom.class);
 	}
+	
+	public ChatRoomDTO convertToChatRoomDTO(ChatRoom chatRoom) {
+		return modelMapper.map(chatRoom, ChatRoomDTO.class);
+	}
 
 	@Transactional
-	public void save(ChatRoomDTO chatRoom) {
-		if (!findAll().contains(convertToChatRoom(chatRoom))) {
+	public void save(ChatRoomDTO chatRoomDTO) {
+		
+		if (!findAll().contains(convertToChatRoom(chatRoomDTO))) {
+			
+			ChatRoom chatRoom = new ChatRoom();
+			
 			chatRoom.setId(UUID.randomUUID().toString());
 			
-			Optional<User> recipientUser = userService.findById(chatRoom.getRecipientId());
-			Optional<User> sernderUser = userService.findById(chatRoom.getSenderId());
+			Optional<User> recipientUser = userService.findById(chatRoomDTO.getRecipientId());
+			Optional<User> senderUser = userService.findById(chatRoomDTO.getSenderId());
 			
 			if (recipientUser.isPresent()) {
 				chatRoom.setRecipientName(recipientUser.get().getUsername());
 			}
 			
-			if (sernderUser.isPresent()) {
-				chatRoom.setSenderName(sernderUser.get().getUsername());
+			if (senderUser.isPresent()) {
+				chatRoom.setSenderName(senderUser.get().getUsername());
 			}
  			
 			
-			chatRoomRepository.save(convertToChatRoom(chatRoom));
+			chatRoomRepository.save(chatRoom);
+			
 		}
 	}
 
@@ -115,9 +124,10 @@ public class ChatRoomService {
 		return chats;
 	}
 
-	public List<ChatRoom> findUsersChats(String userId) {
+	public List<ChatRoomDTO> findUsersChats(String userId) {
 		return Stream
-				.concat(chatRoomRepository.findBySenderId(userId).stream(), chatRoomRepository.findByRecipientId(userId).stream())
+				.concat(chatRoomRepository.findBySenderId(userId).stream().map(x -> convertToChatRoomDTO(x)), 
+						chatRoomRepository.findByRecipientId(userId).stream().map(x -> convertToChatRoomDTO(x)))
 				.collect(Collectors.toList());
 	}
 
@@ -130,43 +140,6 @@ public class ChatRoomService {
 		chatRoomRepository.deleteById(chatId);
 	}
 
-	/*
-	 * // Метод, который считает сообщения со статусом 'Unread' public void
-	 * countUnreadMessages(String chatId) {
-	 * 
-	 * Optional<ChatRoom> chat = findById(chatId);
-	 * 
-	 * if (chat.isPresent()) {
-	 * 
-	 * for (message message : messageService.getCaсhedMessages(chatId)) {
-	 * 
-	 * 
-	 * 
-	 * }
-	 * 
-	 * for (message message : messageService.getCassandraMessages(chatId)) {
-	 * 
-	 * if (message != null && message.getStatus().equals("Unread") &&
-	 * message.getSenderId().equals(chat.get().getSenderId())) {
-	 * 
-	 * // Увеличиваем счетчик для unreadRecipientMessages
-	 * chat.get().setUnreadRecipientMessages(chat.get().getUnreadRecipientMessages()
-	 * + 1); save(chat.get());
-	 * 
-	 * } else if (message.getStatus().equals("Unread") &&
-	 * message.getRecipientId().equals(chat.get().getSenderId())) {
-	 * 
-	 * // Увеличиваем счетчик для unreadSenderMessages
-	 * chat.get().setUnreadSenderMessages(chat.get().getUnreadSenderMessages() + 1);
-	 * save(chat.get());
-	 * 
-	 * }
-	 * 
-	 * }
-	 * 
-	 * }
-	 * 
-	 * }
-	 */
+
 
 }

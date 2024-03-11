@@ -68,9 +68,10 @@ public class ChatController {
 
 	// Страница со всеми чатами
 	@GetMapping("/chats")
-	public List<ChatRoom> users(HttpServletRequest request) {
+	public List<ChatRoomDTO> users(HttpServletRequest request) {
 
 		String currentUserId = connectionService.getCurrentUserId();
+		// Метод для отслеживания перемещений пользователя по страницам
 		connectionService.setCurrentPage(currentUserId, connectionService.getUserConnection(currentUserId),
 				(String) request.getSession().getAttribute("currentMapping"));
 
@@ -107,7 +108,8 @@ public class ChatController {
 	public List<MessageDTO> chat(@PathVariable("chatId") String chatId, HttpServletRequest request) {
 
 		String currentUserId = connectionService.getCurrentUserId();
-
+		
+		// Метод для отслеживания перемещений пользователя по страницам
 		connectionService.setCurrentPage(currentUserId, connectionService.getUserConnection(currentUserId),
 				(String) request.getSession().getAttribute("currentMapping"));
 
