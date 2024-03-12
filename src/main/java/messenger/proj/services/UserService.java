@@ -1,17 +1,12 @@
 package messenger.proj.services;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import messenger.proj.models.ElasticUser;
 import messenger.proj.models.User;
 import messenger.proj.repositories.ElasticSearchQuery;

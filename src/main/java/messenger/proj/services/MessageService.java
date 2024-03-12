@@ -1,39 +1,26 @@
 package messenger.proj.services;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.elasticsearch.cluster.coordination.Publication;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import jnr.ffi.Struct.int16_t;
 import messenger.proj.DTO.MessageDTO;
 import messenger.proj.models.ChatRoom;
-import messenger.proj.models.ConnectionInfo;
 import messenger.proj.models.Message;
-import messenger.proj.repositories.ChatRoomRepository;
 import messenger.proj.repositories.MessageRepositroy;
 
 @Service
@@ -81,14 +68,15 @@ public class MessageService {
 	}
 
 	@Transactional
-	public void save(MessageDTO messageDTO, String chatId, String currentUserId) {
+	public Message save(MessageDTO messageDTO, String chatId, String currentUserId) {
 
 		String id = UUID.randomUUID().toString();
 		Optional<ChatRoom> chat = chatRoomService.findById(chatId);
+		Message message = convertToMessage(messageDTO);
 		
 		if (chat.isPresent()) {
 			
-			Message message = convertToMessage(messageDTO);
+			
 			
 			message.setId(id);
 			message.setChatId(chatId);
@@ -116,6 +104,8 @@ public class MessageService {
 
 			increaseUnreadMessageCounter(message);
 		}
+		
+		return message; 
 
 	}
 

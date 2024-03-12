@@ -1,19 +1,10 @@
 package messenger.proj.services;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import javax.security.auth.x500.X500Principal;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-
 import messenger.proj.models.Message;
 import messenger.proj.repositories.MessageRepositroy;
 

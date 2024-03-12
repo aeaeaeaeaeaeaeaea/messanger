@@ -1,8 +1,6 @@
-package messenger.proj.models;
+package messenger.proj.DTO;
 
-import java.time.LocalDateTime;
-
-public class ConnectionInfo {
+public class ConnectionInfoDTO {
 	
 	private String userName;
 	private String userId;
@@ -10,11 +8,11 @@ public class ConnectionInfo {
 	private String onlineStatus;
 	private String currentPage;
 	
-	public ConnectionInfo() {
+	public ConnectionInfoDTO() {
 		
 	}
 	
-	public ConnectionInfo(String userName, String currentPage, String onlineStatus, String userId, String logInTime) {
+	public ConnectionInfoDTO(String userName, String currentPage, String onlineStatus, String userId, String logInTime) {
 		super();
 		this.onlineStatus = onlineStatus;
 		this.currentPage = currentPage;
@@ -69,11 +67,5 @@ public class ConnectionInfo {
 		return "ConnectionInfo [userName=" + userName + ", userId=" + userId + ", logInTime=" + logInTime
 				+ ", onlineStatus=" + onlineStatus + ", currentPage=" + currentPage + "]";
 	}
-	
-	
-	
-	
-	
-	
 
 }

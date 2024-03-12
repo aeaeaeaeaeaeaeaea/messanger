@@ -7,22 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
 import messenger.proj.DTO.MessageDTO;
-import messenger.proj.models.ChatRoom;
-import messenger.proj.models.ConnectionInfo;
-import messenger.proj.models.FileEntry;
-import messenger.proj.models.User;
-import messenger.proj.security.PersonDetails;
+import messenger.proj.models.Message;
 import messenger.proj.services.ChatRoomService;
 import messenger.proj.services.ConnectionService;
 import messenger.proj.services.MessageService;
@@ -50,16 +36,17 @@ public class MessageController {
 	}
 
 	@PostMapping("/chat/{chatId}/sendMessage")
-	public ResponseEntity<String> processChatMessage(@RequestBody MessageDTO message, @PathVariable("chatId") String chatId) {
+	public ResponseEntity<String> processChatMessage(@RequestBody MessageDTO messageDTO, @PathVariable("chatId") String chatId) {
 		
 		String currentUserId = connectionService.getCurrentUserId();
 		
 		
-		if (!message.getContent().equals("")) {
+		if (!messageDTO.getContent().equals("")) {
 			
-			messageService.save(message, chatId, currentUserId);
+			Message message = messageService.save(messageDTO, chatId, currentUserId);
 			
-			//connectionService.userConnection(senderId, connectionService.getUserConnection(senderId), recipId);
+			connectionService.userConnection(message.getSenderId(),
+					connectionService.getUserConnection(message.getSenderId()), message.getRecipientId());
 		}
 		
 		return ResponseEntity.ok("Message has been sent");

@@ -1,36 +1,24 @@
 package messenger.proj.controllers;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.HttpStatus;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import org.springframework.web.bind.annotation.RestController;
-
 import messenger.proj.DTO.ChatRoomDTO;
 import messenger.proj.DTO.MessageDTO;
 import messenger.proj.models.ChatRoom;
 import messenger.proj.models.Message;
 import messenger.proj.repositories.ElasticSearchQuery;
-
 import messenger.proj.services.ChatRoomService;
 import messenger.proj.services.ConnectionService;
 import messenger.proj.services.FileService;

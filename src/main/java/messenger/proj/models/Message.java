@@ -152,9 +152,6 @@ public class Message {
 		this.sendTime = sendTime;
 	}
 	
-
-
-
 	@Override
 	public String toString() {
 		return "message [id=" + id + ", chatId=" + chatId + ", senderId=" + senderId + ", recipientId=" + recipientId

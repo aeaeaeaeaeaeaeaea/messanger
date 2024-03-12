@@ -6,29 +6,23 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.elasticsearch.index.mapper.StringFieldType;
-import org.hibernate.validator.internal.util.privilegedactions.NewInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import messenger.proj.models.ConnectionInfo;
+import messenger.proj.DTO.ConnectionInfoDTO;
 import messenger.proj.models.User;
 import messenger.proj.security.PersonDetails;
 
 @Service
 public class ConnectionService {
 
-	private final RedisTemplate<String, ConnectionInfo> redisTemplate;
+	private final RedisTemplate<String, ConnectionInfoDTO> redisTemplate;
 	private final UserService userServ;
 
 	@Autowired
-	public ConnectionService(UserService userServ, RedisTemplate<String, ConnectionInfo> redisTemplate) {
+	public ConnectionService(UserService userServ, RedisTemplate<String, ConnectionInfoDTO> redisTemplate) {
 		super();
 		this.userServ = userServ;
 		this.redisTemplate = redisTemplate;
@@ -43,19 +37,18 @@ public class ConnectionService {
 		return currentUserId;
 	}
 
-	public void userConnection(String userId, ConnectionInfo connectionInfo, String recipientId) {
+	public void userConnection(String userId, ConnectionInfoDTO connectionInfo, String recipientId) {
 
 		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-		ConnectionInfo recipientUserConnectionInfo = getUserConnection(recipientId);
+		ConnectionInfoDTO recipientUserConnectionInfo = getUserConnection(recipientId);
 		
-
-		if (connectionInfo != null && connectionInfo.getCurrentPage().substring(6)
+		if (connectionInfo != null && recipientUserConnectionInfo != null && connectionInfo.getCurrentPage().substring(6)
 				.equals(recipientUserConnectionInfo.getCurrentPage().substring(6))) {
 
 			recipientUserConnectionInfo.setOnlineStatus("Online");
 			redisTemplate.opsForValue().set("user:" + recipientId, recipientUserConnectionInfo);
 
-			// Определенный метод, который вы хотите вызвать через 10 секунд
+		
 			Runnable task = () -> recipientUserConnectionInfo.setOnlineStatus(null);
 			Runnable task2 = () -> redisTemplate.opsForValue().set("user:" + recipientId, recipientUserConnectionInfo);
 
@@ -63,6 +56,7 @@ public class ConnectionService {
 			scheduler.schedule(task2, 11, TimeUnit.SECONDS);
 		}
 
+		
 		User user = userServ.findById(userId).get();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
@@ -70,12 +64,19 @@ public class ConnectionService {
 		connectionInfo.setUserId(userId);
 		connectionInfo.setLogInTime(LocalDateTime.now().format(formatter).toString());
 		connectionInfo.setOnlineStatus("Online");
+		
+		
+		Runnable task = () -> connectionInfo.setOnlineStatus(null);
+		Runnable task2 = () -> redisTemplate.opsForValue().set("user:" + userId, connectionInfo);
+
+		scheduler.schedule(task, 10, TimeUnit.SECONDS);
+		scheduler.schedule(task2, 11, TimeUnit.SECONDS);
 
 		redisTemplate.opsForValue().set("user:" + userId, connectionInfo);
 		
 	}
 
-	public void setCurrentPage(String userId, ConnectionInfo connectionInfo, String currentPage) {
+	public void setCurrentPage(String userId, ConnectionInfoDTO connectionInfo, String currentPage) {
 		
 		
 		if (connectionInfo != null) {
@@ -87,7 +88,7 @@ public class ConnectionService {
 			User user = userServ.findById(userId).get();
 			
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-			ConnectionInfo connectionInfo2 = new ConnectionInfo();
+			ConnectionInfoDTO connectionInfo2 = new ConnectionInfoDTO();
 			
 			connectionInfo2.setUserName(user.getUsername());
 			connectionInfo2.setUserId(userId);
@@ -102,9 +103,9 @@ public class ConnectionService {
 		redisTemplate.delete("user:" + userId);
 	}
 
-	public ConnectionInfo getUserConnection(String userId) {
+	public ConnectionInfoDTO getUserConnection(String userId) {
 		Set<String> keySet = redisTemplate.keys("user:" + userId);
-		ConnectionInfo connectionInfo = null;
+		ConnectionInfoDTO connectionInfo = null;
 		for (String key : keySet) {
 			connectionInfo = redisTemplate.opsForValue().get(key);
 		}
