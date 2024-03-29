@@ -86,28 +86,6 @@ public class ChatRoomService {
 		return chatRoom;
 	}
 
-	
-
-	/*
-	 * public List<ChatRoom> lastMessageOrder(String curentUserId) {
-	 * 
-	 * List<ChatRoom> chatRooms = new ArrayList<>(); Map<String, ChatRoom> map =
-	 * findAllHashMap(curentUserId);
-	 * 
-	 * for (Map.Entry<String, message> mEntry :
-	 * messageServ.getLastMessage(findAll(curentUserId)).entrySet()) {
-	 * 
-	 * chatRooms.add(map.get(mEntry.getKey()));
-	 * 
-	 * }
-	 * 
-	 * for (Map.Entry<String, ChatRoom> mEntry : map.entrySet()) { if
-	 * (!chatRooms.contains(map.get(mEntry.getKey()))) {
-	 * chatRooms.add(mEntry.getValue()); } }
-	 * 
-	 * return chatRooms; }
-	 */
-
 	public Map<String, ChatRoom> findAllHashMap(String userId) {
 
 		List<ChatRoom> listOne = chatRoomRepository.findBySenderId(userId);

@@ -7,9 +7,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import messenger.proj.models.ElasticUser;
 import messenger.proj.models.User;
-import messenger.proj.repositories.ElasticSearchQuery;
 import messenger.proj.repositories.UserRepository;
 
 @Service
@@ -17,12 +15,12 @@ import messenger.proj.repositories.UserRepository;
 public class UserService {
 
 	private UserRepository userRep;
-	private ElasticSearchQuery elasticSearchQuery;
+
 
 	@Autowired
-	public UserService(UserRepository userRep, ElasticSearchQuery elasticSearchQuery) {
+	public UserService(UserRepository userRep) {
 		this.userRep = userRep;
-		this.elasticSearchQuery = elasticSearchQuery;
+		
 	}
 
 	public void editUser(User user) {
@@ -36,13 +34,7 @@ public class UserService {
 		user.setRole("ROLE_USER");
 		userRep.save(user);
 
-		ElasticUser elasticUser = new ElasticUser(user.getId(), user.getUsername());
-
-		try {
-			elasticSearchQuery.createOrUpdateDocument(elasticUser);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		
 	}
 
 	public List<User> findAll() {

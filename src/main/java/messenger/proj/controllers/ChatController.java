@@ -18,7 +18,6 @@ import messenger.proj.DTO.ChatRoomDTO;
 import messenger.proj.DTO.MessageDTO;
 import messenger.proj.models.ChatRoom;
 import messenger.proj.models.Message;
-import messenger.proj.repositories.ElasticSearchQuery;
 import messenger.proj.services.ChatRoomService;
 import messenger.proj.services.ConnectionService;
 import messenger.proj.services.MessageRedisService;
@@ -34,15 +33,13 @@ public class ChatController {
 	private final UserService userService;
 	private final RedisTemplate<String, Message> redisTemplate;
 	private final ConnectionService connectionService;
-	private final ElasticSearchQuery elasticSearchQuery;
 	private final MessageRedisService messageRedisService;
 
 	@Autowired
 	public ChatController(ConnectionService connectionService, RedisTemplate<String, Message> redisTemplate,
 			MessageRedisService messageRedisService, UserService userService, ChatRoomService chatRoomService,
-			MessageService messageService, ElasticSearchQuery elasticSearchQuery) {
+			MessageService messageService) {
 
-		this.elasticSearchQuery = elasticSearchQuery;
 		this.messageRedisService = messageRedisService;
 		this.connectionService = connectionService;
 		this.redisTemplate = redisTemplate;
