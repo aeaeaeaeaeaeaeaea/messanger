@@ -1,9 +1,8 @@
 package messenger.proj.services;
 
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.Optional;
-import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +14,6 @@ import messenger.proj.DTO.ChatRoomDTO;
 import messenger.proj.models.ChatRoom;
 import messenger.proj.models.User;
 import messenger.proj.repositories.ChatRoomRepository;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Service
 @Transactional(readOnly = true)
@@ -91,7 +86,9 @@ public class ChatRoomService {
 		List<ChatRoom> listOne = chatRoomRepository.findBySenderId(userId);
 		List<ChatRoom> listTwo = chatRoomRepository.findByRecipientId(userId);
 
-		List<ChatRoom> newList = Stream.concat(listOne.stream(), listTwo.stream()).toList();
+		List<ChatRoom> newList = new ArrayList<>();
+		newList.addAll(listOne);
+		newList.addAll(listTwo);
 
 		Map<String, ChatRoom> chats = new HashMap<>();
 

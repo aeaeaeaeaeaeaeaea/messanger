@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  app:
+    image: app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "2000:2000"
+    depends_on:
+      - cassandra
+      - redis
+    environment:
+      - SPRING_CASSANDRA_CONTACT_POINTS=cassandra
+      - SPRING_CASSANDRA_PORT=9042
+      - SPRING_CASSANDRA_KEYSPACE_NAME=k1
+      - SPRING_CASSANDRA_LOCAL_DATACENTER=datacenter1
+
+  cassandra:
+    image: cassandra:4.0
+    ports:
+      - "9042:9042"
+
+  redis:
+    hostname: redis
+    image: redis:5
+    ports:
+      - "6379:6379"

@@ -27,7 +27,7 @@ public class RedisConfig {
 
 	@Bean
 	public RedisConnectionFactory redisConnectionFactory() {
-		return new LettuceConnectionFactory("localhost", 6379); // Измените хост и порт на соответствующие параметры
+		return new LettuceConnectionFactory("redis", 6379); // Измените хост и порт на соответствующие параметры
 																// вашего Redis сервера
 	}
 
